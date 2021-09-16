@@ -2,14 +2,19 @@ const express = require('express');
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const connectDb = require('./config/db');
+
+const app = express();
 
 // Config .env to ./config/config.env
 require('dotenv').config({
     path: './config/config.env'
 });
 
+// Connect to Database
+// connectDb();
+
 // Use bodyParser to parse JSON
-const app = express();
 app.use(express.json());
 
 // Config for only development
