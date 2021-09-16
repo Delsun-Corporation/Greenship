@@ -69,9 +69,14 @@ exports.registerController = (req, res) => {
         transporter.sendMail(emailData, function (err, info) {
             if (err) {
                 console.log(err);
-                return;
+                return res.status(400).json({
+                    error: errorHandler(err)
+                })
             }
-            console.log(`Sent: ${info.response}`);
+            
+            return res.json({
+                message: `Email has been sent to ${email}`
+            })
         })
     }
 };
