@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "type":"commonjs",
+  "type": "commonjs",
   "scripts": {
     "start": "NODE_ENV=production node server",
     "dev": "nodemon server"
