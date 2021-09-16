@@ -12,7 +12,7 @@ require('dotenv').config({
 });
 
 // Connect to Database
-// connectDb();
+connectDb();
 
 // Use bodyParser to parse JSON
 app.use(express.json());

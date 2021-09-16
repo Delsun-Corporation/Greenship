@@ -94,26 +94,26 @@ exports.activationController = (req, res) => {
         // Get name email password from token
         const { name, email, password } = jwt.decode(token);
 
-        // const user = new User({
-        //   name,
-        //   email,
-        //   password,
-        // });
+        const user = new User({
+          name,
+          email,
+          password,
+        });
 
         console.log('verified');
-        // user.save((err, user) => {
-        //   if (err) {
-        //     return res.status(401).json({
-        //       error: errorHandler(err),
-        //     });
-        //   } else {
-        //     return res.json({
-        //       success: true,
-        //       message: "Signup success",
-        //       user,
-        //     });
-        //   }
-        // });
+        user.save((err, user) => {
+          if (err) {
+            return res.status(401).json({
+              error: errorHandler(err),
+            });
+          } else {
+            return res.json({
+              success: true,
+              message: "Signup success",
+              user,
+            });
+          }
+        });
       }
     });
   } else {
