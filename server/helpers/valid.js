@@ -34,14 +34,9 @@ exports.forgotPasswordValidator = [
 
 // Reset password
 exports.resetPasswordValidator = [
-    check('newPassword').not().isEmpty()
-    .isLength({
-        min: 4,
-        max: 32
-    }).withMessage('name must be between 3 to 32 characters'),
-    check('email').isEmpty().withMessage('Must be a valid email address'),
-    check('password', 'password is required').not().isEmpty(),
-    check('password').isLength({
-        min: 6
-    }).withMessage('Password must contain at leat 6 characters').matches(/\d/).withMessage('password must contain a number')
+    check('newPassword')
+        .not()
+        .isEmpty()
+        .isLength({ min: 6 })
+        .withMessage('Password must be at least  6 characters long')
 ]

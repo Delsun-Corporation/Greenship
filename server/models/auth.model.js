@@ -30,7 +30,7 @@ const userSchema = new mongoose.Schema(
       default: "",
     },
   },
-  { timeStamp: true }
+  { timestamps: true }
 );
 
 // Virtual Password

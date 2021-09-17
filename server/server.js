@@ -14,7 +14,7 @@ require('dotenv').config({
 // Connect to Database
 connectDb();
 
-// Use bodyParser to parse JSON
+// Use express to parse JSON
 app.use(express.json());
 
 // Config for only development
