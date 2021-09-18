@@ -10,12 +10,16 @@ const { errorHandler } = require("../helpers/dbErrorHandling");
 const nodemailer = require("nodemailer");
 
 const transporter = nodemailer.createTransport({
-  host: "smtp.ethereal.email",
-  port: 587,
-  auth: {
-    user: "rashawn.murphy23@ethereal.email",
-    pass: "NHvw2M2XFNg3Tb3hSf",
-  },
+  host: "smtp-mail.outlook.com", // hostname
+    secureConnection: false, // TLS requires secureConnection to be false
+    port: 587, // port for secure SMTP
+    tls: {
+       ciphers:'SSLv3'
+    },
+    auth: {
+        user: 'mockdelsun28-131-693-007@outlook.com',
+        pass: 'okeokeoke90'
+    }
 });
 
 exports.registerController = (req, res) => {
@@ -67,7 +71,7 @@ exports.registerController = (req, res) => {
     transporter.sendMail(emailData, function (err, info) {
       if (err) {
         return res.status(400).json({
-          error: errorHandler(err.message),
+          error: "Something went wrong, please try again",
         });
       }
 
@@ -218,29 +222,32 @@ exports.forgotController = (req, res) => {
               `,
         };
 
-        return user.updateOne({
-          resetPasswordLink: token
-        }, (err, success) => {
-          if (err) {
-            return res.status(400).json({
-              error: errorHandler(err)
-            });
-          } else {
-            transporter.sendMail(emailData, function (err, info) {
-              if (err) {
-                console.log(err);
-                return res.status(400).json({
-                  error: errorHandler(err.message),
-                });
-              }
-        
-              return res.json({
-                message: `Email has been sent to ${email}`,
+        return user.updateOne(
+          {
+            resetPasswordLink: token,
+          },
+          (err, success) => {
+            if (err) {
+              return res.status(400).json({
+                error: errorHandler(err),
               });
-            });
+            } else {
+              transporter.sendMail(emailData, function (err, info) {
+                if (err) {
+                  return res.status(400).json({
+                    error: errorHandler(
+                      "Something went wrong, please try again"
+                    ),
+                  });
+                }
+
+                return res.json({
+                  message: `Email has been sent to ${email}`,
+                });
+              });
+            }
           }
-          
-        });
+        );
       }
     );
   }
@@ -257,40 +264,44 @@ exports.resetController = (req, res) => {
     });
   } else {
     if (resetPasswordLink) {
-      jwt.verify(resetPasswordLink, process.env.JWT_RESET_PASSWORD, function (err, decoded) {
-        if (err) {
-          return res.status(400).json({
-            error: 'Expired link, try again'
-          })
-        }
-
-        User.findOne({resetPasswordLink}, (err, user) => {
-          if (err || !user) {
+      jwt.verify(
+        resetPasswordLink,
+        process.env.JWT_RESET_PASSWORD,
+        function (err, decoded) {
+          if (err) {
             return res.status(400).json({
-              error: 'Something went wrong, please try again'
-            })
+              error: "Expired link, try again",
+            });
           }
 
-          const updatedFields = {
-            password: newPassword,
-            resetPasswordLink: ''
-          }
-
-          user = _.extend(user, updatedFields);
-
-          user.save((err, result) => {
-            if(err){
+          User.findOne({ resetPasswordLink }, (err, user) => {
+            if (err || !user) {
               return res.status(400).json({
+                error: "Something went wrong, please try again",
+              });
+            }
 
-              })
-            } 
+            const updatedFields = {
+              password: newPassword,
+              resetPasswordLink: "",
+            };
 
-            return res.json({
-              message: 'Great! Now you can login with your new password'
-            })
-          })
-        })
-      })
+            user = _.extend(user, updatedFields);
+
+            user.save((err, result) => {
+              if (err) {
+                return res.status(400).json({
+                  error: "Error resetting user password",
+                });
+              }
+
+              return res.json({
+                message: "Great! Now you can login with your new password",
+              });
+            });
+          });
+        }
+      );
     }
   }
-}
+};
