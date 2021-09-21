@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import forgetSvg from "../assets/forget.svg";
 import { ToastContainer, toast } from "react-toastify";
 import axios from "axios";
-import { Redirect } from "react-router-dom";
 
 const ForgotPass = ({history}) => {
   const [formData, setFormData] = useState({

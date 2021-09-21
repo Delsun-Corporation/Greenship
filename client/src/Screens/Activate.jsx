@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import welcomeSvg from "../assets/welcome.svg";
 import { ToastContainer, toast } from "react-toastify";
-import { authenticate, isAuth } from "../helpers/auth";
+import { isAuth } from "../helpers/auth";
 import axios from "axios";
 import jwt from "jsonwebtoken";
-import { Link, Redirect } from "react-router-dom";
+import { Redirect } from "react-router-dom";
 
 const Activate = ({ match }) => {
   const [formData, setFormData] = useState({
