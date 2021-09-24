@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import authSvg from '../assets/auth.svg';
 import {ToastContainer, toast} from 'react-toastify';
-import {authenticate, isAuth} from '../helpers/auth';
+import {isAuth} from '../helpers/auth';
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
 
@@ -41,9 +41,17 @@ const Register = () => {
                         textChange: 'Register'
                     })
 
-                    toast.success(res.data.message);
+                    if (res.data.message) {
+                        toast.success(res.data.message);
+                    } else {
+                        toast.success('Registration Success');
+                    }
                 }).catch ((err) => {
-                    toast.error(err.response.data.error);
+                    if (err.response.data.error) {
+                        toast.error(err.response.data.error);
+                    } else {
+                        toast.error('Something went wrong. Please try again');
+                    }
                     setFormData({
                         ...formData,
                         textChange: 'Register'

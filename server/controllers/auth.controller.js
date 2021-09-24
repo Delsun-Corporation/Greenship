@@ -70,7 +70,7 @@ exports.registerController = (req, res) => {
 
     transporter.sendMail(emailData, function (err, info) {
       if (err) {
-        return res.status(400).json({
+        return res.status(402).json({
           error: "Something went wrong, please try again",
         });
       }
@@ -235,9 +235,7 @@ exports.forgotController = (req, res) => {
               transporter.sendMail(emailData, function (err, info) {
                 if (err) {
                   return res.status(400).json({
-                    error: errorHandler(
-                      "Something went wrong, please try again"
-                    ),
+                    error: "Something went wrong, please try again"
                   });
                 }
 
