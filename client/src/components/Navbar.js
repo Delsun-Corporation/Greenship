@@ -39,7 +39,10 @@ const Navbar = () => {
               <a class="navbar-brand-right" href="/login">
                 Sign in
               </a>
-            ) : null}
+            ) : <h4 class="navbar-brand-right" href="/login">
+            Welcome, {isAuth().name}
+          </h4>
+          }
           </div>
         </div>
         <nav className={sidebar ? "nav-menu active" : "nav-menu"}>

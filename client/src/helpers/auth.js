@@ -67,7 +67,6 @@ export const isAuth = () => {
     }
 }
 
-
 // Update user data in localStorage
 export const updateUser = (res, next) => {
     if(window !== 'undefined') {

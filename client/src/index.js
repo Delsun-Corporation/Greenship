@@ -8,7 +8,7 @@ import { injectStyle } from "react-toastify/dist/inject-style";
 import Login from "./Screens/Login";
 import ForgotPass from "./Screens/ForgotPass";
 import Reset from "./Screens/Reset";
-import Navbar from "./components/Navbar";
+import "./index.css";
 
 if (typeof window !== "undefined") {
   injectStyle();
@@ -16,9 +16,8 @@ if (typeof window !== "undefined") {
 
 ReactDOM.render(
   <BrowserRouter>
-    <Navbar />
     <Switch>
-      <Route path="/" exact render={(props) => <App {...props} />} />
+      <Route path="/" exact render={(props) => <Login {...props} />} />
       <Route path="/login" exact render={(props) => <Login {...props} />} />
       <Route
         path="/users/passwords/forget"
