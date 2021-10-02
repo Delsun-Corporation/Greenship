@@ -6,6 +6,7 @@ module.exports = {
       colors: {
         primary: "#47919B",
         secondary: "#334F59",
+        greenOverlay: "#81ED99",
       },
       fontFamily: {
         'title': ['Libre Baskerville'],

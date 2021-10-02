@@ -68,10 +68,10 @@ const Login = ({ history }) => {
             style={{ backgroundImage: `url(${authPict})` }}
           >
             <div className="z-10">
-              <h1 className="font-title text-white text-7xl font-semibold">Greenship</h1>
+              <h1 className="font-title text-white text-7xl font-semibold">GREENSHIP</h1>
               <h4 className="font-body text-white font-bold">NET ZERO CALCULATOR</h4>
             </div>
-            <div className="absolute z-0 opacity-40 w-full h-full bg-secondary"></div>
+            <div className="rounded-l-lg absolute z-0 opacity-50 w-full h-full bg-greenOverlay mix-blend-multiply"></div>
           </div>
         </div>
         <div className="lg:w-1/2 xl:w-5/12 p-6 sm:p-12">
