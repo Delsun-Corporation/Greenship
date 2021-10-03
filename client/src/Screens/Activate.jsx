@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import welcomeSvg from "../assets/welcome.svg";
 import { ToastContainer, toast } from "react-toastify";
 import { isAuth } from "../helpers/auth";
 import axios from "axios";
 import jwt from "jsonwebtoken";
 import { Redirect } from "react-router-dom";
+import authPict from "../assets/authPict.jpeg";
 
 const Activate = ({ match }) => {
   const [formData, setFormData] = useState({
@@ -45,10 +45,22 @@ const Activate = ({ match }) => {
       {isAuth() ? <Redirect to="/" /> : null}
       <ToastContainer />
       <div className="max-w-screen-xl m-0 sm:m-20 bg-white shadow sm:rounded-lg flex justify-center flex-1">
+      <div className="flex-1 bg-indigo-100 text-center hidden lg:flex">
+          <div
+            className="relative bg-auto w-full bg-cover bg-center bg-no-repeat rounded-l-lg bg-gradient-to-r from-yellow-400 via-red-500 to-pink-500 flex justify-center items-center"
+            style={{ backgroundImage: `url(${authPict})` }}
+          >
+            <div className="z-10">
+              <h1 className="font-title text-white text-7xl font-semibold">GREENSHIP</h1>
+              <h4 className="font-body text-white font-bold">NET ZERO CALCULATOR</h4>
+            </div>
+            <div className="rounded-l-lg absolute z-0 opacity-50 w-full h-full bg-greenOverlay mix-blend-multiply"></div>
+          </div>
+        </div>
         <div className="lg:w-1/2 xl:w-5/12 p-6 sm:p-12">
           <div className="mt-12 flex flex-col items-center">
-            <h1 className="text-2xl xl:text-3xl font-extrabold">
-              Welcome {name}
+            <h1 className="font-body text-center text-2xl xl:text-3xl font-extrabold">
+              Welcome, {name}
             </h1>
 
             <form
@@ -58,15 +70,15 @@ const Activate = ({ match }) => {
               <div className="mx-auto max-w-xs relative ">
                 <button
                   type="submit"
-                  className="mt-5 tracking-wide font-semibold bg-indigo-500 text-gray-100 w-full py-4 rounded-lg hover:bg-indigo-700 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none"
+                  className="font-body mt-5 tracking-wide font-semibold bg-primary text-gray-100 w-full py-4 rounded-lg hover:bg-secondary transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none"
                 >
                   <i className="fas fa-user-plus fa 1x w-6  -ml-2" />
-                  <span className="ml-3">Activate your Account</span>
+                  <span className="ml-3">ACTIVATE YOUR ACCOUNT</span>
                 </button>
               </div>
               <div className="my-12 border-b text-center">
                 <div className="leading-none px-2 inline-block text-sm text-gray-600 tracking-wide font-medium bg-white transform translate-y-1/2">
-                  Or sign up again
+                  or Register Again
                 </div>
               </div>
               <div className="flex flex-col items-center">
@@ -77,17 +89,11 @@ const Activate = ({ match }) => {
                   target="_self"
                 >
                   <i className="fas fa-sign-in-alt fa 1x w-6  -ml-2 text-indigo-500" />
-                  <span className="ml-4">Sign Up</span>
+                  <span className="ml-4">REGISTER</span>
                 </a>
               </div>
             </form>
           </div>
-        </div>
-        <div className="flex-1 bg-indigo-100 text-center hidden lg:flex">
-          <div
-            className="m-12 xl:m-16 w-full bg-contain bg-center bg-no-repeat"
-            style={{ backgroundImage: `url(${welcomeSvg})` }}
-          ></div>
         </div>
       </div>
       ;
