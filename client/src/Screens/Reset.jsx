@@ -47,7 +47,7 @@ const Reset = ({match}) => {
       <div className='max-w-screen-xl m-0 sm:m-20 bg-white shadow sm:rounded-lg flex justify-center flex-1'>
       <div className="flex-1 bg-indigo-100 text-center hidden lg:flex">
           <div
-            className="relative bg-auto w-full bg-cover bg-center bg-no-repeat rounded-l-lg bg-gradient-to-r from-yellow-400 via-red-500 to-pink-500 flex justify-center items-center"
+            className="relative w-full bg-cover bg-center bg-no-repeat rounded-l-lg bg-gradient-to-r from-yellow-400 via-red-500 to-pink-500 flex justify-center items-center"
             style={{ backgroundImage: `url(${authPict})` }}
           >
             <div className="z-10">
@@ -59,11 +59,10 @@ const Reset = ({match}) => {
         </div>
         <div className='lg:w-1/2 xl:w-5/12 p-6 sm:p-12'>
           <div className='mt-12 flex flex-col items-center'>
-            <h1 className='text-2xl xl:text-3xl font-extrabold'>
+            <h1 className='font-body text-2xl xl:text-3xl font-extrabold'>
               Reset Your Password
             </h1>
-            <div className='w-full flex-1 mt-8 text-indigo-500'>
-              
+            <div className='w-full flex-1 mt-8 text-primary'>
               <form
                 className='mx-auto max-w-xs relative '
                 onSubmit={handleSubmit}
