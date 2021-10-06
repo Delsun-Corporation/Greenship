@@ -42,7 +42,7 @@ const Login = ({ history }) => {
           // if admin redirect to /admin
           isAuth() && isAuth().role === "admin"
             ? history.push("/admin")
-            : history.push("/private");
+            : history.push("/");
 
           toast.success(`Hey ${res.data.user.name}, Welcome back!`);
         })
@@ -64,7 +64,7 @@ const Login = ({ history }) => {
       <div className="max-w-screen-xl m-0 sm:m-20 bg-white shadow sm:rounded-lg flex justify-center flex-1">
         <div className="flex-1 bg-indigo-100 text-center hidden lg:flex">
           <div
-            className="relative bg-auto w-full bg-cover bg-center bg-no-repeat rounded-l-lg bg-gradient-to-r from-yellow-400 via-red-500 to-pink-500 flex justify-center items-center"
+            className="relative w-full bg-cover bg-center bg-no-repeat rounded-l-lg bg-gradient-to-r from-yellow-400 via-red-500 to-pink-500 flex justify-center items-center"
             style={{ backgroundImage: `url(${authPict})` }}
           >
             <div className="z-10">
