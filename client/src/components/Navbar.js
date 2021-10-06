@@ -71,25 +71,35 @@ const Navbar = () => {
             <div
               className={
                 dropdown
-                  ? "flex justify-end bg-white mt-0 transition duration-500 absolute w-60 top-20 h-10"
+                  ? "flex justify-end bg-white mt-0 transition duration-500 absolute w-52 top-20 h-10 items-center"
                   : "-mt-100 transition duration-500"
               }
             >
-              <span className={
-                    dropdown ? "font-body font-bold text-red-600" : "hidden"
-                  }>
-                <FaIcons.FaArrowAltCircleRight className="" />
+              <span
+                className={
+                  dropdown
+                    ? "font-body font-bold text-red-600 mr-2 items-center"
+                    : "hidden"
+                }
+              >
+                <FaIcons.FaArrowAltCircleRight color="red" />
               </span>
-              <span className={
-                    dropdown ? "font-body font-bold text-red-600" : "hidden"
-                  }>
-                <Link
-                  to="/login"
-                  onClick={logOut}
-                >
+              <span
+                className={
+                  dropdown
+                    ? "font-body font-bold text-red-600 items-center mr-10"
+                    : "hidden"
+                }
+              >
+                <Link to="/login" onClick={logOut}>
                   LOG OUT
                 </Link>
               </span>
+              <div className= {
+                  dropdown
+                    ? "bg-antiqueBrass w-4 h-full"
+                    : "hidden"
+                }/>
             </div>
           </div>
         </div>
