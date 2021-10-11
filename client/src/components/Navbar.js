@@ -7,7 +7,7 @@ import { IconContext } from "react-icons/lib";
 import { isAuth, Signout } from "../helpers/auth";
 import "./Navbar.css";
 
-const Navbar = () => {
+const Navbar = (props) => {
   const [sidebar, setSidebar] = useState(false);
   const [dropdown, setDropdown] = useState(false);
 
@@ -27,7 +27,7 @@ const Navbar = () => {
     <IconContext.Provider value={{ color: "white" }}>
       <div>
         <div className="navbar">
-          <Link to="#" className="menu-bars">
+          <Link to="#" className={props.isDashboard ? "hidden" : "menu-bars" }>
             <FaIcons.FaBars onClick={showSidebar} />
           </Link>
           <div className="navbar-left">
@@ -36,10 +36,10 @@ const Navbar = () => {
               href="/"
             >
               <h1 className="font-title font-regular ml-5 text-xl md:text-3xl">
-                GREENSHIP
+                DEFINE
               </h1>
-              <h4 className="font-body font-semibold ml-2 text-sm md:text-base">
-                NET ZERO CALCULATOR
+              <h4 className="font-body font-semibold ml-5 text-sm md:text-base">
+                DESIGN FOR NET ZERO AND HEALTHY BUILDING
               </h4>
             </a>
           </div>
