@@ -51,10 +51,10 @@ const Activate = ({ match }) => {
             style={{ backgroundImage: `url(${authPict})` }}
           >
             <div className="z-10">
-              <h1 className="font-title text-white text-7xl font-semibold">GREENSHIP</h1>
-              <h4 className="font-body text-white font-bold">NET ZERO CALCULATOR</h4>
+              <h1 className="font-title text-white text-7xl font-semibold">DEFINE</h1>
+              <h4 className="font-body text-white font-bold">DESIGN FOR NET ZERO AND HEALTHY BUILDING</h4>
             </div>
-            <div className="rounded-l-lg absolute z-0 opacity-50 w-full h-full bg-greenOverlay mix-blend-multiply"></div>
+            <div className="rounded-l-lg absolute z-0 opacity-50 w-full h-full bg-greenOverlay mix-blend-multiply backdrop-filter backdrop-blur-sm md:backdrop-blur-lg"></div>
           </div>
         </div>
         <div className="lg:w-1/2 xl:w-5/12 p-6 sm:p-12">
