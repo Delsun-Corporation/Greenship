@@ -9,6 +9,7 @@ import Login from "./Screens/Login";
 import ForgotPass from "./Screens/ForgotPass";
 import Reset from "./Screens/Reset";
 import NotFoundPage from "./Screens/NotFoundPage";
+import FormPage from "./Screens/FormPage";
 import "./index.css";
 
 if (typeof window !== "undefined") {
@@ -39,6 +40,11 @@ ReactDOM.render(
         path="/users/passwords/reset/:token"
         exact
         render={(props) => <Reset {...props} />}
+      />
+      <Route
+        path="/projects/create" 
+        exact
+        render={(props) => <FormPage {...props} />}
       />
       <Route
         path="" 
