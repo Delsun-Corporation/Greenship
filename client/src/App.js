@@ -11,7 +11,7 @@ function App() {
   return (
     <div className="bg-gray-400 min-h-screen">
       {!isAuth() ? <Redirect to="/login" /> : null }
-      <Navbar />
+      <Navbar isDashboard="true" />
         <Button variant="contained" onClick={() => history.push('/projects/create')}>
           New Project
         </Button>

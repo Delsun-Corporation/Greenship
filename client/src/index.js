@@ -11,6 +11,7 @@ import Reset from "./Screens/Reset";
 import NotFoundPage from "./Screens/NotFoundPage";
 import FormPage from "./Screens/FormPage";
 import "./index.css";
+import Footer from "./components/Footer.jsx";
 
 if (typeof window !== "undefined") {
   injectStyle();
@@ -52,6 +53,7 @@ ReactDOM.render(
         render={(props) => <NotFoundPage {...props} />}
       />
     </Switch>
+    <Footer></Footer>
   </BrowserRouter>,
   document.getElementById("root")
 );
