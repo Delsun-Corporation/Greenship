@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
 const crypto = require("crypto"); // encrypt user password
 
+const Schema = mongoose.Schema;
+
 //User Schema
 const userSchema = new mongoose.Schema(
   {
