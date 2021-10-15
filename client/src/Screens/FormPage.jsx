@@ -1,5 +1,5 @@
 import React from "react";
-import FirstForm from "../components/FirstForm";
+import FirstForm from "../components/project_forms/FirstForm";
 import { Container } from '@mui/material';
 
 function FormPage() {
