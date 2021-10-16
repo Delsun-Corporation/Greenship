@@ -42,9 +42,9 @@ function App() {
                 variant="contained"
                 onClick={createProject}
                 className="h-12 w-1/3 font-body font-bold"
-                style={{ backgroundColor: "#47919B", color: "#FFFFFF" }}
+                style={{ backgroundColor: "#47919B", color: "#FFFFFF", fontFamily: 'Poppins', fontWeight: 'bold' }}
               >
-                New Project
+                CREATE NEW PROJECT
               </Button>
             </div>
           </div>
