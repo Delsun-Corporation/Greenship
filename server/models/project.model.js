@@ -18,7 +18,7 @@ const projectSchema = new Schema(
     },
     project_image: {
       type: String,
-      default: "https://bodybigsize.com/wp-content/uploads/2020/03/noimage-14.png",
+      default: "https://firebasestorage.googleapis.com/v0/b/ina-website-326209.appspot.com/o/resource%2FNoImageDefault.png?alt=media&token=ac9bfea9-44db-4dca-9293-64da65636021",
     },
     project_owner: {
       type: Schema.Types.ObjectId,
