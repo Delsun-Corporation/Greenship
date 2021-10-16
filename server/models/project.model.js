@@ -14,7 +14,7 @@ const projectSchema = new Schema(
     },
     project_status: {
       type: String,
-      default: "Draft",
+      default: "DRAFT",
     },
     project_image: {
       type: String,

@@ -5,6 +5,7 @@ import { isAuth, getUserId } from "./helpers/auth";
 import { Button } from "@mui/material";
 import ProjectCards from "./components/project_card/ProjectCards";
 import axios from "axios";
+import { ToastContainer, toast } from 'react-toastify';
 
 function App() {
   const history = useHistory();
@@ -19,11 +20,13 @@ function App() {
       })
       .catch((err) => {
         console.log(err);
+        toast.error('Something went wrong, please try again');
       });
   });
 
   return (
     <div className="bg-gray-400 min-h-screen flex flex-col justify-center">
+      <ToastContainer/>
       {!isAuth() ? <Redirect to="/login" /> : null}
       <Navbar isDashboard="true" />
       <div className="min-h-screen bg-gray-100 text-gray-900 flex justify-center">

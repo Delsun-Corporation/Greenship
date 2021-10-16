@@ -3,6 +3,7 @@ import axios from 'axios';
 import { getUserId } from "../../helpers/auth";
 import { Grid, CircularProgress } from '@material-ui/core';
 import ProjectCard from "./ProjectCard";
+import { ToastContainer, toast } from 'react-toastify';
 
 function ProjectCards() {
 
@@ -20,11 +21,13 @@ function ProjectCards() {
           })
           .catch((err) => {
             console.log(err);
+            toast.error('Something went wrong, please try again');
           });
       }, []);
 
     return (
-        <div>
+        <div className="flex items-center justify-center">
+            <ToastContainer/>
             {!projects.length ? <CircularProgress/> : 
               <Grid container alignItems="stretch" spacing={4} columns={{ xs: 4, sm: 8, md: 12 }}>
                 {projects.map((project) => (
