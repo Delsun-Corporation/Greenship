@@ -30,9 +30,11 @@ if(process.env.NODE_ENV === 'development') {
 
 // Load all routes
 const authRouter = require('./routes/auth.route');
+const projectRouter = require('./routes/project.route');
 
 // User Routes
 app.use('/api/', authRouter);
+app.use('/api/', projectRouter);
 app.use((req, res, next) => {
     res.status(404).json({
         success: false,
