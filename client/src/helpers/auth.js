@@ -67,6 +67,13 @@ export const isAuth = () => {
     }
 }
 
+export const getUserId = () => {
+    if(window !== 'undefined') {
+        let auth = JSON.parse(localStorage.getItem('user'));
+        return auth._id;
+    }
+}
+
 // Update user data in localStorage
 export const updateUser = (res, next) => {
     if(window !== 'undefined') {

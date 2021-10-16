@@ -18,7 +18,7 @@ const projectSchema = new Schema(
     },
     project_image: {
       type: String,
-      default: "",
+      default: "https://bodybigsize.com/wp-content/uploads/2020/03/noimage-14.png",
     },
     project_owner: {
       type: Schema.Types.ObjectId,

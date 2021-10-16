@@ -11,8 +11,7 @@ exports.createProject = (req, res) => {
   NewProject.save().then((result) => {
     console.log(result);
     res.status(200).json({
-      message: "Success",
-      id: objectId,
+      message: "success",
     });
   });
 };
@@ -22,7 +21,7 @@ exports.getProjects = (req, res) => {
   var objectId = mongoose.Types.ObjectId(userId);
 
   Project.find({ userId: objectId })
-    .select('project_name project_desc project_status project_image project_owner')
+    .select('project_name project_desc project_status project_image project_owner _id')
     .then((projects) => {
       res.status(200).json({
         message: "Success",
