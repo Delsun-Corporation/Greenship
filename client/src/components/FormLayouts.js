@@ -1,6 +1,8 @@
 import React from 'react';
-import { useController, useWatch } from "react-hook-form";
-import { Container, TextField, Stack, Typography, Paper, Divider } from '@mui/material';
+import Select from "react-select";
+import { useController, useWatch, Controller } from "react-hook-form";
+import { Box, Button, Container, TextField, Stack, Typography, Paper, Divider } from '@mui/material';
+import { formChapters, occupancyCategory, buildingTypology, AchReference } from '../datas/Datas'
 
 export const FormLayout = ({ leftComponent, rightComponent }) => (
     <>
@@ -22,21 +24,56 @@ export const FormLayout = ({ leftComponent, rightComponent }) => (
     </>
 )
 
+export const FormHeader = ({ title }) => (
+    <Stack direction="row" justifyContent="space-between" alignItems="center">
+        <Stack direction="column">
+            <Box sx={{ fontWeight: "medium", fontSize: 18, color: "text.secondary" }}>
+                CREATE NEW PROJECT
+            </Box>
+            <Box sx={{ fontWeight: "bold", fontSize: 32 }}>
+                {title}
+            </Box>
+        </Stack>
+        <Stack direction="row" spacing={2}>
+            <Button variant="contained">
+                Delete
+            </Button>
+            <Button type="submit" variant="contained">
+                Save Draft
+            </Button>
+        </Stack>
+    </Stack>
+)
+
+export const FormFooter = ({ chapter }) => (
+    <Stack direction="row" justifyContent="space-between" alignItems="center">
+        { chapter !== "1" && 
+            <Button variant="contained">
+                PREV: {formChapters.find(e => e.chapter === ('' + (parseInt(chapter)-1))).title}
+            </Button>
+        }
+        { chapter === "1" && <Box></Box>}
+        <Button type="submit" variant="contained">
+            NEXT: {formChapters.find(e => e.chapter === ('' + (parseInt(chapter)+1))).title}
+        </Button>
+    </Stack>
+    /// Need logic for last page
+)
+
 export function SideInput({ control, name, title, subtitle, defaultValue }) {
     const {
-        field: { ref, ...inputProps },
+        field: { ref, value, ...inputProps },
         fieldState: { invalid, isTouched, isDirty },
         formState: { touchedFields, dirtyFields }
     } = useController({
         name,
         control,
-        rules: { required: true },
         defaultValue: defaultValue,
     });
 
     return (
         <Stack direction="row" alignItems="center" justifyContent="space-between"
-            spacing={2}>
+            spacing={2} minHeight={40}>
             <Stack direction="column">
                 <Typography variant="body1">
                     {title}
@@ -47,7 +84,13 @@ export function SideInput({ control, name, title, subtitle, defaultValue }) {
                     </Typography>
                 }
             </Stack>
-            <TextField {...inputProps} inputRef={ref} required variant="outlined" size="small" />
+            <TextField {...inputProps}
+                value={value || ""}
+                inputProps={{ min: 0, style: { textAlign: 'right' } }}
+                variant="outlined"
+                size="small"
+                type="number"
+                freeSolo />
         </Stack>
 
     );
@@ -72,7 +115,6 @@ export function BlockInput({ control, name, title, subtitle, defaultValue, maxLe
     } = useController({
         name,
         control,
-        rules: { required: true },
         defaultValue: defaultValue,
     });
 
@@ -98,12 +140,49 @@ export function BlockInput({ control, name, title, subtitle, defaultValue, maxLe
                 multiline
                 rows={rows}
                 maxRows={maxRows}
-                required
                 helperText={(getValue ? getValue.length : "0") + "/" + (maxLength ? maxLength : "-")}
                 FormHelperTextProps={{
                     style: styles.helper
                 }} />
         </Stack>
 
+    );
+}
+
+export function SelectInput({ name, control, options, getOptionLabel, getOptionValue, placeholder }) {
+    return (
+        <Controller
+            name={name}
+            control={control}
+            render={({ field }) => <Select
+                {...field}
+                options={options}
+                getOptionLabel={(option) => eval('option.' + getOptionLabel)}
+                getOptionValue={(option) => eval('option.' + getOptionValue)}
+                placeholder={placeholder}
+            />}
+        />
+    )
+}
+
+export function InlineLabel({ title, subtitle, value }) {
+
+    return (
+        <Stack direction="row" alignItems="center" justifyContent="space-between"
+            spacing={2} minHeight={40}>
+            <Stack direction="column">
+                <Typography variant="body1">
+                    {title}
+                </Typography>
+                {subtitle &&
+                    <Typography variant="caption" color="text.secondary">
+                        {subtitle}
+                    </Typography>
+                }
+            </Stack>
+            <Box sx={{ fontWeight: "bold" }}>
+                {value ? value : "-"}
+            </Box>
+        </Stack>
     );
 }
