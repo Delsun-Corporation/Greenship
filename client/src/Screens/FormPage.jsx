@@ -1,5 +1,6 @@
 import React from "react";
 import FirstForm from "../components/project_forms/FirstForm";
+import Navbar from "../components/Navbar";
 import { Container } from '@mui/material';
 
 function FormPage() {
@@ -8,6 +9,7 @@ function FormPage() {
   }
   return (
     <div className="bg-gray-100 min-h-screen">
+      <Navbar isDashboard="true" />
       <Container maxWidth="xl">
         <FirstForm onceSubmitted={(data) => onFormSubmit(data)} />
       </Container>
