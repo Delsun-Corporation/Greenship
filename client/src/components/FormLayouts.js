@@ -85,12 +85,14 @@ export function SideInput({ control, name, title, subtitle, defaultValue }) {
                 }
             </Stack>
             <TextField {...inputProps}
-                value={value || ""}
+                value={value || defaultValue}
                 inputProps={{ min: 0, style: { textAlign: 'right' } }}
                 variant="outlined"
                 size="small"
                 type="number"
-                freeSolo />
+                freeSolo 
+                defaultValue={defaultValue}
+                />
         </Stack>
 
     );
@@ -143,23 +145,27 @@ export function BlockInput({ control, name, title, subtitle, defaultValue, maxLe
                 helperText={(getValue ? getValue.length : "0") + "/" + (maxLength ? maxLength : "-")}
                 FormHelperTextProps={{
                     style: styles.helper
-                }} />
+                }}
+                defaultValue={defaultValue} 
+                />
         </Stack>
 
     );
 }
 
-export function SelectInput({ name, control, options, getOptionLabel, getOptionValue, placeholder }) {
+export function SelectInput({ name, control, options, getOptionLabel, getOptionValue, placeholder, defaultValue }) {
     return (
         <Controller
             name={name}
             control={control}
-            render={({ field }) => <Select
+            render={({ field }) => 
+            <Select
                 {...field}
                 options={options}
                 getOptionLabel={(option) => eval('option.' + getOptionLabel)}
                 getOptionValue={(option) => eval('option.' + getOptionValue)}
                 placeholder={placeholder}
+                defaultInputValue={defaultValue}
             />}
         />
     )

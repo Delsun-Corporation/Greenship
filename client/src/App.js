@@ -11,12 +11,14 @@ function App() {
   const history = useHistory();
 
   const createProject = (() => {
+    const userId = getUserId()
+
     axios
       .post(`${process.env.REACT_APP_API_URL}/createProject`, {
-        id: { getUserId },
+        id: userId,
       })
       .then((result) => {
-        history.push("/projects/create");
+        history.push(`/projects/create/${result.data.projectId}`);
       })
       .catch((err) => {
         console.log(err);
