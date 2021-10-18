@@ -15,6 +15,12 @@ require('dotenv').config({
 connectDb();
 
 // Use express to parse JSON
+app.use(
+    express.urlencoded({
+      extended: true
+    })
+  )
+
 app.use(express.json());
 
 // Config for only development
