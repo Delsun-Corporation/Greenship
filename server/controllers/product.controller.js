@@ -79,12 +79,39 @@ exports.updatePageOneDraft = (req, res) => {
   const objectId = ObjectId.ObjectId(projectId);
   const updatedTitle = req.body.project_name;
   const updatedDesc = req.body.project_desc;
+  const updatedWorkDay = req.body.a_working_days;
+  const updatedTypology = req.body.a_typology;
+  const updatedLocation = req.body.a_location_city;
+  const updatedGFA = req.body.a_gfa;
+  const updatedFloorCount = req.body.a_floor_count;
+  const updatedFloorAvg = req.body.a_floor_height_avg;
+  const updatedOccupancyHours = req.body.a_occupancy_hours;
+  const updatedOperationalHours = req.body.a_operational_hours;
+  const updatedHolidays = req.body.a_holidays;
+  const updatedVentilationArea = req.body.a_ventilation_area;
+  const updatedAch = req.body.a_ach;
 
   Project.findById(objectId)
     .then((project) => {
+      if (!project) {
+        res.status(400).json({
+          message: "Request Parameter is wrong"
+        })
+      }
       project.project_name = updatedTitle;
       project.project_desc = updatedDesc;
-      project.markModified("project_date");
+      project.a_working_days = updatedWorkDay;
+      project.a_typology = updatedTypology;
+      project.a_location_city = updatedLocation;
+      project.a_gfa = updatedGFA;
+      project.a_floor_count = updatedFloorCount;
+      project.a_floor_height_avg = updatedFloorAvg;
+      project.a_occupancy_hours = updatedOccupancyHours;
+      project.a_operational_hours = updatedOperationalHours;
+      project.a_holidays = updatedHolidays;
+      project.a_ventilation_area = updatedVentilationArea;
+      project.a_ach = updatedAch;
+      project.project_date = new Date();
       return project.save();
     })
     .then((result) => {
