@@ -89,6 +89,7 @@ exports.updatePageOneDraft = (req, res) => {
   const updatedOperationalHours = req.body.a_operational_hours;
   const updatedHolidays = req.body.a_holidays;
   const updatedVentilationArea = req.body.a_ventilation_area;
+  const updatedAch = req.body.a_ach;
 
   Project.findById(objectId)
     .then((project) => {
@@ -109,6 +110,7 @@ exports.updatePageOneDraft = (req, res) => {
       project.a_operational_hours = updatedOperationalHours;
       project.a_holidays = updatedHolidays;
       project.a_ventilation_area = updatedVentilationArea;
+      project.a_ach = updatedAch;
       project.project_date = new Date();
       return project.save();
     })

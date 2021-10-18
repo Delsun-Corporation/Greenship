@@ -11,7 +11,6 @@ function FormPage() {
 
   const onFormSubmit = (data) => {
     if (data.firstForm) {
-      console.log(data);
       axios
         .put(`${process.env.REACT_APP_API_URL}/updatepageone`, {
           projectId: projectid,
@@ -32,7 +31,7 @@ function FormPage() {
           a_orientation_image: [""],
           a_micro_noise_image: "",
           a_energy_place_image: "",
-          a_ach: 0,
+          a_ach: data.firstForm.ach,
         })
         .then((res) => {
           if (res.status === 200) {

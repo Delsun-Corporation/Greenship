@@ -358,7 +358,7 @@ const FirstForm = ({ onceSubmitted, projectId }) => {
             <Box sx={{ fontWeight: "bold" }}>Building Health Indexes:</Box>
 
             <SideInput
-              name={sectionName + "gfa"}
+              name={sectionName + "ach"}
               control={control}
               title="Air Change per Hour (ACH)"
               subtitle="See next table for reference"
