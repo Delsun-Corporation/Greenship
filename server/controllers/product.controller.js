@@ -53,7 +53,7 @@ exports.getPageOneDraft = (req, res) => {
 
   Project.findOne({_id: objectId})
     .select(
-      "project_name project_desc project_status project_image project_date a_typology a_location_province a_location_city a_location_image a_gfa a_floor_count a_floor_height_avg a_occupancy_hours a_operational_hours a_working_days a_holidays a_ventilation_area a_orientation_image a_micro_noise_image a_energy_place_image a_ach"
+      "project_name project_desc project_status project_image project_date a_typology a_location_province a_location_city a_location_image a_gfa a_floor_count a_floor_height_avg a_occupancy_density a_operational_hours a_working_days a_holidays a_ventilation_area a_orientation_image a_micro_noise_image a_energy_place_image a_ach"
     )
     .then((page_one) => {
       if (page_one) {
@@ -85,7 +85,7 @@ exports.updatePageOneDraft = (req, res) => {
   const updatedGFA = req.body.a_gfa;
   const updatedFloorCount = req.body.a_floor_count;
   const updatedFloorAvg = req.body.a_floor_height_avg;
-  const updatedOccupancyHours = req.body.a_occupancy_hours;
+  const updatedOccupancyDensity = req.body.a_occupancy_density;
   const updatedOperationalHours = req.body.a_operational_hours;
   const updatedHolidays = req.body.a_holidays;
   const updatedVentilationArea = req.body.a_ventilation_area;
@@ -106,7 +106,7 @@ exports.updatePageOneDraft = (req, res) => {
       project.a_gfa = updatedGFA;
       project.a_floor_count = updatedFloorCount;
       project.a_floor_height_avg = updatedFloorAvg;
-      project.a_occupancy_hours = updatedOccupancyHours;
+      project.a_occupancy_dencity = updatedOccupancyDensity;
       project.a_operational_hours = updatedOperationalHours;
       project.a_holidays = updatedHolidays;
       project.a_ventilation_area = updatedVentilationArea;

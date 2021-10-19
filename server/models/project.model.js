@@ -57,7 +57,7 @@ const projectSchema = new Schema(
       type: Number,
       default: 0,
     },
-    a_occupancy_hours: {
+    a_occupancy_density: {
       type: Number,
       default: 0,
     },
