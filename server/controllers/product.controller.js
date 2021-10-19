@@ -27,7 +27,6 @@ exports.createProject = (req, res) => {
 
 exports.getProjects = (req, res) => {
   const userId = req.query.id;
-  console.log(userId);
   var objectId = new mongoose.Types.ObjectId(userId);
 
   Project.find({ project_owner: objectId })
@@ -73,6 +72,31 @@ exports.getPageOneDraft = (req, res) => {
       });
     });
 };
+
+exports.deleteProject = (req, res) => {
+  const projectId = req.body.projectId;
+  const objectId = ObjectId.ObjectId(projectId);
+  
+  Project.findByIdAndDelete(objectId).then((result) => {
+    if (!objectId) {
+      return res.status(400).json({
+        message: "Bad projectId"
+      })
+    } else if (!result) {
+      return res.status(401).json({
+        message: "No Project was found"
+      })
+    } else {
+      return res.status(200).json({
+        message: "Success Deleting Product"
+      })
+    }
+  }).catch((err) => {
+    res.status(402).json({
+      message: "Failed to delete product"
+    })
+  })
+}
 
 exports.updatePageOneDraft = (req, res) => {
   const projectId = req.body.projectId;
@@ -120,7 +144,6 @@ exports.updatePageOneDraft = (req, res) => {
       });
     })
     .catch((err) => {
-      console.log(err);
       res.status(400).json({
         message: "Internal Server Error",
       });

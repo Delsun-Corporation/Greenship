@@ -48,12 +48,10 @@ import {
   calcRoomVolumePerPerson,
 } from "../../datas/FormLogic";
 import axios from "axios";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 
-const FirstForm = ({ onceSubmitted, projectId }) => {
+const FirstForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
   const methods = useForm({});
-
-  console.log(projectId);
 
   const onSubmit = (data) => {
     onceSubmitted(data);
@@ -469,10 +467,11 @@ const FirstForm = ({ onceSubmitted, projectId }) => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <ToastContainer/>
       <Stack direction="column" spacing={4} sx={{ paddingY: 10 }}>
         <FormHeader
-          title={formChapters.find((e) => e.chapter === CHAPTER_NUMBER).title}
+          title={formChapters.find((e) => e.chapter === CHAPTER_NUMBER).title} 
+          projectId={projectId}
+          shouldRedirect={shouldRedirect}
         />
         <FirstSection control={control} />
         <SecondSection control={control} />
