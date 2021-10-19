@@ -69,8 +69,12 @@ export const isAuth = () => {
 
 export const getUserId = () => {
     if(window !== 'undefined') {
-        let auth = JSON.parse(localStorage.getItem('user'));
-        return auth._id;
+        if(localStorage.getItem('user')) {
+            let auth = JSON.parse(localStorage.getItem('user'));
+            return auth._id;
+        } else {
+            return false;
+        }
     }
 }
 
