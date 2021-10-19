@@ -3,7 +3,7 @@ import axios from 'axios';
 import { getUserId } from "../../helpers/auth";
 import { Grid, CircularProgress } from '@mui/material';
 import ProjectCard from "./ProjectCard";
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 
 function ProjectCards() {
 
@@ -30,7 +30,6 @@ function ProjectCards() {
 
     return (
         <div className="flex items-center justify-center">
-            <ToastContainer/>
             {!projects.length ? <CircularProgress/> : 
               <Grid container alignItems="stretch" spacing={4} columns={{ xs: 4, sm: 8, md: 12 }}>
                 {projects.map((project) => (

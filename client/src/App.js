@@ -27,10 +27,10 @@ function App() {
   });
 
   return (
-    <div className="bg-gray-400 min-h-screen flex flex-col justify-center">
+    <div className="bg-gray-100 min-h-screen flex flex-col justify-center">
       <ToastContainer/>
       {!isAuth() ? <Redirect to="/login" /> : null}
-      <Navbar isDashboard="true" />
+      <Navbar />
       <div className="min-h-screen bg-gray-100 text-gray-900 flex justify-center">
         <div className="max-w-screen-xl bg-transparant flex flex-1 mt-10 flex-col">
           <div className="h-1/6 flex justify-end">
@@ -58,6 +58,14 @@ function App() {
           </div>
         </div>
       </div>
+      <div className="flex justify-center items-center">
+          <img src="https://firebasestorage.googleapis.com/v0/b/ina-website-326209.appspot.com/o/resource%2FEmpty_State_Background.svg?alt=media&token=89e118d7-ea2b-40de-9718-4922a3f38ec2" alt="No Project"
+            className="w-20 h-20"
+          />
+          <h1>
+            No Projects yet, Let's Create a new one!
+          </h1>
+        </div>
     </div>
   );
 }
