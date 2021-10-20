@@ -24,14 +24,14 @@ export const FormLayout = ({ leftComponent, rightComponent }) => (
     </>
 )
 
-export const FormHeader = ({ title }) => (
+export const FormHeader = ({ chapter }) => (
     <Stack direction="row" justifyContent="space-between" alignItems="center">
         <Stack direction="column">
             <Box sx={{ fontWeight: "medium", fontSize: 18, color: "text.secondary" }}>
                 CREATE NEW PROJECT
             </Box>
             <Box sx={{ fontWeight: "bold", fontSize: 32 }}>
-                {title}
+                {formChapters.find((e) => e.chapter === chapter).title}
             </Box>
         </Stack>
         <Stack direction="row" spacing={2}>
@@ -67,8 +67,7 @@ export function SideInput({ control, name, title, subtitle, defaultValue }) {
         formState: { touchedFields, dirtyFields }
     } = useController({
         name,
-        control,
-        defaultValue: defaultValue,
+        control
     });
 
     return (
@@ -90,19 +89,13 @@ export function SideInput({ control, name, title, subtitle, defaultValue }) {
                 variant="outlined"
                 size="small"
                 type="number"
-                freeSolo 
-                defaultValue={defaultValue}
                 />
         </Stack>
 
     );
 }
 
-export function BlockInput({ control, name, title, subtitle, defaultValue, maxLength, rows, maxRows }) {
-    const getValue = useWatch({
-        control,
-        name: name
-    });
+export function BlockInput({ control, name, title, subtitle, maxLength, rows, maxRows }) {
 
     const styles = {
         helper: {
@@ -116,8 +109,7 @@ export function BlockInput({ control, name, title, subtitle, defaultValue, maxLe
         formState: { touchedFields, dirtyFields }
     } = useController({
         name,
-        control,
-        defaultValue: defaultValue,
+        control
     });
 
     return (
@@ -135,6 +127,7 @@ export function BlockInput({ control, name, title, subtitle, defaultValue, maxLe
             </Stack>
             <TextField
                 {...inputProps}
+                autoFocus
                 inputRef={ref}
                 variant="outlined"
                 fullWidth
@@ -142,31 +135,34 @@ export function BlockInput({ control, name, title, subtitle, defaultValue, maxLe
                 multiline
                 rows={rows}
                 maxRows={maxRows}
-                helperText={(getValue ? getValue.length : "0") + "/" + (maxLength ? maxLength : "-")}
+                helperText={(value ? value.length : "0") + "/" + (maxLength ? maxLength : "-")}
                 FormHelperTextProps={{
                     style: styles.helper
                 }}
-                defaultValue={defaultValue} 
+                defaultValue={value}
                 />
         </Stack>
 
     );
 }
 
-export function SelectInput({ name, control, options, getOptionLabel, getOptionValue, placeholder, defaultValue }) {
+export function SelectInput({ name, control, options, getOptionLabel, getOptionValue, placeholder, defaultValue}) {
     return (
         <Controller
             name={name}
             control={control}
-            render={({ field }) => 
+            defaultValue = ""
+            render={({ field: {onChange, value} }) => 
             <Select
-                {...field}
+                value={value}
+                onChange={onChange}
                 options={options}
-                getOptionLabel={(option) => eval('option.' + getOptionLabel)}
-                getOptionValue={(option) => eval('option.' + getOptionValue)}
+                getOptionLabel={option => eval('option.' + getOptionLabel)}
+                getOptionValue={option => eval('option.' + getOptionValue)}
                 placeholder={placeholder}
-                defaultInputValue={defaultValue}
-            />}
+                isClearable
+                isSearchable= {false}
+                />}
         />
     )
 }
