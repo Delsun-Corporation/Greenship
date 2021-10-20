@@ -4,7 +4,7 @@ import Navbar from "../components/Navbar";
 import { Container } from "@mui/material";
 import { useParams } from "react-router";
 import axios from "axios";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import { useHistory } from "react-router";
 
 function FormPage() {
@@ -22,7 +22,11 @@ function FormPage() {
         .then((res) => {
           if (res.status === 200) {
             toast.success("Your project has successfully been saved as Draft.");
+          } else {
+            toast.error("Save draft failed, check your internet and try again");
           }
+        }).catch((err) => {
+          toast.error("Save draft failed, check your internet and try again");
         });
     }
   };
@@ -33,6 +37,7 @@ function FormPage() {
 
   return (
     <div className="bg-gray-100 min-h-screen">
+      <ToastContainer/>
       <Navbar />
       <Container maxWidth="xl">
         <FirstForm

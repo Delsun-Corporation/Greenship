@@ -114,6 +114,7 @@ exports.updatePageOneDraft = (req, res) => {
   const updatedHolidays = req.body.a_holidays;
   const updatedVentilationArea = req.body.a_ventilation_area;
   const updatedAch = req.body.a_ach;
+  const updatedProvince = req.body.a_location_province;
 
   Project.findById(objectId)
     .then((project) => {
@@ -130,12 +131,13 @@ exports.updatePageOneDraft = (req, res) => {
       project.a_gfa = updatedGFA;
       project.a_floor_count = updatedFloorCount;
       project.a_floor_height_avg = updatedFloorAvg;
-      project.a_occupancy_dencity = updatedOccupancyDensity;
+      project.a_occupancy_density = updatedOccupancyDensity;
       project.a_operational_hours = updatedOperationalHours;
       project.a_holidays = updatedHolidays;
       project.a_ventilation_area = updatedVentilationArea;
       project.a_ach = updatedAch;
       project.project_date = new Date();
+      project.a_location_province = updatedProvince;
       return project.save();
     })
     .then((result) => {
