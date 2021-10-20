@@ -301,6 +301,10 @@ const projectSchema = new Schema(
     e_pv_spec_dimension: {
       type: [Number],
       default: 0
+    },
+    last_page: {
+      type: Number,
+      default: 1
     }
   }
 );

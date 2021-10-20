@@ -6,6 +6,7 @@ import { useParams } from "react-router";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import { useHistory } from "react-router";
+import { statusResponse } from "../helpers/response";
 
 function FormPage() {
   const { projectid } = useParams();
@@ -20,24 +21,25 @@ function FormPage() {
           a_typology: data.firstForm.a_typology.type,
         })
         .then((res) => {
-          if (res.status === 200) {
-            toast.success("Your project has successfully been saved as Draft.");
-          } else {
-            toast.error("Save draft failed, check your internet and try again");
-          }
-        }).catch((err) => {
-          toast.error("Save draft failed, check your internet and try again");
+          statusResponse(
+            res.status,
+            "Save draft failed, check your internet and try again",
+            "Your project has successfully been saved as Draft."
+          );
+        })
+        .catch((err) => {
+          toast.error(`${process.env.BASE_CATCH_ERROR}`);
         });
     }
   };
 
   const redirectPage = (path) => {
     history.push(path);
-  }
+  };
 
   return (
     <div className="bg-gray-100 min-h-screen">
-      <ToastContainer/>
+      <ToastContainer />
       <Navbar />
       <Container maxWidth="xl">
         <FirstForm

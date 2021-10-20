@@ -4,12 +4,18 @@ const router = express.Router();
 const {
     createProject,
     getProjects,
+    deleteProject,
+} = require('../controllers/project_controller/product.controller');
+
+const {
     getPageOneDraft,
     updatePageOneDraft,
-    deleteProject,
+} = require('../controllers/project_controller/pageOne.controller');
+
+const {
     getPageTwoDraft,
     updatePageTwoDraft
-} = require('../controllers/product.controller.js');
+} = require('../controllers/project_controller/pageTwo.controller')
 
 router.post('/createproject', createProject);
 
