@@ -5,9 +5,11 @@ import { Container } from "@mui/material";
 import { useParams } from "react-router";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { useHistory } from "react-router";
 
 function FormPage() {
   const { projectid } = useParams();
+  const history = useHistory();
 
   const onFormSubmit = (data) => {
     if (data.firstForm) {
@@ -25,6 +27,10 @@ function FormPage() {
     }
   };
 
+  const redirectPage = (path) => {
+    history.push(path);
+  }
+
   return (
     <div className="bg-gray-100 min-h-screen">
       <Navbar />
@@ -32,6 +38,7 @@ function FormPage() {
         <FirstForm
           projectId={projectid}
           onceSubmitted={(data) => onFormSubmit(data)}
+          shouldRedirect={redirectPage}
         />
       </Container>
     </div>

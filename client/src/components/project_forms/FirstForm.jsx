@@ -37,9 +37,9 @@ import {
     calcRoomVolumePerPerson,
 } from "../../datas/FormLogic";
 import axios from "axios";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 
-const FirstForm = ({ onceSubmitted, projectId }) => {
+const FirstForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
     const methods = useForm({});
     const { control, handleSubmit, setValue, reset } = methods;
     const [isLoading, setLoading] = useState(true);
@@ -76,20 +76,19 @@ const FirstForm = ({ onceSubmitted, projectId }) => {
     const CHAPTER_NUMBER = "1";
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)}>
-            <ToastContainer />
-            <Stack direction="column" spacing={4} sx={{ paddingY: 10 }}>
-                <FormHeader
-                    chapter={CHAPTER_NUMBER}
-                />
-                { !isLoading && <>
-                <FirstSection control={control} />
-                <SecondSection control={control} />
-                <ThirdSection control={control} /></>
-                }
-                <FormFooter chapter={CHAPTER_NUMBER} />
-            </Stack>
-        </form>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <Stack direction="column" spacing={4} sx={{ paddingY: 10 }}>
+          <FormHeader
+            title={formChapters.find((e) => e.chapter === CHAPTER_NUMBER).title} 
+            projectId={projectId}
+            shouldRedirect={shouldRedirect}
+          />
+          <FirstSection control={control} />
+          <SecondSection control={control} />
+          <ThirdSection control={control} />
+          <FormFooter chapter={CHAPTER_NUMBER} />
+        </Stack>
+      </form>
     );
 };
 
@@ -471,4 +470,4 @@ const AchTable = () => {
             </Table>
         </TableContainer>
     );
-};
+  };
