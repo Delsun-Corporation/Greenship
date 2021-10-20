@@ -64,6 +64,7 @@ const FirstForm = ({ onceSubmitted, projectId }) => {
                     ...res.data.page_one,
                     a_typology: buildingTypology.find(e => e.type === res.data.page_one.a_typology)
                 });
+                console.log(res.data)
                 setLoading(false);
             })
             .catch((err) => {
@@ -171,7 +172,7 @@ const SecondSection = ({ control }) => {
         const gfa = useWatch({ control, name: sectionName + "a_gfa" });
         const occupancyDensity = useWatch({
             control,
-            name: sectionName + "a_occupancy_hours",
+            name: sectionName + "a_occupancy_density",
         });
         if (occupancyDensity && gfa) {
             return calcOccupancy(gfa, occupancyDensity) + " pax";
