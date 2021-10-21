@@ -9,6 +9,7 @@ import {
   FormFooter,
   SideInput,
   InlineLabel,
+  DoubleSideInput,
 } from "../FormLayouts";
 import {
   formChapters,
@@ -22,7 +23,6 @@ import { toast } from "react-toastify";
 const SecondForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
   const methods = useForm({});
   const { control, handleSubmit, setValue } = methods;
-  const [isLoading, setLoading] = useState(true);
 
   console.log(projectId);
 
@@ -30,28 +30,23 @@ const SecondForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
     onceSubmitted(data);
   };
 
-  // useEffect(() => {
-  //   axios
-  //     .get(`${process.env.REACT_APP_API_URL}/getpageone`, {
-  //       params: {
-  //         id: projectId,
-  //       },
-  //     })
-  //     .then((res) => {
-  //       setValue("firstForm", {
-  //         ...res.data.page_one,
-  //         a_typology: buildingTypology.find(
-  //           (e) => e.type === res.data.page_one.a_typology
-  //         ),
-  //       });
-  //       console.log(res.data);
-  //       setLoading(false);
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //       toast.error("Something went wrong, please try again");
-  //     });
-  // }, [projectId]);
+  useEffect(() => {
+    axios
+      .get(`${process.env.REACT_APP_API_URL}/getpagetwo`, {
+        params: {
+          projectId: projectId,
+        },
+      })
+      .then((res) => {
+        setValue("secondForm", {
+          ...res.data.page_two,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+        toast.error("Something went wrong, please try again");
+      });
+  }, [projectId]);
 
   const CHAPTER_NUMBER = "2";
 
@@ -110,12 +105,12 @@ const FirstSection = ({ control }) => {
             title="SHGC"
           />
 
-          <SideInput
+          <DoubleSideInput
             name={sectionName + "b_window_area"}
             control={control}
             title="Window Area (m2)"
           />
-          <SideInput
+          <DoubleSideInput
             name={sectionName + "b_wall_area"}
             control={control}
             title="Wall Area (m2)"
