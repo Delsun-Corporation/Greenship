@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import FirstForm from "../components/project_forms/FirstForm";
 import Navbar from "../components/Navbar";
 import { Container } from "@mui/material";
@@ -7,9 +7,10 @@ import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import { useHistory } from "react-router";
 import { statusResponse } from "../helpers/response";
+import SecondForm from "../components/project_forms/SecondForm";
 
 function FormPage() {
-  const { projectid } = useParams();
+  const { projectid, page } = useParams();
   const history = useHistory();
 
   const onFormSubmit = (data) => {
@@ -37,16 +38,29 @@ function FormPage() {
     history.push(path);
   };
 
+  function render() {
+    const pageNumber = parseInt(page);
+    if (pageNumber === 1) {
+      return <FirstForm
+          projectId={projectid}
+          onceSubmitted={(data) => onFormSubmit(data)}
+          shouldRedirect={redirectPage}
+        />
+    } else if (pageNumber === 2) {
+      return <SecondForm></SecondForm>
+    } else {
+      return <SecondForm/>
+    }
+  }
+
   return (
     <div className="bg-gray-100 min-h-screen">
       <ToastContainer />
       <Navbar />
       <Container maxWidth="xl">
-        <FirstForm
-          projectId={projectid}
-          onceSubmitted={(data) => onFormSubmit(data)}
-          shouldRedirect={redirectPage}
-        />
+        {
+          render()
+        }
       </Container>
     </div>
   );

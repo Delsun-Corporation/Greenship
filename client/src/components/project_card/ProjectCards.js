@@ -50,7 +50,7 @@ function ProjectCards({ isProjectEmpty, setIsProjectEmpty }) {
         >
           {projects.map((project) => (
             <Grid item xs={2} sm={4} md={4} key={project._id}>
-              <ProjectCard project={project} projectId={project._id} />
+              <ProjectCard project={project} projectId={project._id} lastPage={project.last_page} />
             </Grid>
           ))}
         </Grid>

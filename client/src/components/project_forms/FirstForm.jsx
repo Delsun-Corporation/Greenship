@@ -38,7 +38,7 @@ import { toast } from "react-toastify";
 
 const FirstForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
   const methods = useForm({});
-  const { control, handleSubmit, setValue, reset } = methods;
+  const { control, handleSubmit, setValue } = methods;
   const [isLoading, setLoading] = useState(true);
 
   console.log(projectId);

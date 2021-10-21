@@ -1,9 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-function ProjectCard({ project, projectId }) {
+function ProjectCard({ project, projectId, lastPage }) {
   return (
-    <Link className="w-full h-32 bg-white flex flex-row p-2 rounded-lg" to={`/projects/create/${projectId}`}>
+    <Link className="w-full h-32 bg-white flex flex-row p-2 rounded-lg" to={`/projects/create/${projectId}/${lastPage}`}>
       <div className="bg-gray-200 w-1/4 h-full">
         <img
           src={project.project_image}
