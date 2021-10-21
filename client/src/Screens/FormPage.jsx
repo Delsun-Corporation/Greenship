@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, { useEffect } from "react";
 import FirstForm from "../components/project_forms/FirstForm";
 import Navbar from "../components/Navbar";
 import { Container } from "@mui/material";
@@ -31,6 +31,8 @@ function FormPage() {
         .catch((err) => {
           toast.error(`${process.env.BASE_CATCH_ERROR}`);
         });
+    } else {
+      console.log(data);
     }
   };
 
@@ -41,15 +43,29 @@ function FormPage() {
   function render() {
     const pageNumber = parseInt(page);
     if (pageNumber === 1) {
-      return <FirstForm
+      return (
+        <FirstForm
           projectId={projectid}
           onceSubmitted={(data) => onFormSubmit(data)}
           shouldRedirect={redirectPage}
         />
+      );
     } else if (pageNumber === 2) {
-      return <SecondForm></SecondForm>
+      return (
+        <SecondForm
+          projectId={projectid}
+          onceSubmitted={(data) => onFormSubmit(data)}
+          shouldRedirect={redirectPage}
+        ></SecondForm>
+      );
     } else {
-      return <SecondForm/>
+      return (
+        <SecondForm
+          projectId={projectid}
+          onceSubmitted={(data) => onFormSubmit(data)}
+          shouldRedirect={redirectPage}
+        />
+      );
     }
   }
 
@@ -57,11 +73,7 @@ function FormPage() {
     <div className="bg-gray-100 min-h-screen">
       <ToastContainer />
       <Navbar />
-      <Container maxWidth="xl">
-        {
-          render()
-        }
-      </Container>
+      <Container maxWidth="xl">{render()}</Container>
     </div>
   );
 }

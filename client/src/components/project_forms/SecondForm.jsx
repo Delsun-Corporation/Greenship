@@ -1,37 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import {
-  Box,
   Stack,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  Divider,
 } from "@mui/material";
 import {
   FormLayout,
   FormHeader,
   FormFooter,
   SideInput,
-  BlockInput,
-  SelectInput,
   InlineLabel,
 } from "../FormLayouts";
 import {
   formChapters,
-  occupancyCategory,
-  buildingTypology,
-  AchReference,
 } from "../../datas/Datas";
 import {
-  calcOperatingHoursPerYear,
-  calcNonOperatingHoursPerYear,
-  calcOccupancy,
-  calcRoomVolumePerPerson,
+  calcWWR
 } from "../../datas/FormLogic";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -44,35 +27,33 @@ const SecondForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
   console.log(projectId);
 
   const onSubmit = (data) => {
-    console.log("DATA");
-    console.log(data);
     onceSubmitted(data);
   };
 
-  useEffect(() => {
-    axios
-      .get(`${process.env.REACT_APP_API_URL}/getpageone`, {
-        params: {
-          id: projectId,
-        },
-      })
-      .then((res) => {
-        setValue("firstForm", {
-          ...res.data.page_one,
-          a_typology: buildingTypology.find(
-            (e) => e.type === res.data.page_one.a_typology
-          ),
-        });
-        console.log(res.data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.log(err);
-        toast.error("Something went wrong, please try again");
-      });
-  }, [projectId]);
+  // useEffect(() => {
+  //   axios
+  //     .get(`${process.env.REACT_APP_API_URL}/getpageone`, {
+  //       params: {
+  //         id: projectId,
+  //       },
+  //     })
+  //     .then((res) => {
+  //       setValue("firstForm", {
+  //         ...res.data.page_one,
+  //         a_typology: buildingTypology.find(
+  //           (e) => e.type === res.data.page_one.a_typology
+  //         ),
+  //       });
+  //       console.log(res.data);
+  //       setLoading(false);
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //       toast.error("Something went wrong, please try again");
+  //     });
+  // }, [projectId]);
 
-  const CHAPTER_NUMBER = "1";
+  const CHAPTER_NUMBER = "2";
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -83,11 +64,7 @@ const SecondForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
           shouldRedirect={shouldRedirect}
           chapter={CHAPTER_NUMBER}
         />
-        {!isLoading && (
-          <>
-            <FirstSection control={control} />
-          </>
-        )}
+        <FirstSection control={control} />
         <FormFooter chapter={CHAPTER_NUMBER} />
       </Stack>
     </form>
@@ -97,30 +74,79 @@ const SecondForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
 export default SecondForm;
 
 const FirstSection = ({ control }) => {
-    const sectionName = "firstForm.";
-  
-    return (
-      <FormLayout
-        leftComponent={
-          <Stack direction="column" spacing={2}>
-            <BlockInput
-              name={sectionName + "project_name"}
-              control={control}
-              title="Project Name"
-              rows={1}
-              maxLength={50}
-            />
-  
-            <BlockInput
-              name={sectionName + "project_desc"}
-              control={control}
-              title="Project Description"
-              rows={3}
-              maxLength={400}
-            />
-          </Stack>
-        }
-        rightComponent={<>Building Image</>}
-      />
-    );
-  };
+  const sectionName = "secondForm.";
+
+  function CountWWR() {
+    const windowArea = useWatch({
+      control,
+      name: sectionName + "b_window_area",
+    });
+    const wallArea = useWatch({
+      control,
+      name: sectionName + "b_wall_area",
+    });
+    if (windowArea && wallArea) {
+      return (
+        calcWWR(windowArea, wallArea) +
+        "%"
+      );
+    }
+    return NaN;
+  }
+
+  return (
+    <FormLayout
+      leftComponent={
+        <Stack direction="column" spacing={2}>
+          <SideInput
+            name={sectionName + "b_ottv"}
+            control={control}
+            title="OTTV (kWh/m2)"
+          />
+
+          <SideInput
+            name={sectionName + "b_shgc"}
+            control={control}
+            title="SHGC"
+          />
+
+          <SideInput
+            name={sectionName + "b_window_area"}
+            control={control}
+            title="Window Area (m2)"
+          />
+          <SideInput
+            name={sectionName + "b_wall_area"}
+            control={control}
+            title="Wall Area (m2)"
+          />
+          <InlineLabel
+            title="WWR"
+            value={CountWWR()}
+          />
+        </Stack>
+      }
+      rightComponent={
+        <div className="font-body">
+          <h1 className="text-xl font-black underline">Baseline Guidance:</h1>
+          <h1 className="mt-6">
+            <span className="font-regular">OTTV Baseline:</span>{" "}
+            <span className="font-bold ml-2">45kWh/m2</span>
+          </h1>
+          <h1>
+            <span className="font-regular">SHGC Baseline:</span>{" "}
+            <span className="font-bold ml-2">0.6 - 0.7</span>
+          </h1>
+          <h1>
+            <span className="font-regular">Window Area Baseline:</span>{" "}
+            <span className="font-bold ml-2">45kWh/m2</span>
+          </h1>
+          <h1>
+            <span className="font-regular">WWR:</span>{" "}
+            <span className="font-bold ml-2">30 - 40%</span>
+          </h1>
+        </div>
+      }
+    />
+  );
+};

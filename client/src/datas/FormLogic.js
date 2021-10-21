@@ -13,3 +13,7 @@ export function calcOccupancy(gfa, occupancyDensity) {
 export function calcRoomVolumePerPerson(floorNumber, avgFloorHeight, occupancyDensity) {
     return Math.ceil(floorNumber * avgFloorHeight / occupancyDensity)
 }
+
+export function calcWWR(windowArea, wallArea) {
+    return Math.ceil(windowArea / wallArea * 100 / 100)
+}
