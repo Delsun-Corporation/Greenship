@@ -8,7 +8,7 @@ exports.updatePageTwoDraft = (req, res) => {
 
   const objectId = ObjectId.ObjectId(projectId);
 
-  if (req.body === {} || req.body === null || req.body === undefined) {
+  if (req.body === {} || req.body === null || req.body === undefined || projectId === null || projectId === undefined) {
     return res.status(400).json({
       message: "Request parameter is wrong",
     });
@@ -16,11 +16,6 @@ exports.updatePageTwoDraft = (req, res) => {
 
   Project.findById(objectId)
     .then((project) => {
-      if (!project) {
-        return res.status(400).json({
-          message: "Request Parameter is wrong",
-        });
-      }
       project.b_ottv = b_ottv;
       project.b_shgc = b_shgc;
       project.b_window_area = b_window_area;
@@ -29,12 +24,14 @@ exports.updatePageTwoDraft = (req, res) => {
       return project.save();
     })
     .then((result) => {
-      return res.status(200).json({
-        message: "Success save page two draft",
-      });
+      if (result !== undefined) {
+        res.status(200).json({
+          message: "Success save page two draft",
+        });
+      }
     })
     .catch((err) => {
-      return res.status(500).json({
+      res.status(500).json({
         message: "Internal server error",
       });
     });

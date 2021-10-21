@@ -1,30 +1,22 @@
 import React, { useEffect, useState } from "react";
-import { useForm, useWatch } from "react-hook-form";
-import {
-  Stack,
-} from "@mui/material";
+import { useForm, useWatch, Controller } from "react-hook-form";
+import { Stack, TextField, Typography } from "@mui/material";
 import {
   FormLayout,
   FormHeader,
   FormFooter,
   SideInput,
   InlineLabel,
-  DoubleSideInput,
+  BasicInputField,
 } from "../FormLayouts";
-import {
-  formChapters,
-} from "../../datas/Datas";
-import {
-  calcWWR
-} from "../../datas/FormLogic";
+import { formChapters } from "../../datas/Datas";
+import { calcWWR } from "../../datas/FormLogic";
 import axios from "axios";
 import { toast } from "react-toastify";
 
 const SecondForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
   const methods = useForm({});
   const { control, handleSubmit, setValue } = methods;
-
-  console.log(projectId);
 
   const onSubmit = (data) => {
     onceSubmitted(data);
@@ -38,8 +30,13 @@ const SecondForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
         },
       })
       .then((res) => {
+        const pageTwoData = res.data.page_two;
         setValue("secondForm", {
-          ...res.data.page_two,
+          b_window_area_p: pageTwoData.b_window_area[0],
+          b_window_area_l: pageTwoData.b_window_area[1],
+          b_wall_area_p: pageTwoData.b_wall_area[0],
+          b_wall_area_l: pageTwoData.b_wall_area[1],
+          ...res.data.page_two
         });
       })
       .catch((err) => {
@@ -72,21 +69,26 @@ const FirstSection = ({ control }) => {
   const sectionName = "secondForm.";
 
   function CountWWR() {
-    const windowArea = useWatch({
+    const windowAreaP = useWatch({
       control,
-      name: sectionName + "b_window_area",
+      name: sectionName + "b_window_area_p",
     });
-    const wallArea = useWatch({
+    const windowAreaL = useWatch({
       control,
-      name: sectionName + "b_wall_area",
+      name: sectionName + "b_window_area_l",
     });
-    if (windowArea && wallArea) {
-      return (
-        calcWWR(windowArea, wallArea) +
-        "%"
-      );
+    const wallAreaP = useWatch({
+      control,
+      name: sectionName + "b_wall_area_p",
+    });
+    const wallAreaL = useWatch({
+      control,
+      name: sectionName + "b_wall_area_l",
+    });
+    if (windowAreaP && windowAreaL && wallAreaP && wallAreaL) {
+      return calcWWR(windowAreaP, windowAreaL, wallAreaP, wallAreaL) + "%";
     }
-    return NaN;
+    return null;
   }
 
   return (
@@ -105,20 +107,42 @@ const FirstSection = ({ control }) => {
             title="SHGC"
           />
 
-          <DoubleSideInput
-            name={sectionName + "b_window_area"}
-            control={control}
-            title="Window Area (m2)"
-          />
-          <DoubleSideInput
-            name={sectionName + "b_wall_area"}
-            control={control}
-            title="Wall Area (m2)"
-          />
-          <InlineLabel
-            title="WWR"
-            value={CountWWR()}
-          />
+          <Stack direction="row" spacing={2} alignItems="center" justifyContent="space-between">
+            <Typography>
+            Window Area (m2)
+            </Typography>
+            <Stack direction="row" spacing={2} alignItems="flex-end" justifyContent="space-between">
+            <BasicInputField
+              name={sectionName + "b_window_area_p"}
+              control={control}
+              adornment={"m"}
+            />
+            <BasicInputField
+              name={sectionName + "b_window_area_l"}
+              control={control}
+              adornment={"m"}
+            />
+            </Stack>
+          </Stack>
+
+          <Stack direction="row" spacing={2} alignItems="center" justifyContent="space-between">
+            <Typography>
+            Wall Area (m2)
+            </Typography>
+            <Stack direction="row" spacing={2} alignItems="flex-end" justifyContent="space-between">
+            <BasicInputField
+              name={sectionName + "b_wall_area_p"}
+              control={control}
+              adornment={"m"}
+            />
+            <BasicInputField
+              name={sectionName + "b_wall_area_l"}
+              control={control}
+              adornment={"m"}
+            />
+            </Stack>
+          </Stack>
+          <InlineLabel title="WWR" value={CountWWR()} />
         </Stack>
       }
       rightComponent={

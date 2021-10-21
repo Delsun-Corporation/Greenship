@@ -1,6 +1,6 @@
 import React from "react";
 import Select from "react-select";
-import { useController, useWatch, Controller } from "react-hook-form";
+import { useController, Controller } from "react-hook-form";
 import {
   Box,
   Button,
@@ -10,6 +10,7 @@ import {
   Typography,
   Paper,
   Divider,
+  InputAdornment,
 } from "@mui/material";
 import {
   formChapters,
@@ -260,57 +261,35 @@ export function InlineLabel({ title, subtitle, value }) {
   );
 }
 
-export function DoubleSideInput({
+export function BasicInputField({
   control,
   name,
-  title,
-  subtitle,
-  defaultValue,
+  adornment
 }) {
   const {
     field: { ref, value, ...inputProps },
     fieldState: { invalid, isTouched, isDirty },
-    formState: { touchedFields, dirtyFields },
+    formState: { touchedFields, dirtyFields }
   } = useController({
     name,
     control,
+    rules: { required: true },
+    defaultValue: "",
   });
-
   return (
-    <Stack
-      direction="row"
-      alignItems="center"
-      justifyContent="space-between"
-      spacing={2}
-      minHeight={40}
-    >
-      <Stack direction="column">
-        <Typography variant="body1">{title}</Typography>
-        {subtitle && (
-          <Typography variant="caption" color="text.secondary">
-            {subtitle}
-          </Typography>
-        )}
-      </Stack>
-      <Stack direction="row">
-      <TextField
-        {...inputProps}
-        value={value || defaultValue}
-        inputProps={{ min: 0, style: { textAlign: "right" }}}
-        variant="outlined"
-        size="small"
-        type="number"
-        
-      />
-      <TextField
-        {...inputProps}
-        value={value || defaultValue}
-        inputProps={{ min: 0, style: { textAlign: "right" } }}
-        variant="outlined"
-        size="small"
-        type="number"
-      />
-      </Stack>
-    </Stack>
+    <TextField
+    {...inputProps} 
+    inputRef={ref}
+          checked={value}
+          value={value}
+          inputProps={{ min: 0, style: { textAlign: "right" } }}
+          variant="outlined"
+          size="small"
+          type="number"
+          className="w-24"
+          InputProps={{
+            startAdornment: <InputAdornment position="start">{adornment}</InputAdornment>
+          }}
+        />
   );
 }

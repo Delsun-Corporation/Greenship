@@ -14,6 +14,6 @@ export function calcRoomVolumePerPerson(floorNumber, avgFloorHeight, occupancyDe
     return Math.ceil(floorNumber * avgFloorHeight / occupancyDensity)
 }
 
-export function calcWWR(windowArea, wallArea) {
-    return Math.ceil(windowArea / wallArea * 100 / 100)
+export function calcWWR(windowAreaP, windowAreaL, wallAreaP, wallAreaL) {
+    return Math.ceil((windowAreaP * windowAreaL) / (wallAreaP * wallAreaL) * 100 / 100)
 }

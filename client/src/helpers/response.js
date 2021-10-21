@@ -1,17 +1,19 @@
+import { toast } from "react-toastify"
+
 export const statusResponse = (status, customErrorResp, customSuccessResp) => {
     if (status === 200) {
         if (customSuccessResp) {
-            return customSuccessResp
+            return toast.success(customSuccessResp)
         } else {
-            return "Process success"
+            return toast.success("Process success")
         }
     } else if (status > 200 && status <= 500) {
         if (customErrorResp) {
-            return customErrorResp
+            return toast.error(customErrorResp)
         } else {
-            return "Process error"
+            return toast.error("Process error")
         }
     } else {
-        return "Internal Server Error"
+        return toast.error("Internal Server Error")
     }
 }
