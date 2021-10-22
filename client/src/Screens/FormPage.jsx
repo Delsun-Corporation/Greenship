@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import FirstForm from "../components/project_forms/FirstForm";
 import Navbar from "../components/Navbar";
-import { Container } from "@mui/material";
+import { Container, Typography, Stack } from "@mui/material";
 import { useParams } from "react-router";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
@@ -10,12 +10,13 @@ import { statusResponse } from "../helpers/response";
 import SecondForm from "../components/project_forms/SecondForm";
 import { updatePage } from "../helpers/PageService";
 import { PageTwo } from "../model/pageTwo.model";
+import FormPageNotFound from "../components/project_forms/FormPageNotFound";
 
 function FormPage() {
   const { projectid, page } = useParams();
   const history = useHistory();
 
-  const onFormSubmit = (data) => {
+  const onFormSubmit = (data, nextPage) => {
     if (data.firstForm) {
       axios
         .put(`${process.env.REACT_APP_API_URL}/updatepageone`, {
@@ -29,6 +30,9 @@ function FormPage() {
             "Save draft failed, check your internet and try again",
             "Your project has successfully been saved as Draft."
           );
+          if (nextPage) {
+            redirectPage(nextPage)
+          }
         })
         .catch((err) => {
           toast.error('Something went wrong, check your internet and try again');
@@ -49,6 +53,9 @@ function FormPage() {
             "Save draft failed, check your internet and try again",
             "Your project has successfully been saved as Draft."
           );
+          if (nextPage) {
+            redirectPage(nextPage)
+          }
         })
         .catch((err) => {
           toast.error('Something went wrong, check your internet and try again');
@@ -66,7 +73,7 @@ function FormPage() {
       return (
         <FirstForm
           projectId={projectid}
-          onceSubmitted={(data) => onFormSubmit(data)}
+          onceSubmitted={(data, nextPage) => onFormSubmit(data, nextPage)}
           shouldRedirect={redirectPage}
         />
       );
@@ -74,17 +81,13 @@ function FormPage() {
       return (
         <SecondForm
           projectId={projectid}
-          onceSubmitted={(data) => onFormSubmit(data)}
+          onceSubmitted={(data, nextPage) => onFormSubmit(data, nextPage)}
           shouldRedirect={redirectPage}
         ></SecondForm>
       );
     } else {
       return (
-        <SecondForm
-          projectId={projectid}
-          onceSubmitted={(data) => onFormSubmit(data)}
-          shouldRedirect={redirectPage}
-        />
+        <FormPageNotFound/>
       );
     }
   }

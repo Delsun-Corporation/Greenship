@@ -21,6 +21,9 @@ exports.updatePageTwoDraft = (req, res) => {
       project.b_window_area = b_window_area;
       project.b_wall_area = b_wall_area;
       project.project_date = new Date();
+      if (project.last_page < 2) {
+        project.last_page = 2
+      }
       return project.save();
     })
     .then((result) => {

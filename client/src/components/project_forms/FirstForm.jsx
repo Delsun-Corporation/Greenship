@@ -40,13 +40,14 @@ const FirstForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
   const methods = useForm({});
   const { control, handleSubmit, setValue } = methods;
   const [isLoading, setLoading] = useState(true);
-
-  console.log(projectId);
+  const [isFromNextButton, setIsFromNextButton] = useState(false);
 
   const onSubmit = (data) => {
-    console.log("DATA");
-    console.log(data);
-    onceSubmitted(data);
+    if (isFromNextButton) {
+      onceSubmitted(data, "2");
+    } else {
+      onceSubmitted(data);
+    }
   };
 
   useEffect(() => {
@@ -90,7 +91,7 @@ const FirstForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
             <ThirdSection control={control} />
           </>
         )}
-        <FormFooter chapter={CHAPTER_NUMBER} />
+        <FormFooter chapter={CHAPTER_NUMBER} setFromNextButton={setIsFromNextButton} />
       </Stack>
     </form>
   );

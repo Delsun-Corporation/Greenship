@@ -17,9 +17,14 @@ import { toast } from "react-toastify";
 const SecondForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
   const methods = useForm({});
   const { control, handleSubmit, setValue } = methods;
+  const [isFromNextButton, setIsFromNextButton] = useState(false);
 
   const onSubmit = (data) => {
-    onceSubmitted(data);
+    if (isFromNextButton) {
+      onceSubmitted(data, "3");
+    } else {
+      onceSubmitted(data);
+    }
   };
 
   useEffect(() => {
@@ -66,7 +71,7 @@ const SecondForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
           chapter={CHAPTER_NUMBER}
         />
         <FirstSection control={control} />
-        <FormFooter chapter={CHAPTER_NUMBER} />
+        <FormFooter chapter={CHAPTER_NUMBER} shouldRedirect={shouldRedirect} setFromNextButton={setIsFromNextButton} />
       </Stack>
     </form>
   );

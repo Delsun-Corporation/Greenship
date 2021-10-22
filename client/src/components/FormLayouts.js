@@ -87,10 +87,10 @@ export const FormHeader = ({ title, projectId, shouldRedirect }) => (
   </Stack>
 );
 
-export const FormFooter = ({ chapter, shouldRedirect }) => (
+export const FormFooter = ({ chapter, shouldRedirect, setFromNextButton }) => (
   <Stack direction="row" justifyContent="space-between" alignItems="center">
     {chapter !== "1" && (
-      <Button variant="contained">
+      <Button variant="contained" onClick={(e) => {shouldRedirect(`${(parseInt(chapter) - 1)}`)}}>
         PREV:{" "}
         {
           formChapters.find((e) => e.chapter === "" + (parseInt(chapter) - 1))
@@ -99,7 +99,7 @@ export const FormFooter = ({ chapter, shouldRedirect }) => (
       </Button>
     )}
     {chapter === "1" && <Box></Box>}
-    <Button type="submit" variant="contained">
+    <Button type="submit" variant="contained" onClick={(e) => {setFromNextButton(true)}}>
       NEXT:{" "}
       {
         formChapters.find((e) => e.chapter === "" + (parseInt(chapter) + 1))

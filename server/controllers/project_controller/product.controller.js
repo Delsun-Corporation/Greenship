@@ -102,35 +102,3 @@ exports.getLastPage = (req, res) => {
       });
     });
 };
-
-exports.postLastPage = (req, res) => {
-  const { projectId, last_page } = req.body;
-
-  if (projectId === undefined || projectId === null) {
-    return res.status(400).json({
-      message: "Bad request!",
-    });
-  }
-
-  Project.findById(projectId)
-    .then((project) => {
-      if (!project || project === {}) {
-        return res.status(402).json({
-          message: "No project found",
-        });
-      }
-      const updatedLastPage = last_page;
-      project.last_page = updatedLastPage;
-      return project.save();
-    })
-    .then((result) => {
-      return res.status(200).json({
-        message: "Success to post last page",
-      });
-    })
-    .catch((err) => {
-      return res.status(402).json({
-        message: "Failed to get last page",
-      });
-    });
-};

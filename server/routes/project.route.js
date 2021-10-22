@@ -5,8 +5,7 @@ const {
     createProject,
     getProjects,
     deleteProject,
-    getLastPage,
-    postLastPage
+    getLastPage
 } = require('../controllers/project_controller/product.controller');
 
 const {
@@ -20,7 +19,6 @@ const {
 } = require('../controllers/project_controller/pageTwo.controller')
 
 router.post('/createproject', createProject);
-router.post('/postlastpage', postLastPage);
 
 router.put('/updatepageone', updatePageOneDraft);
 router.put('/updatepagetwo', updatePageTwoDraft);
