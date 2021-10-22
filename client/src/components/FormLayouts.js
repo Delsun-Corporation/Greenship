@@ -108,7 +108,7 @@ export const FormFooter = ({ chapter }) => (
   /// Need logic for last page
 );
 
-export function SideInput({ control, name, title, subtitle, defaultValue }) {
+export function SideInput({ control, name, title, subtitle, defaultValue, type }) {
     const {
         field: { ref, value, ...inputProps },
         fieldState: { invalid, isTouched, isDirty },
@@ -136,7 +136,7 @@ export function SideInput({ control, name, title, subtitle, defaultValue }) {
                 inputProps={{ min: 0, style: { textAlign: 'right' } }}
                 variant="outlined"
                 size="small"
-                type="number"
+                type={type ? type : "number"}
                 />
         </Stack>
     )
@@ -213,7 +213,7 @@ export function SelectInput({ name, control, options, getOptionLabel, getOptionV
   );
 };
 
-export function InlineLabel({ title, subtitle, value }) {
+export function InlineLabel({ title, subtitle, value, bold }) {
   return (
     <Stack
       direction="row"
@@ -223,7 +223,8 @@ export function InlineLabel({ title, subtitle, value }) {
       minHeight={40}
     >
       <Stack direction="column">
-        <Typography variant="body1">{title}</Typography>
+        { bold && <Box sx={{ fontSize: 16, fontWeight: "bold" }}>{title}</Box>}
+        {!bold && <Typography variant="body1">{title}</Typography>}
         {subtitle && (
           <Typography variant="caption" color="text.secondary">
             {subtitle}
