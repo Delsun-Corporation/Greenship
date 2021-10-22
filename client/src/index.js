@@ -43,7 +43,7 @@ ReactDOM.render(
         render={(props) => <Reset {...props} />}
       />
       <Route
-        path="/projects/create/:projectid" 
+        path="/projects/create/:projectid/:page" 
         exact
         render={(props) => <FormPage {...props} />}
       />
