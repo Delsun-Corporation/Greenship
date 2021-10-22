@@ -25,13 +25,14 @@ function FormPage() {
           a_typology: data.firstForm.a_typology.type,
         })
         .then((res) => {
-          statusResponse(
-            res.status,
-            "Save draft failed, check your internet and try again",
-            "Your project has successfully been saved as Draft."
-          );
           if (nextPage) {
             redirectPage(nextPage)
+          } else {
+            statusResponse(
+              res.status,
+              "Save draft failed, check your internet and try again",
+              "Your project has successfully been saved as Draft."
+            );
           }
         })
         .catch((err) => {
@@ -48,13 +49,14 @@ function FormPage() {
 
       updatePage("updatepagetwo", body, projectid)
         .then((res) => {
-          statusResponse(
-            res.status,
-            "Save draft failed, check your internet and try again",
-            "Your project has successfully been saved as Draft."
-          );
           if (nextPage) {
             redirectPage(nextPage)
+          } else {
+            statusResponse(
+              res.status,
+              "Save draft failed, check your internet and try again",
+              "Your project has successfully been saved as Draft."
+            );
           }
         })
         .catch((err) => {
