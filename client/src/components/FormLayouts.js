@@ -87,7 +87,7 @@ export const FormHeader = ({ title, projectId, shouldRedirect }) => (
   </Stack>
 );
 
-export const FormFooter = ({ chapter }) => (
+export const FormFooter = ({ chapter, shouldRedirect }) => (
   <Stack direction="row" justifyContent="space-between" alignItems="center">
     {chapter !== "1" && (
       <Button variant="contained">
@@ -110,7 +110,7 @@ export const FormFooter = ({ chapter }) => (
   /// Need logic for last page
 );
 
-export function SideInput({ control, name, title, subtitle, defaultValue }) {
+export function SideInput({ control, name, title, subtitle, defaultValue, minimalInput }) {
   const {
     field: { ref, value, ...inputProps },
     fieldState: { invalid, isTouched, isDirty },
@@ -139,7 +139,7 @@ export function SideInput({ control, name, title, subtitle, defaultValue }) {
       <TextField
         {...inputProps}
         value={value || defaultValue}
-        inputProps={{ min: 0, style: { textAlign: "right" } }}
+        inputProps={{ min: minimalInput, style: { textAlign: "right" } }}
         variant="outlined"
         size="small"
         type="number"

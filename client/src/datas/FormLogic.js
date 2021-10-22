@@ -14,6 +14,16 @@ export function calcRoomVolumePerPerson(floorNumber, avgFloorHeight, occupancyDe
     return Math.ceil(floorNumber * avgFloorHeight / occupancyDensity)
 }
 
-export function calcWWR(windowAreaP, windowAreaL, wallAreaP, wallAreaL) {
-    return Math.ceil((windowAreaP * windowAreaL) / (wallAreaP * wallAreaL) * 100 / 100)
+export function calcWWR(collectionWindowArea, collectionWallArea) {
+    const totalWindowArea = sumValue(collectionWindowArea);
+    const totalWallArea = sumValue(collectionWallArea);
+    return Math.ceil((totalWindowArea / totalWallArea) * 100 / 100)
+}
+
+function sumValue(array) {
+    let sum = 0;
+    for (let i = 0; i < array.length; i++) {
+        sum += parseInt(array[i]);
+    }
+    return sum
 }

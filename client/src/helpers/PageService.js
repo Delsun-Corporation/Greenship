@@ -7,3 +7,4 @@ export const updatePage = (path, data, projectId) => {
           ...data
         })
 }
+

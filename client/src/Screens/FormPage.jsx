@@ -8,7 +8,8 @@ import { toast, ToastContainer } from "react-toastify";
 import { useHistory } from "react-router";
 import { statusResponse } from "../helpers/response";
 import SecondForm from "../components/project_forms/SecondForm";
-import { updatePage } from "../helpers/updatePageService";
+import { updatePage } from "../helpers/PageService";
+import { PageTwo } from "../model/pageTwo.model";
 
 function FormPage() {
   const { projectid, page } = useParams();
@@ -34,12 +35,13 @@ function FormPage() {
         });
     } else if (data.secondForm) {
       const secondFormData = data.secondForm;
+      const pageTwo = new PageTwo(secondFormData);
       const body = {
-        b_window_area: [parseInt(secondFormData.b_window_area_p), parseInt(secondFormData.b_window_area_l)],
-        b_wall_area: [parseInt(secondFormData.b_wall_area_p), parseInt(secondFormData.b_wall_area_l)],
+        ...pageTwo.getSaveDraftModel(),
         b_ottv: secondFormData.b_ottv,
         b_shgc: secondFormData.b_shgc
       }
+
       updatePage("updatepagetwo", body, projectid)
         .then((res) => {
           statusResponse(
