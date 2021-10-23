@@ -20,7 +20,7 @@ function App() {
         id: userId,
       })
       .then((result) => {
-        history.push(`/projects/create/${result.data.projectId}`);
+        history.push(`/projects/create/${result.data.projectId}/${result.data.last_page}`);
       })
       .catch((err) => {
         console.log(err);

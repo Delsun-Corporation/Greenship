@@ -18,6 +18,21 @@ export function calcRoomVolumePerPerson(floorNumber, avgFloorHeight, occupancyDe
     return Math.ceil(floorNumber * avgFloorHeight / occupancyDensity)
 }
 
+/// 2
+export function calcWWR(collectionWindowArea, collectionWallArea) {
+    const totalWindowArea = sumValue(collectionWindowArea);
+    const totalWallArea = sumValue(collectionWallArea);
+    return Math.ceil((totalWindowArea / totalWallArea) * 100 / 100)
+}
+
+function sumValue(array) {
+    let sum = 0;
+    for (let i = 0; i < array.length; i++) {
+        sum += parseInt(array[i]);
+    }
+    return sum
+}
+
 /// 3a2
 export function calcNonDaylightArea(gfa, daylightArea) {
     return Math.ceil(gfa - daylightArea)
