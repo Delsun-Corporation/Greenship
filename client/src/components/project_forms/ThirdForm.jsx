@@ -47,7 +47,8 @@ import {
     calcLSL,
     calcCFM1,
     calcCFM2,
-    convertCoolingLoad
+    convertCoolingLoad,
+    calcApplianceConsumption
 } from "../../datas/FormLogic";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -78,6 +79,7 @@ const ThirdForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
                 />
                 <LightingSection control={control} getValues={getValues} />
                 <ACSection control={control} getValues={getValues} />
+                <AppliancesSection control={control} getValues={getValues} />
 
                 <Button type="submit" variant="contained">
                     Submit
@@ -112,6 +114,7 @@ function defaultFormValue() {
             thirdForm: {
                 c_lighting: [defaultLightingValue()],
                 c_ac: defaultACValue(),
+                c_appliances: [defaultAppliancesValue()],
             }
         }
     )
@@ -132,6 +135,14 @@ function defaultACValue() {
     })
 }
 
+function defaultAppliancesValue() {
+    return ({
+        name: "",
+        amount: 10,
+        watt: 10
+    })
+}
+
 /// SECTIONS ///
 
 const LightingSection = ({ control, getValues }) => {
@@ -140,6 +151,12 @@ const LightingSection = ({ control, getValues }) => {
     const { fields, append, remove } = useFieldArray({
         control, name: `${sectionName}`
     });
+
+    var totalLeArr = {
+        leOperationalDay: [],
+        leOperationalNonDay: [],
+        leNonOperational: []
+    }
 
     // CALCULATED COMPONENTS
 
@@ -175,6 +192,14 @@ const LightingSection = ({ control, getValues }) => {
             result = calcLeDuringOperationalDay(daylightArea, lpdOperational, operationalHours)
         }
 
+        if (totalLeArr.leOperationalDay.length < index) {
+            totalLeArr.leOperationalDay.push(result)
+        } else {
+            totalLeArr.leOperationalDay[index] = result
+        }
+        
+        console.log("LE", totalLeArr)
+
         return <InlineLabel
             title="LE during operational hours daylight area"
             value={result}
@@ -195,6 +220,13 @@ const LightingSection = ({ control, getValues }) => {
         if (gfa && daylightArea && lpdOperational && operationalHours) {
             result = calcLeDuringOperationalNonDay(gfa, daylightArea, lpdOperational, operationalHours)
         }
+
+        if (totalLeArr.leOperationalNonDay.length < index) {
+            totalLeArr.leOperationalNonDay.push(result)
+        } else {
+            totalLeArr.leOperationalNonDay[index] = result
+        }
+
         return <InlineLabel
             title="LE during operational hours non-daylight area"
             value={result}
@@ -218,10 +250,44 @@ const LightingSection = ({ control, getValues }) => {
             result = calcLeDuringNonOperational(gfa, operationalHours, workingDays, holidays, lpdNonOperational)
         }
 
+        if (totalLeArr.leNonOperational.length < index) {
+            totalLeArr.leNonOperational.push(result)
+        } else {
+            totalLeArr.leNonOperational[index] = result
+        }
+
         return <InlineLabel
             title="LE during non-operational hours"
             value={result}
         />
+    }
+
+    const LightingTotal = () => {
+        const watchValues = useWatch({
+            control,
+            name: `${sectionName}`,
+            defaultValue: fields
+        })
+
+        var result = 
+        totalLeArr.leOperationalDay.reduce(function(sum, item) {
+            return sum + item;
+        }, 0)
+        + totalLeArr.leOperationalNonDay.reduce(function(sum, item) {
+            return sum + item;
+        }, 0)
+        + totalLeArr.leNonOperational.reduce(function(sum, item) {
+            return sum + item;
+        }, 0)
+
+        console.log("total", result)
+
+        return <InlineLabel
+            title="Total Lighting Energy Consumption"
+            value={`${result} kWh/m2 per year`}
+            bold
+        />
+
     }
 
     return (
@@ -295,6 +361,7 @@ const LightingSection = ({ control, getValues }) => {
                             );
                         })}
                     </div>
+                    <LightingTotal />
                 </Stack>
 
             }
@@ -429,7 +496,6 @@ const ACSection = ({ control, getValues }) => {
         const gfa = getValues("firstForm.a_gfa")
         const floorCount = getValues("firstForm.a_floor_count")
         const floorHeightAvg = getValues("firstForm.a_floor_height_avg")
-        console.log(ach, gfa, floorCount, floorHeightAvg)
         var result = NaN
         if (ach && gfa && floorCount && floorHeightAvg) {
             result = calcCFM1(ach, gfa, floorCount, floorHeightAvg)
@@ -522,6 +588,136 @@ const ACSection = ({ control, getValues }) => {
             }
         />
     )
+}
+
+const AppliancesSection = ({control, getValues}) => {
+    const sectionName = "thirdForm.c_appliances"
+
+    const { fields, append, remove } = useFieldArray({
+        control, name: `${sectionName}`
+    });
+
+    var totalAppliances = []
+
+    // CALCULATED COMPONENTS
+
+    const ApplianceConsumption = ({index}) => {
+        const watchValues = useWatch({
+            control,
+            name: `${sectionName}`,
+            defaultValue: fields
+        })
+
+        const amount = watchValues[index].amount
+        const watt = watchValues[index].watt
+        const operationalHours = getValues("firstForm.a_operational_hours")
+
+        var result = NaN
+        if (amount && watt && operationalHours) {
+            result = calcApplianceConsumption(amount, watt, operationalHours)
+        }
+
+        if (totalAppliances.length < index) {
+            totalAppliances.push(result)
+        } else {
+            totalAppliances[index] = result
+        }
+
+        return <InlineLabel
+        title="Energy Consumption"
+        value={result+ " kWh/m2 per year"}
+    />
+    }
+
+    const TotalApplianceConsumption = () => {
+        const watchValues = useWatch({
+            control,
+            name: `${sectionName}`,
+            defaultValue: fields
+        })
+
+        var result = 
+        totalAppliances.reduce(function(sum, item) {
+            return sum + item;
+        }, 0)
+
+        return <InlineLabel
+        title="Total Appliance Energy Consumption"
+        value={result + " kWh/m2 per year"}
+    />
+    }
+
+    return (
+        <FormLayout
+            leftComponent={
+                <Stack direction="column" spacing={2}>
+                    <Stack direction="row" justifyContent="space-between" >
+                        <Box sx={{ fontSize: 24, fontWeight: "bold" }}>APPLIANCES</Box>
+                        <Button variant="contained" onClick={() => {
+                            append(defaultAppliancesValue())
+                        }}>
+                            ADD ITEM
+                        </Button>
+                    </Stack>
+
+                    <div>
+                        {fields.map((field, index) => {
+                            const multiInputName = `${sectionName}.${index}`
+                            return (
+                                <Accordion key={field.id}>
+                                    <AccordionSummary
+                                        expandIcon={<ExpandMoreIcon />}
+                                        aria-controls={"panel" + (index + 1) + "bh-content"}
+                                        id={"panel" + (index + 1) + "bh-header"}
+                                    >
+                                        <Stack justifyContent="space-between" alignItems="center"
+                                            spacing={2} direction="row" width='100%'>
+                                            <Controller
+                                                control={control}
+                                                name={`${multiInputName}.name`}
+                                                render={({ field: { onChange, onBlur, value, ref } }) => (
+                                                    <TextField
+                                                        onChange={onChange}
+                                                        value={value} variant="outlined" size="small"
+                                                        label={"Item #" + (index + 1) + " name"}
+                                                        bgcolor="white"
+                                                    />
+                                                )}
+                                            />
+                                            <Button variant="contained" onClick={() => remove(index)} color="warning">Delete</Button>
+                                        </Stack>
+                                    </AccordionSummary>
+                                    <AccordionDetails>
+                                        <Stack spacing={2}>
+                                            <SideInput
+                                                name={`${multiInputName}.amount`}
+                                                control={control}
+                                                title="Number of Appliances"
+                                            />
+                                            <SideInput
+                                                name={`${multiInputName}.watt`}
+                                                control={control}
+                                                title="Watt"
+                                            />
+                                            <ApplianceConsumption index={index}/>
+                                        </Stack>
+
+                                    </AccordionDetails>
+                                </Accordion>
+                            );
+                        })}
+                    </div>
+                </Stack>
+
+            }
+            rightComponent={
+                <Stack direction="column" spacing={2}>
+                    <TotalApplianceConsumption />
+                </Stack>
+            }
+        />
+    );
+
 }
 
 const LpdReferenceTable = ({ control }) => {

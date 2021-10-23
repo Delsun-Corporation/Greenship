@@ -44,11 +44,9 @@ export function calcBSL(windowAreas, wallAreas, windowHeatLoad, wallHeatLoad, to
     windowAreas.forEach((element, index) => {
         totalAreaHeatLoad += element * windowHeatLoad[index].value
     });
-    console.log("windowareas", totalAreaHeatLoad)
     wallAreas.forEach((element, index) => {
         totalAreaHeatLoad += element * parseFloat(wallHeatLoad[index].value) * toTi
     });
-    console.log("wallareas", totalAreaHeatLoad)
 
     return Math.ceil(totalAreaHeatLoad * toTi)
 }
@@ -76,4 +74,9 @@ export function calcCFM2(toTi, ach, gfa, floorCount, floorHeightAvg) {
 
 export function convertCoolingLoad(coolingLoad, operationalHours, workingDays, gfa) {
     return Math.ceil(coolingLoad / 12000 * 1.12 * operationalHours * workingDays / gfa)
+}
+
+/// 3c
+export function calcApplianceConsumption(amount, watt, operationalHours) {
+    return Math.ceil(amount * watt * operationalHours)
 }
