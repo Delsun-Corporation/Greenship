@@ -351,9 +351,9 @@ exports.activationEmail = (token , username) => {
                   <table role="presentation" border="0" cellpadding="0" cellspacing="0">
                     <tr>
                       <td>
-                        <h2>Hai ${username},</h2>
-                        <p>Terima kasih telah mendaftarkan akun anda di website kami, hanya tinggal selangkah lagi agar kamu dapat mengaktifkan akunmu,</p>
-                        <p>Klik tombol di bawah ini untuk mengaktifkan akunmu!</p>
+                        <h2>Hi ${username},</h2>
+                        <p>Thank you for registering your account in our website. You are one step away to be able to activate your account!</p>
+                        <p>Please click this button to activate your account.</p>
                         <table role="presentation" border="0" cellpadding="0" cellspacing="0" class="btn btn-primary">
                           <tbody>
                             <tr>
@@ -370,7 +370,7 @@ exports.activationEmail = (token , username) => {
                           </tbody>
                         </table>
                         <br></br>
-                        <p>Email ini berisikan data penting, selalu jaga keamanan akun anda.</p>
+                        <p>This website contains important information, make sure to always keep your account secure.</p>
                       </td>
                     </tr>
                   </table>

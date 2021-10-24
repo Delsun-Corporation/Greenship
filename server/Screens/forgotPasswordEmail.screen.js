@@ -351,9 +351,9 @@ exports.forgotPasswordEmail = (token, username) => {
                   <table role="presentation" border="0" cellpadding="0" cellspacing="0">
                     <tr>
                       <td>
-                        <h2>Hai ${username},</h2>
-                        <p>Apakah kamu ingin merubah password akunmu?</p>
-                        <p>Jika benar, klik tombol di bawah ini untuk merubah password akunmu!</p>
+                        <h2>Hi ${username},</h2>
+                        <p>We detected a request to reset the password for your account.</p>
+                        <p>If it was yours, please click the button below to change your account password!</p>
                         <table role="presentation" border="0" cellpadding="0" cellspacing="0" class="btn btn-primary">
                           <tbody>
                             <tr>
@@ -361,7 +361,7 @@ exports.forgotPasswordEmail = (token, username) => {
                                 <table role="presentation" border="0" cellpadding="0" cellspacing="0">
                                   <tbody>
                                     <tr>
-                                      <td> <a href="${process.env.CLIENT_URL}/users/passwords/reset/${token}" target="_blank">Rubah Password</a> </td>
+                                      <td> <a href="${process.env.CLIENT_URL}/users/passwords/reset/${token}" target="_blank">Change Password</a> </td>
                                     </tr>
                                   </tbody>
                                 </table>
@@ -370,7 +370,7 @@ exports.forgotPasswordEmail = (token, username) => {
                           </tbody>
                         </table>
                         <br></br>
-                        <p>Email ini berisikan data penting, selalu jaga keamanan akun anda.</p>
+                        <p>This website contains important information, make sure to always keep your account secure.</p>
                       </td>
                     </tr>
                   </table>
