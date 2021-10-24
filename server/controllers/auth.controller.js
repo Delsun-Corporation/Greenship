@@ -7,6 +7,8 @@ const jwt = require("jsonwebtoken");
 // Custom Error handler
 const { errorHandler } = require("../helpers/dbErrorHandling");
 const nodemailer = require("nodemailer");
+const { activationEmail } = require("../Screens/activationEmail.screen");
+const { forgotPasswordEmail } = require("../Screens/forgotPasswordEmail.screen");
 
 const transporter = nodemailer.createTransport({
   host: "smtp-mail.outlook.com", // hostname
@@ -58,13 +60,7 @@ exports.registerController = (req, res) => {
       from: process.env.EMAIL_FROM,
       to: email,
       subject: "Account Activation link",
-      html: `
-                <h1>Please Click to link to activate<h1>
-                <a href="${process.env.CLIENT_URL}/users/activate/${token}">${process.env.CLIENT_URL}/users/activate/${token}</a>
-                <br/>
-                <p>This email contain sensitive info</p>
-                <a href="${process.env.CLIENT_URL}">${process.env.CLIENT_URL}</p>
-            `,
+      html: activationEmail(token, name),
     };
 
     transporter.sendMail(emailData, function (err, info) {
@@ -212,13 +208,7 @@ exports.forgotController = (req, res) => {
           from: process.env.EMAIL_FROM,
           to: email,
           subject: "Password Reset link",
-          html: `
-                  <h1>Please Click to link to reset your password<h1>
-                  <a href="${process.env.CLIENT_URL}/users/passwords/reset/${token}">${process.env.CLIENT_URL}/users/passwords/reset/${token}</a>
-                  <br/>
-                  <p>This email contain sensitive info</p>
-                  <a href="${process.env.CLIENT_URL}">${process.env.CLIENT_URL}</p>
-              `,
+          html: forgotPasswordEmail(token, user.name),
         };
 
         return user.updateOne(
