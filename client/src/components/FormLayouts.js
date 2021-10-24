@@ -139,6 +139,9 @@ export function SideInput({ control, name, title, subtitle, defaultValue, isStri
                 variant="outlined"
                 size="small"
                 type={isString ? "text" : "number"}
+                sx = {{
+                  maxWidth: "40%"
+                }}
                 />
         </Stack>
     )
@@ -253,7 +256,7 @@ export function InlineLabel({ title, subtitle, value, bold }) {
           </Typography>
         )}
       </Stack>
-      <Box sx={{ fontWeight: "bold" }}>{value ? value : "-"}</Box>
+      <Box sx={{ fontWeight: "bold", textAlign: "right" }}>{value ? value : "-"}</Box>
     </Stack>
   );
 }

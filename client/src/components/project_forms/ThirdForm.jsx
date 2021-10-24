@@ -3,52 +3,44 @@ import {
     useForm,
     useFieldArray,
     Controller,
-    useWatch,
-    FormProvider
+    useWatch
 } from "react-hook-form";
 import {
-    Box,
-    Button,
+    Box, Container, Paper, Stack,
     Accordion, AccordionSummary, AccordionDetails,
+    Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
+    Button,
     TextField,
-    Stack,
-    Typography,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
-    Paper,
-    Divider,
+    Divider
 } from '@mui/material';
 import {
     FormLayout,
     FormHeader,
     FormFooter,
     SideInput,
-    BlockInput,
     SelectInput,
     InlineLabel,
 } from "../FormLayouts";
 import {
     formChapters,
     lpdReference,
-    heatLoad
+    heatLoad,
+    powerFactor
 } from "../../datas/Datas";
 import {
+    calcLightingEnergyConsumption,
     calcNonDaylightArea,
     calcLeDuringOperationalDay,
     calcLeDuringOperationalNonDay,
     calcLeDuringNonOperational,
-    calcPSL,
-    calcPLL,
-    calcBSL,
-    calcLSL,
-    calcCFM1,
-    calcCFM2,
+    calcPSL, calcPLL, calcBSL, calcLSL, calcCFM1, calcCFM2,
     convertCoolingLoad,
-    calcApplianceConsumption
+    calcApplianceConsumption,
+    calcLiftConsumption,
+    calcUtilityConsumption,
+    calcPlugEnergyAC,
+    calcPlugEnergyNonAC,
+    calcPlugConsumption
 } from "../../datas/FormLogic";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -60,6 +52,7 @@ const ThirdForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
     });
     const { control, handleSubmit, setValue, reset, getValues } = methods
     const [isLoading, setLoading] = useState(true);
+    const [isFromNextButton, setIsFromNextButton] = useState(false);
 
     const onSubmit = (data) => {
         console.log(data)
@@ -77,13 +70,13 @@ const ThirdForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
                     shouldRedirect={shouldRedirect}
                     chapter={CHAPTER_NUMBER}
                 />
-                <LightingSection control={control} getValues={getValues} />
-                <ACSection control={control} getValues={getValues} />
-                <AppliancesSection control={control} getValues={getValues} />
-
-                <Button type="submit" variant="contained">
-                    Submit
-                </Button>
+                <LightingSection control={control} getValues={getValues} setValue={setValue} />
+                <ACSection control={control} getValues={getValues} setValue={setValue} />
+                <AppliancesSection control={control} getValues={getValues} setValue={setValue} />
+                <UtilitySection control={control} getValues={getValues} setValue={setValue} />
+                <PlugSection control={control} getValues={getValues} setValue={setValue} />
+                <TotalSection control={control} />
+                <FormFooter chapter={CHAPTER_NUMBER} setFromNextButton={setIsFromNextButton} />
             </Stack>
 
         </form>
@@ -115,6 +108,9 @@ function defaultFormValue() {
                 c_lighting: [defaultLightingValue()],
                 c_ac: defaultACValue(),
                 c_appliances: [defaultAppliancesValue()],
+                c_utilities: defaultUtilityValue(),
+                c_plug: defaultPlugValue(),
+                total: defaultTotalEnergyConsumption()
             }
         }
     )
@@ -143,9 +139,62 @@ function defaultAppliancesValue() {
     })
 }
 
+function defaultUtilityValue() {
+    return ([{
+        name: "Lift",
+        amount: 0,
+        watt: 0,
+        util_type: "lift",
+        lift_capacity: 10,
+        lift_velocity: 10
+    },
+    {
+        name: "Escalator",
+        amount: 0,
+        watt: 0,
+        util_type: "escalator"
+    },
+    {
+        name: "Pump",
+        amount: 0,
+        watt: 0,
+        util_type: "pump"
+    },
+    {
+        name: "STP",
+        amount: 0,
+        watt: 0,
+        util_type: "stp"
+    },
+    {
+        name: "Mechanical Ventilation",
+        amount: 0,
+        watt: 0,
+        util_type: "mv",
+        mv_flow_rate: 0
+    }])
+}
+
+function defaultPlugValue() {
+    return ({
+        operating_power: 0,
+        nonoperating_power: 0
+    })
+}
+
+function defaultTotalEnergyConsumption() {
+    return ({
+        lighting: 0,
+        ac: 0,
+        appliances: 0,
+        utility: 0,
+        plug: 0
+    })
+}
+
 /// SECTIONS ///
 
-const LightingSection = ({ control, getValues }) => {
+const LightingSection = ({ control, getValues, setValue }) => {
     const sectionName = "thirdForm.c_lighting"
 
     const { fields, append, remove } = useFieldArray({
@@ -155,7 +204,8 @@ const LightingSection = ({ control, getValues }) => {
     var totalLeArr = {
         leOperationalDay: [],
         leOperationalNonDay: [],
-        leNonOperational: []
+        leNonOperational: [],
+        energyConsumption: []
     }
 
     // CALCULATED COMPONENTS
@@ -197,7 +247,7 @@ const LightingSection = ({ control, getValues }) => {
         } else {
             totalLeArr.leOperationalDay[index] = result
         }
-        
+
         console.log("LE", totalLeArr)
 
         return <InlineLabel
@@ -262,32 +312,60 @@ const LightingSection = ({ control, getValues }) => {
         />
     }
 
-    const LightingTotal = () => {
+    const LightingEnergyConsumption = ({index}) => {
+        const watchValues = useWatch({
+            control,
+            name: `${sectionName}`,
+            defaultValue: fields
+        })
+        const name = watchValues[index].name
+        const gfa = getValues("firstForm.a_gfa")
+        const leOperationalDay = totalLeArr.leOperationalDay[index]
+        const leOperationalNonDay = totalLeArr.leOperationalNonDay[index]
+        const leNonOperational = totalLeArr.leNonOperational[index]
+        
+        var result = calcLightingEnergyConsumption(leOperationalDay, leOperationalNonDay, leNonOperational, gfa)
+
+        if (totalLeArr.energyConsumption.length < index) {
+            totalLeArr.energyConsumption.push(result)
+        } else {
+            totalLeArr.energyConsumption[index] = result
+        }
+
+
+        return (
+            <InlineLabel
+                title={`${name} Energy Consumption`}
+                value={`${result} kWh/m2 per year`}
+                bold
+            />
+        )
+    }
+
+    const TotalLightingEnergyConsumption = () => {
         const watchValues = useWatch({
             control,
             name: `${sectionName}`,
             defaultValue: fields
         })
 
-        var result = 
-        totalLeArr.leOperationalDay.reduce(function(sum, item) {
-            return sum + item;
-        }, 0)
-        + totalLeArr.leOperationalNonDay.reduce(function(sum, item) {
-            return sum + item;
-        }, 0)
-        + totalLeArr.leNonOperational.reduce(function(sum, item) {
-            return sum + item;
-        }, 0)
+        const gfa = getValues("firstForm.a_gfa")
 
-        console.log("total", result)
+        var result =
+            totalLeArr.energyConsumption.reduce(function (sum, item) {
+                return sum + item;
+            }, 0)
 
-        return <InlineLabel
-            title="Total Lighting Energy Consumption"
-            value={`${result} kWh/m2 per year`}
-            bold
-        />
+        setValue("thirdForm.total.lighting", result)
 
+        return (<Paper sx={{ paddingX: 2, paddingY: 1, backgroundColor: "green", color: "white" }}>
+            <InlineLabel
+                title="Total Lighting Energy Consumption"
+                value={`${result} kWh/m2 per year`}
+                bold
+            />
+        </Paper>
+        )
     }
 
     return (
@@ -295,7 +373,7 @@ const LightingSection = ({ control, getValues }) => {
             leftComponent={
                 <Stack direction="column" spacing={2}>
                     <Stack direction="row" justifyContent="space-between" >
-                        <Box sx={{ fontSize: 24, fontWeight: "bold" }}>LIGHTING</Box>
+                        <Box sx={{ fontSize: 24, fontWeight: "bold" }}>Lighting</Box>
                         <Button variant="contained" onClick={() => {
                             append(defaultLightingValue())
                         }}>
@@ -354,6 +432,8 @@ const LightingSection = ({ control, getValues }) => {
                                             <LeDuringOperationalDay index={index} />
                                             <LeDuringOperationalNonDay index={index} />
                                             <LeDuringNonOperational index={index} />
+                                            <Divider sx={{ maxWidth: "100%"}} />
+                                            <LightingEnergyConsumption index={index} />
                                         </Stack>
 
                                     </AccordionDetails>
@@ -361,12 +441,12 @@ const LightingSection = ({ control, getValues }) => {
                             );
                         })}
                     </div>
-                    <LightingTotal />
+
                 </Stack>
 
             }
             rightComponent={
-                <Stack direction="column" spacing={2}>
+                <Stack direction="column" spacing={2} justifyContent="space-between">
                     <Box sx={{ fontWeight: "bold" }}>LPD Reference Table</Box>
                     <SelectInput
                         name={"thirdForm.lpd_option"}
@@ -376,14 +456,15 @@ const LightingSection = ({ control, getValues }) => {
                         getOptionValue="type"
                         placeholder="Select building type..."
                     />
-                    <LpdReferenceTable control= {control} />
+                    <LpdReferenceTable control={control} />
+                    <TotalLightingEnergyConsumption />
                 </Stack>
             }
         />
     );
 };
 
-const ACSection = ({ control, getValues }) => {
+const ACSection = ({ control, getValues, setValue }) => {
     const sectionName = "thirdForm.c_ac"
 
     var components = {
@@ -541,6 +622,21 @@ const ACSection = ({ control, getValues }) => {
             control,
             name: `${sectionName}`,
         })
+        var result = components.BSL + components.CFM1 + components.CFM2 + components.LSL + components.PLL + components.PSL
+
+        return <InlineLabel
+            title="Cooling Load"
+            subtitle="BSL + PSL + PLL + LSL + CFM1 + CFM2"
+            value={`${result} BTU`}
+            bold
+        />
+    }
+
+    const TotalACEnergyConsumption = () => {
+        const watchValues = useWatch({
+            control,
+            name: `${sectionName}`,
+        })
         const gfa = getValues("firstForm.a_gfa")
         const workingDays = getValues("firstForm.a_working_days")
         const operationalHours = getValues("firstForm.a_operational_hours")
@@ -548,14 +644,18 @@ const ACSection = ({ control, getValues }) => {
         var converted = NaN
         if (result && operationalHours && workingDays && gfa) {
             converted = convertCoolingLoad(result, operationalHours, workingDays, gfa)
+            setValue("thirdForm.total.ac", converted)
         }
 
-        return <InlineLabel
-            title="Cooling Load"
-            subtitle="BSL + PSL + PLL + LSL + CFM1 + CFM2"
-            value={`${result} BTU | ${converted} kWh/m2 per year`}
-            bold
-        />
+        return (
+            <Paper sx={{ paddingX: 2, paddingY: 1, backgroundColor: "green", color: "white" }}>
+                <InlineLabel
+                    title="Total AC Energy Consumption"
+                    value={`${converted} kWh/m2 per year`}
+                />
+            </Paper>
+        )
+
     }
 
     return (
@@ -583,6 +683,7 @@ const ACSection = ({ control, getValues }) => {
                 <Stack direction="column" spacing={2}>
                     <Box sx={{ fontSize: 16, fontWeight: "bold" }}>BSL Heat Load Table</Box>
                     <HeatLoadTable />
+                    <TotalACEnergyConsumption />
                 </Stack>
 
             }
@@ -590,7 +691,7 @@ const ACSection = ({ control, getValues }) => {
     )
 }
 
-const AppliancesSection = ({control, getValues}) => {
+const AppliancesSection = ({ control, getValues, setValue }) => {
     const sectionName = "thirdForm.c_appliances"
 
     const { fields, append, remove } = useFieldArray({
@@ -601,7 +702,7 @@ const AppliancesSection = ({control, getValues}) => {
 
     // CALCULATED COMPONENTS
 
-    const ApplianceConsumption = ({index}) => {
+    const ApplianceConsumption = ({ index }) => {
         const watchValues = useWatch({
             control,
             name: `${sectionName}`,
@@ -624,9 +725,9 @@ const AppliancesSection = ({control, getValues}) => {
         }
 
         return <InlineLabel
-        title="Energy Consumption"
-        value={result+ " kWh/m2 per year"}
-    />
+            title="Energy Consumption"
+            value={result + " kWh/m2 per year"}
+        />
     }
 
     const TotalApplianceConsumption = () => {
@@ -636,15 +737,21 @@ const AppliancesSection = ({control, getValues}) => {
             defaultValue: fields
         })
 
-        var result = 
-        totalAppliances.reduce(function(sum, item) {
-            return sum + item;
-        }, 0)
+        var result =
+            totalAppliances.reduce(function (sum, item) {
+                return sum + item;
+            }, 0)
 
-        return <InlineLabel
-        title="Total Appliance Energy Consumption"
-        value={result + " kWh/m2 per year"}
-    />
+        setValue("thirdForm.total.appliances", result)
+
+        return (
+            <Paper sx={{ paddingX: 2, paddingY: 1, backgroundColor: "green", color: "white" }}>
+                <InlineLabel
+                    title="Total Appliance Energy Consumption"
+                    value={result + " kWh/m2 per year"}
+                />
+            </Paper>
+        )
     }
 
     return (
@@ -652,7 +759,7 @@ const AppliancesSection = ({control, getValues}) => {
             leftComponent={
                 <Stack direction="column" spacing={2}>
                     <Stack direction="row" justifyContent="space-between" >
-                        <Box sx={{ fontSize: 24, fontWeight: "bold" }}>APPLIANCES</Box>
+                        <Box sx={{ fontSize: 24, fontWeight: "bold" }}>Appliances</Box>
                         <Button variant="contained" onClick={() => {
                             append(defaultAppliancesValue())
                         }}>
@@ -699,7 +806,7 @@ const AppliancesSection = ({control, getValues}) => {
                                                 control={control}
                                                 title="Watt"
                                             />
-                                            <ApplianceConsumption index={index}/>
+                                            <ApplianceConsumption index={index} />
                                         </Stack>
 
                                     </AccordionDetails>
@@ -717,7 +824,408 @@ const AppliancesSection = ({control, getValues}) => {
             }
         />
     );
+}
 
+const UtilitySection = ({ control, getValues, setValue }) => {
+    const sectionName = "thirdForm.c_utilities"
+
+    var totalUtilityConsumptionArr = [0, 0, 0, 0, 0]
+
+    const LiftEscalatorConsumption = () => {
+        const watchValues = useWatch({
+            control,
+            name: `${sectionName}`
+        })
+        const gfa = getValues("firstForm.a_gfa")
+        const operationalHours = getValues("firstForm.a_operational_hours")
+        const watt = watchValues[0].watt
+        const amount = watchValues[0].amount
+        const capacity = watchValues[0].lift_capacity
+        const velocity = watchValues[0].lift_velocity
+        var result = "-"
+
+        if (gfa && operationalHours && watt && amount && capacity && velocity) {
+            result = calcLiftConsumption(gfa, operationalHours, watt, amount, capacity, velocity)
+            totalUtilityConsumptionArr[0] = result
+        }
+
+        return <InlineLabel
+            title="Energy Consumption"
+            value={result + " kWh/m2 per year"}
+            bold
+        />
+    }
+
+    const UtilityComponentsConsumption = ({ index }) => {
+        const watchValues = useWatch({
+            control,
+            name: `${sectionName}`
+        })
+        const gfa = getValues("firstForm.a_gfa")
+        const operationalHours = getValues("firstForm.a_operational_hours")
+        const watt = watchValues[index].watt
+        const amount = watchValues[index].amount
+        var result = "-"
+
+        if (gfa && operationalHours && watt && amount) {
+            result = calcUtilityConsumption(gfa, operationalHours, watt, amount)
+            totalUtilityConsumptionArr[index] = result
+        }
+
+        console.log(totalUtilityConsumptionArr)
+
+        return <InlineLabel
+            title="Energy Consumption"
+            value={result + " kWh/m2 per year"}
+            bold
+        />
+    }
+
+    const TotalUtilityEnergyConsumption = () => {
+        const watchValues = useWatch({
+            control,
+            name: `${sectionName}`
+        })
+
+        var result = "-"
+        result = totalUtilityConsumptionArr.reduce((a, v) => a + v)
+        setValue("thirdForm.total.utility", result)
+        if (result === 0) {
+            result = "-"
+        }
+
+        return (<Paper sx={{ paddingX: 2, paddingY: 1, backgroundColor: "green", color: "white" }}>
+            <InlineLabel
+                title="Total Utility Energy Consumption"
+                value={result + " kWh/m2 per year"}
+            />
+        </Paper>)
+    }
+
+    return (
+        <FormLayout
+            leftComponent={
+                <Stack direction="column" spacing={2} >
+                    <Box sx={{ fontSize: 24, fontWeight: "bold" }}>Utility</Box>
+                    <Box sx={{ fontSize: 16, fontWeight: "bold" }}>Lift and Escalator</Box>
+                    <Paper variant="outlined" sx={{ padding: 2 }}>
+                        <Stack spacing={1} direction="column">
+                            <Box sx={{ fontSize: 14, fontWeight: "bold", color: "text.secondary" }}>LIFT</Box>
+
+                            <Stack spacing={2} direction="row">
+                                <Box width="50%">
+                                    <SideInput
+                                        name={`${sectionName}.0.amount`}
+                                        control={control}
+                                        title="Numbers of Lift"
+                                    />
+                                </Box>
+                                <Box width="50%">
+                                    <SideInput
+                                        name={`${sectionName}.0.watt`}
+                                        control={control}
+                                        title="Power Factor"
+                                        subtitle="Refer to table below"
+                                    />
+                                </Box>
+                            </Stack>
+                            <Stack spacing={2} direction="row">
+                                <Box width="50%">
+                                    <SideInput
+                                        name={`${sectionName}.0.lift_capacity`}
+                                        control={control}
+                                        title="Lift Capacity"
+                                    />
+                                </Box>
+                                <Box width="50%">
+                                    <SideInput
+                                        name={`${sectionName}.0.lift_velocity`}
+                                        control={control}
+                                        title="Lift Velocity"
+                                    />
+                                </Box>
+                            </Stack>
+                            <Divider style={{ width: "100%" }} />
+
+                            <LiftEscalatorConsumption />
+                        </Stack>
+                    </Paper>
+
+                    <Paper variant="outlined" sx={{ padding: 2 }}>
+                        <Stack spacing={1} direction="column">
+                            <Box sx={{ fontSize: 14, fontWeight: "bold", color: "text.secondary" }}>ESCALATOR</Box>
+                            <Stack spacing={2} direction="row">
+                                <Box width="50%">
+                                    <SideInput
+                                        name={`${sectionName}.1.amount`}
+                                        control={control}
+                                        title="Amount"
+                                    />
+                                </Box>
+                                <Box width="50%">
+
+                                    <SideInput
+                                        name={`${sectionName}.1.watt`}
+                                        control={control}
+                                        title="Power"
+                                    />
+                                </Box>
+                            </Stack>
+                            <Divider style={{ width: "100%" }} />
+                            <UtilityComponentsConsumption index={1} />
+                        </Stack>
+                    </Paper>
+
+                    <Divider style={{ width: "100%" }} />
+
+                    <Box sx={{ fontSize: 16, fontWeight: "bold" }}>Lift Power Factor Reference Table</Box>
+                    <PowerFactorTable />
+                </Stack>
+            }
+            rightComponent={
+                <Stack direction="column" spacing={2}>
+                    <Box sx={{ fontSize: 16, fontWeight: "bold" }}>Pump and STP</Box>
+
+                    <Paper variant="outlined" sx={{ padding: 2 }}>
+                        <Stack spacing={1} direction="column">
+                            <Box sx={{ fontSize: 14, fontWeight: "bold", color: "text.secondary" }}>PUMP</Box>
+                            <Stack spacing={2} direction="row">
+                                <Box width="50%">
+                                    <SideInput
+                                        name={`${sectionName}.2.amount`}
+                                        control={control}
+                                        title="Amount"
+                                    />
+                                </Box>
+                                <Box width="50%">
+                                    <SideInput
+                                        name={`${sectionName}.2.watt`}
+                                        control={control}
+                                        title="Power Density"
+                                    />
+                                </Box>
+                            </Stack>
+                            <Divider style={{ width: "100%" }} />
+                            <UtilityComponentsConsumption index={2} />
+                        </Stack>
+                    </Paper>
+                    <Paper variant="outlined" sx={{ padding: 2 }}>
+                        <Stack spacing={1} direction="column">
+                            <Box sx={{ fontSize: 14, fontWeight: "bold", color: "text.secondary" }}>STP</Box>
+                            <Stack spacing={2} direction="row">
+                                <Box width="50%">
+                                    <SideInput
+                                        name={`${sectionName}.3.amount`}
+                                        control={control}
+                                        title="Amount"
+                                    />
+                                </Box>
+                                <Box width="50%">
+                                    <SideInput
+                                        name={`${sectionName}.3.watt`}
+                                        control={control}
+                                        title="Power Density"
+                                    />
+                                </Box>
+                            </Stack>
+                            <Divider style={{ width: "100%" }} />
+                            <UtilityComponentsConsumption index={3} />
+                        </Stack>
+                    </Paper>
+
+                    <Divider style={{ width: "100%" }} />
+
+                    <Box sx={{ fontSize: 16, fontWeight: "bold" }}>Mechanical Ventilation</Box>
+
+                    <Paper variant="outlined" sx={{ padding: 2 }}>
+                        <Stack spacing={1} direction="column">
+                            <SideInput
+                                name={`${sectionName}.4.amount`}
+                                control={control}
+                                title="Amount"
+                            />
+                            <Box sx={{ fontSize: 14, fontWeight: "bold", color: "text.secondary" }}>MV SPECIFICATION</Box>
+                            <Stack spacing={2} direction="row" >
+                                <Box width="50%">
+                                    <SideInput
+                                        name={`${sectionName}.4.watt`}
+                                        control={control}
+                                        title="MV power"
+                                        subtitle="MV power baseline is 5 W/m2"
+                                    />
+                                </Box>
+                                <Box width="50%">
+                                    <SideInput
+                                        name={`${sectionName}.4.mv_flow_rate`}
+                                        control={control}
+                                        title="MV flow rate"
+                                    />
+                                </Box>
+                            </Stack>
+                            <Divider style={{ width: "100%" }} />
+                            <UtilityComponentsConsumption index={4} />
+                        </Stack>
+                    </Paper>
+                    <TotalUtilityEnergyConsumption />
+                </Stack>
+            }
+        />
+    )
+}
+
+const PlugSection = ({ control, getValues, setValue }) => {
+    const sectionName = "thirdForm.c_plug"
+
+    var totalPlugEnergy = { acHours: 0, nonAcHours: 0 }
+
+    const PlugEnergyAC = () => {
+        const watchValues = useWatch({
+            control,
+            name: `${sectionName}`
+        })
+        const gfa = getValues("firstForm.a_gfa")
+        const operationalHours = getValues("firstForm.a_operational_hours")
+        const operatingPower = watchValues.operating_power
+
+        var result = "-"
+        if (gfa && operationalHours && operatingPower) {
+            result = calcPlugEnergyAC(gfa, operationalHours, operatingPower)
+            totalPlugEnergy.acHours = result
+        }
+
+        return <InlineLabel
+            title="Plug energy during AC hours"
+            value={result + " kWh/year"}
+        />
+    }
+
+    const PlugEnergyNonAC = () => {
+        const watchValues = useWatch({
+            control,
+            name: `${sectionName}`
+        })
+        const gfa = getValues("firstForm.a_gfa")
+        const operationalHours = getValues("firstForm.a_operational_hours")
+        const nonOperatingPower = watchValues.nonoperating_power
+
+        var result = "-"
+        if (gfa && operationalHours && nonOperatingPower) {
+            result = calcPlugEnergyNonAC(gfa, operationalHours, nonOperatingPower)
+            totalPlugEnergy.nonAcHours = result
+        }
+
+        return <InlineLabel
+            title="Plug energy during non-AC hours"
+            value={result + " kWh/year"}
+        />
+    }
+
+    const TotalPlugEnergyConsumption = () => {
+        const watchValues = useWatch({
+            control,
+            name: `${sectionName}`
+        })
+        const gfa = getValues("firstForm.a_gfa")
+        const plugEnergyAC = totalPlugEnergy.acHours
+        const plugEnergyNonAC = totalPlugEnergy.nonAcHours
+
+        var result = "-"
+        if (gfa && plugEnergyAC && plugEnergyNonAC) {
+            result = calcPlugConsumption(gfa, plugEnergyAC, plugEnergyNonAC)
+            setValue("thirdForm.total.plug", result)
+        }
+
+        return (<Paper sx={{ paddingX: 2, paddingY: 1, backgroundColor: "green", color: "white" }}>
+            <InlineLabel
+                title="Total Plug Energy Consumption"
+                value={result + " kWh/m2 per year"}
+            />
+        </Paper>)
+    }
+
+    return (
+        <FormLayout
+            leftComponent={
+                <Stack direction="column" spacing={2}>
+                    <Box sx={{ fontSize: 24, fontWeight: "bold" }}>Plug</Box>
+                    <SideInput
+                        name={`${sectionName}.operating_power`}
+                        control={control}
+                        title="Plug power density during operating hours"
+                    />
+                    <SideInput
+                        name={`${sectionName}.nonoperating_power`}
+                        control={control}
+                        title="Plug power density during non-operating hours"
+                    />
+                    <PlugEnergyAC />
+                    <PlugEnergyNonAC />
+                </Stack>
+            }
+            rightComponent={
+                <Stack direction="column" spacing={2}>
+                    <TotalPlugEnergyConsumption />
+                </Stack>
+            }
+        />
+    )
+}
+
+const TotalSection = ({ control }) => {
+
+    const watchValues = useWatch({
+        control,
+        name: `thirdForm.total`
+    })
+
+    const DesignEnergyConsumption = () => {
+        var result = watchValues.lighting + watchValues.ac + watchValues.appliances + watchValues.utility + watchValues.plug
+        if (result === 0) {
+            result = "-"
+        }
+
+        return (<Paper sx={{ paddingX: 2, paddingY: 1, backgroundColor: "green", color: "white" }}>
+            <InlineLabel
+                title="Design Energy Consumption"
+                value={result + " kWh/m2 per year"}
+            />
+        </Paper>)
+    }
+
+    return (
+        <FormLayout
+        leftComponent= {
+                <Stack
+                    direction="row"
+                    divider={<Divider orientation="vertical" flexItem />}
+                    spacing={4} justifyContent="center"
+                >
+                    <Stack direction="column" spacing={0} alignItems="center">
+                        <Box sx={{ fontSize: 14, fontWeight: "bold", color: "text.secondary" }}>LIGHTING</Box>
+                        <Box sx={{ fontSize: 20, fontWeight: "bold" }}>{watchValues.lighting}</Box>
+                    </Stack>
+                    <Stack direction="column" spacing={0} alignItems="center">
+                        <Box sx={{ fontSize: 14, fontWeight: "bold", color: "text.secondary" }}>AC</Box>
+                        <Box sx={{ fontSize: 20, fontWeight: "bold" }}>{watchValues.ac}</Box>
+                    </Stack>
+                    <Stack direction="column" spacing={0} alignItems="center">
+                        <Box sx={{ fontSize: 14, fontWeight: "bold", color: "text.secondary" }}>APPLIANCES</Box>
+                        <Box sx={{ fontSize: 20, fontWeight: "bold" }}>{watchValues.appliances}</Box>
+                    </Stack>
+                    <Stack direction="column" spacing={0} alignItems="center">
+                        <Box sx={{ fontSize: 14, fontWeight: "bold", color: "text.secondary" }}>UTILITY</Box>
+                        <Box sx={{ fontSize: 20, fontWeight: "bold" }}>{watchValues.utility}</Box>
+                    </Stack>
+                    <Stack direction="column" spacing={0} alignItems="center">
+                        <Box sx={{ fontSize: 14, fontWeight: "bold", color: "text.secondary" }}>PLUG</Box>
+                        <Box sx={{ fontSize: 20, fontWeight: "bold" }}>{watchValues.plug}</Box>
+                    </Stack>
+                </Stack>
+        } rightComponent= {
+            <DesignEnergyConsumption />
+        }
+        />
+    )
 }
 
 const LpdReferenceTable = ({ control }) => {
@@ -726,48 +1234,47 @@ const LpdReferenceTable = ({ control }) => {
         name: "thirdForm.lpd_option.type",
     });
 
-function children() {
-    if (type) {
-      const temp = lpdReference.find((e) => e.type === type);
-      return temp.children;
+    function children() {
+        if (type) {
+            const temp = lpdReference.find((e) => e.type === type);
+            return temp.children;
+        }
     }
-  }
 
-  if (type) {
-    return (
-      <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
-          <TableHead sx={{ backgroundColor: "orange" }}>
-            <TableRow>
-              <TableCell>Room Function</TableCell>
-              <TableCell align="right">Maximum Lighting Power (W/m2)</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {children().map((row, index) => (
-              <TableRow
-                key={index}
-                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-              >
-                <TableCell component="th" scope="row">
-                  {row.room}
-                </TableCell>
-                <TableCell align="right">{row.value}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    );
-  }
-  return <></>;
-
+    if (type) {
+        return (
+            <TableContainer component={Paper}>
+                <Table size="small" aria-label="a dense table">
+                    <TableHead sx={{ backgroundColor: "orange" }}>
+                        <TableRow>
+                            <TableCell>Room Function</TableCell>
+                            <TableCell align="right">Maximum Lighting Power (W/m2)</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {children().map((row, index) => (
+                            <TableRow
+                                key={index}
+                                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                            >
+                                <TableCell component="th" scope="row">
+                                    {row.room}
+                                </TableCell>
+                                <TableCell align="right">{row.value}</TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+        );
+    }
+    return <></>;
 }
 
 const HeatLoadTable = () => {
     return (
         <TableContainer component={Paper}>
-            <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
+            <Table size="small" aria-label="a dense table">
                 <TableHead sx={{ backgroundColor: "orange" }}>
                     <TableRow>
                         <TableCell>Window</TableCell>
@@ -808,5 +1315,62 @@ const HeatLoadTable = () => {
                 </TableBody>
             </Table>
         </TableContainer>
+    );
+};
+
+const PowerFactorTable = () => {
+    return (
+        <Stack direction="row" spacing={2}>
+            <TableContainer component={Paper} >
+                <Table size="small" aria-label="a dense table">
+                    <TableHead sx={{ backgroundColor: "orange" }}>
+                        <TableRow>
+                            <TableCell>Lift Number</TableCell>
+                            <TableCell align="right">Power Factor</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {[...Array(5)].map((element, i) => (
+                            <TableRow
+                                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                            >
+                                <TableCell component="th" scope="row">
+                                    {powerFactor[i].number}
+                                </TableCell>
+                                <TableCell align="right">{powerFactor[i].power}</TableCell>
+                            </TableRow>
+                        ))}
+
+                    </TableBody>
+                </Table>
+
+            </TableContainer>
+            <TableContainer component={Paper}>
+                <Table size="small" aria-label="a dense table">
+                    <TableHead sx={{ backgroundColor: "orange" }}>
+                        <TableRow>
+                            <TableCell>Lift Number</TableCell>
+                            <TableCell align="right">Power Factor</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {[...Array(5)].map((element, i) => (
+                            <TableRow
+                                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                            >
+                                <TableCell component="th" scope="row">
+                                    {powerFactor[i + 5].number}
+                                </TableCell>
+                                <TableCell align="right">{powerFactor[i + 5].power}</TableCell>
+                            </TableRow>
+                        ))}
+
+                    </TableBody>
+                </Table>
+
+            </TableContainer>
+
+        </Stack>
+
     );
 };

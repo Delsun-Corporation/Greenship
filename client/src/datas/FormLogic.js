@@ -33,6 +33,11 @@ function sumValue(array) {
     return sum
 }
 
+/// 3a
+export function calcLightingEnergyConsumption(leOperationalDay, leOperationalNonDay, leNonOperational, gfa) {
+    return Math.ceil((leOperationalDay + leOperationalNonDay + leNonOperational)/gfa)
+}
+
 /// 3a2
 export function calcNonDaylightArea(gfa, daylightArea) {
     return Math.ceil(gfa - daylightArea)
@@ -94,4 +99,26 @@ export function convertCoolingLoad(coolingLoad, operationalHours, workingDays, g
 /// 3c
 export function calcApplianceConsumption(amount, watt, operationalHours) {
     return Math.ceil(amount * watt * operationalHours)
+}
+
+/// 3d
+export function calcLiftConsumption(gfa, operationalHours, watt, amount, capacity, velocity) {
+    return Math.ceil(0.2 * watt * amount * ((0.75 * capacity * velocity) / 75) * 0.746 * operationalHours / gfa)
+}
+
+export function calcUtilityConsumption(gfa, operationalHours, watt, amount) {
+    return Math.ceil(watt * amount * operationalHours / gfa)
+}
+
+/// 3e
+export function calcPlugEnergyAC(gfa, operationalHours, operatingPower) {
+    return Math.ceil(operatingPower * operationalHours * gfa)
+}
+
+export function calcPlugEnergyNonAC(gfa, operationalHours, nonOperatingPower) {
+    return Math.ceil(nonOperatingPower * (24 - operationalHours) * gfa)
+}
+
+export function calcPlugConsumption(gfa, plugEnergyAC, plugEnergyNonAC) {
+    return Math.ceil((plugEnergyAC + plugEnergyNonAC) / gfa)
 }

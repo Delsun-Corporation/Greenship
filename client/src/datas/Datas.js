@@ -250,3 +250,16 @@ export const heatLoad = [
         ]
     }
 ]
+
+export const powerFactor = [
+    { number: 2, power: 0.85 },
+    { number: 3, power: 0.77 },
+    { number: 4, power: 0.72 },
+    { number: 5, power: 0.67 },
+    { number: 6, power: 0.63 },
+    { number: 7, power: 0.59 },
+    { number: 10, power: 0.52 },
+    { number: 15, power: 0.44 },
+    { number: 20, power: 0.40 },
+    { number: 25, power: 0.35 }
+]
