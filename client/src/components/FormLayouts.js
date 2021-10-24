@@ -110,42 +110,41 @@ export const FormFooter = ({ chapter, shouldRedirect, setFromNextButton }) => (
   /// Need logic for last page
 );
 
-export function SideInput({ control, name, title, subtitle, defaultValue, minimalInput }) {
-  const {
-    field: { ref, value, ...inputProps },
-    fieldState: { invalid, isTouched, isDirty },
-    formState: { touchedFields, dirtyFields },
-  } = useController({
-    name,
-    control,
-  });
+export function SideInput({ control, name, title, subtitle, defaultValue, isString, minimalInput }) {
+    const {
+        field: { ref, value, ...inputProps },
+        fieldState: { invalid, isTouched, isDirty },
+        formState: { touchedFields, dirtyFields }
+    } = useController({
+        name,
+        control
+    });
 
-  return (
-    <Stack
-      direction="row"
-      alignItems="center"
-      justifyContent="space-between"
-      spacing={2}
-      minHeight={40}
-    >
-      <Stack direction="column">
-        <Typography variant="body1">{title}</Typography>
-        {subtitle && (
-          <Typography variant="caption" color="text.secondary">
-            {subtitle}
-          </Typography>
-        )}
-      </Stack>
-      <TextField
-        {...inputProps}
-        value={value || defaultValue}
-        inputProps={{ min: minimalInput, style: { textAlign: "right" } }}
-        variant="outlined"
-        size="small"
-        type="number"
-      />
-    </Stack>
-  );
+    return (
+        <Stack direction="row" alignItems="center" justifyContent="space-between"
+            spacing={2} minHeight={40}>
+            <Stack direction="column">
+                <Typography variant="body1">
+                    {title}
+                </Typography>
+                {subtitle &&
+                    <Typography variant="caption" color="text.secondary">
+                        {subtitle}
+                    </Typography>
+                }
+            </Stack>
+            <TextField {...inputProps}
+                value={value || defaultValue}
+                inputProps={{ min: minimalInput, style: { textAlign: 'right' } }}
+                variant="outlined"
+                size="small"
+                type={isString ? "text" : "number"}
+                sx = {{
+                  maxWidth: "40%"
+                }}
+                />
+        </Stack>
+    )
 }
 
 export function BlockInput({
@@ -239,7 +238,7 @@ export function SelectInput({
   );
 }
 
-export function InlineLabel({ title, subtitle, value }) {
+export function InlineLabel({ title, subtitle, value, bold }) {
   return (
     <Stack
       direction="row"
@@ -249,14 +248,15 @@ export function InlineLabel({ title, subtitle, value }) {
       minHeight={40}
     >
       <Stack direction="column">
-        <Typography variant="body1">{title}</Typography>
+        { bold && <Box sx={{ fontSize: 16, fontWeight: "bold" }}>{title}</Box>}
+        {!bold && <Typography variant="body1">{title}</Typography>}
         {subtitle && (
           <Typography variant="caption" color="text.secondary">
             {subtitle}
           </Typography>
         )}
       </Stack>
-      <Box sx={{ fontWeight: "bold" }}>{value ? value : "-"}</Box>
+      <Box sx={{ fontWeight: "bold", textAlign: "right" }}>{value ? value : "-"}</Box>
     </Stack>
   );
 }
