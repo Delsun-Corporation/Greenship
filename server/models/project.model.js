@@ -103,11 +103,11 @@ const projectSchema = new Schema(
     },
     b_window_area: {
       type: [Number],
-      default: [],
+      default: [0, 0, 0, 0, 0, 0, 0, 0],
     },
     b_wall_area: {
       type: [Number],
-      default: 0,
+      default: [0, 0, 0, 0, 0],
     },
     c_lighting: {
       items: [
@@ -305,6 +305,32 @@ const projectSchema = new Schema(
     last_page: {
       type: Number,
       default: 1
+    },
+    total_dec: {
+      items: [
+        {
+          lighting: {
+            type: Number,
+            default: 0
+          },
+          ac: {
+            type: Number,
+            default: 0
+          },
+          appliances: {
+            type: Number,
+            default: 0
+          },
+          utility: {
+            type: Number,
+            default: 0
+          },
+          plug: {
+            type: Number,
+            default: 0
+          }
+        }
+      ]
     }
   }
 );
