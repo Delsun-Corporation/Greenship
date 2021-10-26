@@ -58,7 +58,7 @@ const ThirdForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
         const newData = {
             thirdForm: data.thirdForm
         }
-
+        console.log("DATA", data)
         if (isFromNextButton) {
             onceSubmitted(newData, '4');
         } else {
@@ -77,9 +77,22 @@ const ThirdForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
             const pageThreeData = res.data.page_three;
             const pageTwoData = res.data.page_two;
             const pageOneData = res.data.page_one;
-            console.log(pageThreeData);
-            console.log(pageTwoData);
-            console.log(pageOneData);
+            console.log("page 3", pageThreeData);
+            console.log("page 2",pageTwoData);
+            console.log("page 1",pageOneData);
+            setValue("firstForm", {
+                ...pageOneData
+            })
+            setValue("secondForm", {
+                ...pageTwoData
+            })
+            setValue("thirdForm", {
+                ...pageThreeData,
+                c_lighting: (pageThreeData.c_lighting.items.length === 0 ? [defaultLightingValue()] : pageThreeData.c_lighting.items),
+                c_appliances: (pageThreeData.c_appliances.items.length === 0 ? [defaultAppliancesValue()] : pageThreeData.c_appliances.items),
+                c_utility: (pageThreeData.c_utility.items.length === 0 ? defaultUtilityValue() : pageThreeData.c_utility.items),
+            })
+            setLoading(false);
           })
           .catch((err) => {
             console.log(err);
@@ -98,6 +111,7 @@ const ThirdForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
                     shouldRedirect={shouldRedirect}
                     chapter={CHAPTER_NUMBER}
                 />
+                {!isLoading && (<>
                 <LightingSection control={control} getValues={getValues} setValue={setValue} />
                 <ACSection control={control} getValues={getValues} setValue={setValue} />
                 <AppliancesSection control={control} getValues={getValues} setValue={setValue} />
@@ -105,6 +119,8 @@ const ThirdForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
                 <PlugSection control={control} getValues={getValues} setValue={setValue} />
                 <TotalSection control={control} />
                 <FormFooter chapter={CHAPTER_NUMBER} setFromNextButton={setIsFromNextButton} />
+                </>
+        )}
             </Stack>
 
         </form>
@@ -136,9 +152,9 @@ function defaultFormValue() {
                 c_lighting: [defaultLightingValue()],
                 c_ac: defaultACValue(),
                 c_appliances: [defaultAppliancesValue()],
-                c_utilities: defaultUtilityValue(),
+                c_utility: defaultUtilityValue(),
                 c_plug: defaultPlugValue(),
-                total: defaultTotalEnergyConsumption()
+                total_dec: defaultTotalEnergyConsumption()
             }
         }
     )
@@ -246,7 +262,7 @@ const LightingSection = ({ control, getValues, setValue }) => {
         })
         const gfa = getValues(`firstForm.a_gfa`)
         const daylightArea = watchValues[index].daylight_area
-        var result = NaN
+        var result = "-"
         if (gfa && daylightArea) {
             result = calcNonDaylightArea(gfa, daylightArea)
         }
@@ -265,7 +281,7 @@ const LightingSection = ({ control, getValues, setValue }) => {
         const daylightArea = watchValues[index].daylight_area
         const lpdOperational = watchValues[index].lpd_operate
         const operationalHours = getValues("firstForm.a_operational_hours")
-        var result = NaN
+        var result = "-"
         if (daylightArea && lpdOperational && operationalHours) {
             result = calcLeDuringOperationalDay(daylightArea, lpdOperational, operationalHours)
         }
@@ -275,8 +291,6 @@ const LightingSection = ({ control, getValues, setValue }) => {
         } else {
             totalLeArr.leOperationalDay[index] = result
         }
-
-        console.log("LE", totalLeArr)
 
         return <InlineLabel
             title="LE during operational hours daylight area"
@@ -294,7 +308,7 @@ const LightingSection = ({ control, getValues, setValue }) => {
         const daylightArea = watchValues[index].daylight_area
         const lpdOperational = watchValues[index].lpd_operate
         const operationalHours = getValues("firstForm.a_operational_hours")
-        var result = NaN
+        var result = "-"
         if (gfa && daylightArea && lpdOperational && operationalHours) {
             result = calcLeDuringOperationalNonDay(gfa, daylightArea, lpdOperational, operationalHours)
         }
@@ -323,7 +337,7 @@ const LightingSection = ({ control, getValues, setValue }) => {
         const holidays = getValues("firstForm.a_holidays")
         const lpdNonOperational = watchValues[index].lpd_nonoperate
 
-        var result = NaN
+        var result = "-"
         if (gfa && operationalHours && workingDays && holidays && lpdNonOperational) {
             result = calcLeDuringNonOperational(gfa, operationalHours, workingDays, holidays, lpdNonOperational)
         }
@@ -383,13 +397,20 @@ const LightingSection = ({ control, getValues, setValue }) => {
             totalLeArr.energyConsumption.reduce(function (sum, item) {
                 return sum + item;
             }, 0)
+        
+        var output = "-"
+        var valueWillSet = result
+        if (result === NaN) { 
+            output = "-" 
+            valueWillSet = 0
+        }
 
-        setValue("thirdForm.total.lighting", result)
+        setValue("thirdForm.total_dec.lighting", valueWillSet)
 
         return (<Paper sx={{ paddingX: 2, paddingY: 1, backgroundColor: "green", color: "white" }}>
             <InlineLabel
                 title="Total Lighting Energy Consumption"
-                value={`${result} kWh/m2 per year`}
+                value={`${output} kWh/m2 per year`}
                 bold
             />
         </Paper>
@@ -521,7 +542,7 @@ const ACSection = ({ control, getValues, setValue }) => {
         }).load
         const toTi = watchValues.to_ti
 
-        var result = NaN
+        var result = "-"
         if (windowAreas && wallAreas && toTi && windowAreas.length === 8 && wallAreas.length === 5) {
             result = calcBSL(windowAreas, wallAreas, windowHeatLoad, wallHeatLoad, toTi)
         }
@@ -539,7 +560,7 @@ const ACSection = ({ control, getValues, setValue }) => {
     const PSL = () => {
         const gfa = getValues("firstForm.a_gfa")
         const occupancyDensity = getValues("firstForm.a_occupancy_density")
-        var result = NaN
+        var result = "-"
         if (gfa && occupancyDensity) {
             result = calcPSL(gfa, occupancyDensity)
         }
@@ -557,7 +578,7 @@ const ACSection = ({ control, getValues, setValue }) => {
     const PLL = () => {
         const gfa = getValues("firstForm.a_gfa")
         const occupancyDensity = getValues("firstForm.a_occupancy_density")
-        var result = NaN
+        var result = "-"
         if (gfa && occupancyDensity) {
             result = calcPLL(gfa, occupancyDensity)
         }
@@ -585,7 +606,7 @@ const ACSection = ({ control, getValues, setValue }) => {
             return total + item.lpd_nonoperate
         }, 0)
 
-        var result = NaN
+        var result = "-"
         if (gfa && totalLpdOperational && totalLpdNonOperational) {
             result = calcLSL(gfa, totalLpdOperational, totalLpdNonOperational)
         }
@@ -605,7 +626,7 @@ const ACSection = ({ control, getValues, setValue }) => {
         const gfa = getValues("firstForm.a_gfa")
         const floorCount = getValues("firstForm.a_floor_count")
         const floorHeightAvg = getValues("firstForm.a_floor_height_avg")
-        var result = NaN
+        var result = "-"
         if (ach && gfa && floorCount && floorHeightAvg) {
             result = calcCFM1(ach, gfa, floorCount, floorHeightAvg)
         }
@@ -630,7 +651,7 @@ const ACSection = ({ control, getValues, setValue }) => {
         const floorCount = getValues("firstForm.a_floor_count")
         const floorHeightAvg = getValues("firstForm.a_floor_height_avg")
         const toTi = watchValues.to_ti
-        var result = NaN
+        var result = "-"
         if (toTi && ach && gfa && floorCount && floorHeightAvg) {
             result = calcCFM2(toTi, ach, gfa, floorCount, floorHeightAvg)
         }
@@ -651,11 +672,14 @@ const ACSection = ({ control, getValues, setValue }) => {
             name: `${sectionName}`,
         })
         var result = components.BSL + components.CFM1 + components.CFM2 + components.LSL + components.PLL + components.PSL
+        
+        var output = "-"
+        if (result === NaN) { output = "-" }
 
         return <InlineLabel
             title="Cooling Load"
             subtitle="BSL + PSL + PLL + LSL + CFM1 + CFM2"
-            value={`${result} BTU`}
+            value={`${output} BTU`}
             bold
         />
     }
@@ -669,17 +693,19 @@ const ACSection = ({ control, getValues, setValue }) => {
         const workingDays = getValues("firstForm.a_working_days")
         const operationalHours = getValues("firstForm.a_operational_hours")
         var result = components.BSL + components.CFM1 + components.CFM2 + components.LSL + components.PLL + components.PSL
-        var converted = NaN
         if (result && operationalHours && workingDays && gfa) {
-            converted = convertCoolingLoad(result, operationalHours, workingDays, gfa)
-            setValue("thirdForm.total.ac", converted)
+            result = convertCoolingLoad(result, operationalHours, workingDays, gfa)
+            setValue("thirdForm.total_dec.ac", result)
         }
+
+        var output = "-"
+        if (result === NaN) { output = "-" }
 
         return (
             <Paper sx={{ paddingX: 2, paddingY: 1, backgroundColor: "green", color: "white" }}>
                 <InlineLabel
                     title="Total AC Energy Consumption"
-                    value={`${converted} kWh/m2 per year`}
+                    value={`${output} kWh/m2 per year`}
                 />
             </Paper>
         )
@@ -741,7 +767,7 @@ const AppliancesSection = ({ control, getValues, setValue }) => {
         const watt = watchValues[index].watt
         const operationalHours = getValues("firstForm.a_operational_hours")
 
-        var result = NaN
+        var result = 0
         if (amount && watt && operationalHours) {
             result = calcApplianceConsumption(amount, watt, operationalHours)
         }
@@ -752,9 +778,12 @@ const AppliancesSection = ({ control, getValues, setValue }) => {
             totalAppliances[index] = result
         }
 
+        var output = "-"
+        if (result === NaN) { output = "-" }
+
         return <InlineLabel
             title="Energy Consumption"
-            value={result + " kWh/m2 per year"}
+            value={output + " kWh/m2 per year"}
         />
     }
 
@@ -770,13 +799,16 @@ const AppliancesSection = ({ control, getValues, setValue }) => {
                 return sum + item;
             }, 0)
 
-        setValue("thirdForm.total.appliances", result)
+        setValue("thirdForm.total_dec.appliances", result)
+
+        var output = "-"
+        if (result === NaN) { output = "-" }
 
         return (
             <Paper sx={{ paddingX: 2, paddingY: 1, backgroundColor: "green", color: "white" }}>
                 <InlineLabel
                     title="Total Appliance Energy Consumption"
-                    value={result + " kWh/m2 per year"}
+                    value={output + " kWh/m2 per year"}
                 />
             </Paper>
         )
@@ -855,7 +887,7 @@ const AppliancesSection = ({ control, getValues, setValue }) => {
 }
 
 const UtilitySection = ({ control, getValues, setValue }) => {
-    const sectionName = "thirdForm.c_utilities"
+    const sectionName = "thirdForm.c_utility"
 
     var totalUtilityConsumptionArr = [0, 0, 0, 0, 0]
 
@@ -877,9 +909,12 @@ const UtilitySection = ({ control, getValues, setValue }) => {
             totalUtilityConsumptionArr[0] = result
         }
 
+        var output = "-"
+        if (result === NaN) { output = "-" }
+
         return <InlineLabel
             title="Energy Consumption"
-            value={result + " kWh/m2 per year"}
+            value={output + " kWh/m2 per year"}
             bold
         />
     }
@@ -900,8 +935,6 @@ const UtilitySection = ({ control, getValues, setValue }) => {
             totalUtilityConsumptionArr[index] = result
         }
 
-        console.log(totalUtilityConsumptionArr)
-
         return <InlineLabel
             title="Energy Consumption"
             value={result + " kWh/m2 per year"}
@@ -917,7 +950,7 @@ const UtilitySection = ({ control, getValues, setValue }) => {
 
         var result = "-"
         result = totalUtilityConsumptionArr.reduce((a, v) => a + v)
-        setValue("thirdForm.total.utility", result)
+        setValue("thirdForm.total_dec.utility", result)
         if (result === 0) {
             result = "-"
         }
@@ -1160,7 +1193,7 @@ const PlugSection = ({ control, getValues, setValue }) => {
         var result = "-"
         if (gfa && plugEnergyAC && plugEnergyNonAC) {
             result = calcPlugConsumption(gfa, plugEnergyAC, plugEnergyNonAC)
-            setValue("thirdForm.total.plug", result)
+            setValue("thirdForm.total_dec.plug", result)
         }
 
         return (<Paper sx={{ paddingX: 2, paddingY: 1, backgroundColor: "green", color: "white" }}>
@@ -1203,22 +1236,25 @@ const TotalSection = ({ control }) => {
 
     const watchValues = useWatch({
         control,
-        name: `thirdForm.total`
+        name: `thirdForm.total_dec`
     })
 
     const DesignEnergyConsumption = () => {
         var result = watchValues.lighting + watchValues.ac + watchValues.appliances + watchValues.utility + watchValues.plug
-        if (result === 0) {
-            result = "-"
-        }
+
+        var output = "-"
+        if (result === NaN) { output = "-" }
 
         return (<Paper sx={{ paddingX: 2, paddingY: 1, backgroundColor: "green", color: "white" }}>
             <InlineLabel
                 title="Design Energy Consumption"
-                value={result + " kWh/m2 per year"}
+                value={output + " kWh/m2 per year"}
             />
         </Paper>)
     }
+
+    var totalLighting = 0
+    if (!isNaN(watchValues.lighting) ) {totalLighting = watchValues.lighting}
 
     return (
         <FormLayout
@@ -1230,11 +1266,11 @@ const TotalSection = ({ control }) => {
                 >
                     <Stack direction="column" spacing={0} alignItems="center">
                         <Box sx={{ fontSize: 14, fontWeight: "bold", color: "text.secondary" }}>LIGHTING</Box>
-                        <Box sx={{ fontSize: 20, fontWeight: "bold" }}>{watchValues.lighting}</Box>
+                        <Box sx={{ fontSize: 20, fontWeight: "bold" }}>{isNaN(watchValues.lighting) ? 0 : watchValues.lighting}</Box>
                     </Stack>
                     <Stack direction="column" spacing={0} alignItems="center">
                         <Box sx={{ fontSize: 14, fontWeight: "bold", color: "text.secondary" }}>AC</Box>
-                        <Box sx={{ fontSize: 20, fontWeight: "bold" }}>{watchValues.ac}</Box>
+                        <Box sx={{ fontSize: 20, fontWeight: "bold" }}>{isNaN(watchValues.ac) ? 0 : watchValues.ac}</Box>
                     </Stack>
                     <Stack direction="column" spacing={0} alignItems="center">
                         <Box sx={{ fontSize: 14, fontWeight: "bold", color: "text.secondary" }}>APPLIANCES</Box>
