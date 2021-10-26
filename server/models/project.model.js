@@ -195,18 +195,14 @@ const projectSchema = new Schema({
     ],
   },
   c_plug: {
-    items: [
-      {
-        operating_power: {
-          type: Number,
-          default: 0,
-        },
-        nonoperating_power: {
-          type: Number,
-          default: 0,
-        },
-      },
-    ],
+    operating_power: {
+      type: Number,
+      default: 0,
+    },
+    nonoperating_power: {
+      type: Number,
+      default: 0,
+    },
   },
   d_a_is_potential: {
     type: Boolean,

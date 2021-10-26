@@ -77,9 +77,9 @@ const ThirdForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
             const pageThreeData = res.data.page_three;
             const pageTwoData = res.data.page_two;
             const pageOneData = res.data.page_one;
-            console.log("page 3", pageThreeData);
-            console.log("page 2",pageTwoData);
-            console.log("page 1",pageOneData);
+            console.log(pageThreeData);
+            console.log(pageTwoData);
+            console.log(pageOneData);
             setValue("firstForm", {
                 ...pageOneData
             })
@@ -118,7 +118,7 @@ const ThirdForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
                 <UtilitySection control={control} getValues={getValues} setValue={setValue} />
                 <PlugSection control={control} getValues={getValues} setValue={setValue} />
                 <TotalSection control={control} />
-                <FormFooter chapter={CHAPTER_NUMBER} setFromNextButton={setIsFromNextButton} />
+                <FormFooter chapter={CHAPTER_NUMBER} setFromNextButton={setIsFromNextButton} shouldRedirect={shouldRedirect} />
                 </>
         )}
             </Stack>
