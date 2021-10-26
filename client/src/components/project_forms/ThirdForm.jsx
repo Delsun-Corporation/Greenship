@@ -55,9 +55,37 @@ const ThirdForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
     const [isFromNextButton, setIsFromNextButton] = useState(false);
 
     const onSubmit = (data) => {
-        console.log(data)
-        // onceSubmitted(data);
+        const newData = {
+            thirdForm: data.thirdForm
+        }
+
+        if (isFromNextButton) {
+            onceSubmitted(newData, '4');
+        } else {
+            onceSubmitted(newData);
+        }
     };
+
+    useEffect(() => {
+        axios
+          .get(`${process.env.REACT_APP_API_URL}/getpagethree`, {
+            params: {
+              projectId: projectId,
+            },
+          })
+          .then((res) => {
+            const pageThreeData = res.data.page_three;
+            const pageTwoData = res.data.page_two;
+            const pageOneData = res.data.page_one;
+            console.log(pageThreeData);
+            console.log(pageTwoData);
+            console.log(pageOneData);
+          })
+          .catch((err) => {
+            console.log(err);
+            toast.error("Something went wrong, please try again");
+          });
+      }, [projectId]);
 
     const CHAPTER_NUMBER = "3";
 
@@ -91,18 +119,18 @@ function defaultFormValue() {
     return (
         {
             firstForm: {
-                a_gfa: 100,
-                a_operational_hours: 10,
-                a_working_days: 10,
-                a_holidays: 10,
-                a_occupancy_density: 10,
-                a_ach: 50,
-                a_floor_count: 5,
-                a_floor_height_avg: 2
+                a_gfa: 0,
+                a_operational_hours: 0,
+                a_working_days: 0,
+                a_holidays: 0,
+                a_occupancy_density: 0,
+                a_ach: 0,
+                a_floor_count: 0,
+                a_floor_height_avg: 0
             },
             secondForm: {
-                b_window_area: [1, 2, 3, 4, 5, 6, 7, 8],
-                b_wall_area: [1, 2, 3, 4, 5]
+                b_window_area: [0, 0, 0, 0, 0, 0, 0, 0],
+                b_wall_area: [0, 0, 0, 0, 0]
             },
             thirdForm: {
                 c_lighting: [defaultLightingValue()],
@@ -119,23 +147,23 @@ function defaultFormValue() {
 function defaultLightingValue() {
     return ({
         name: "",
-        daylight_area: 10,
-        lpd_operate: 10,
-        lpd_nonoperate: 10
+        daylight_area: 0,
+        lpd_operate: 0,
+        lpd_nonoperate: 0
     })
 }
 
 function defaultACValue() {
     return ({
-        to_ti: 10
+        to_ti: 0
     })
 }
 
 function defaultAppliancesValue() {
     return ({
         name: "",
-        amount: 10,
-        watt: 10
+        amount: 0,
+        watt: 0
     })
 }
 
@@ -145,8 +173,8 @@ function defaultUtilityValue() {
         amount: 0,
         watt: 0,
         util_type: "lift",
-        lift_capacity: 10,
-        lift_velocity: 10
+        lift_capacity: 0,
+        lift_velocity: 0
     },
     {
         name: "Escalator",
