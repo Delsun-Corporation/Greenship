@@ -11,6 +11,7 @@ import SecondForm from "../components/project_forms/SecondForm";
 import { updatePage } from "../helpers/PageService";
 import { PageTwo } from "../model/pageTwo.model";
 import FormPageNotFound from "../components/project_forms/FormPageNotFound";
+import ThirdForm from "../components/project_forms/ThirdForm";
 
 function FormPage() {
   const { projectid, page } = useParams();
@@ -26,7 +27,7 @@ function FormPage() {
         })
         .then((res) => {
           if (nextPage) {
-            redirectPage(nextPage)
+            redirectPage(nextPage);
           } else {
             statusResponse(
               res.status,
@@ -36,7 +37,9 @@ function FormPage() {
           }
         })
         .catch((err) => {
-          toast.error('Something went wrong, check your internet and try again');
+          toast.error(
+            "Something went wrong, check your internet and try again"
+          );
         });
     } else if (data.secondForm) {
       const secondFormData = data.secondForm;
@@ -44,13 +47,13 @@ function FormPage() {
       const body = {
         ...pageTwo.getSaveDraftModel(),
         b_ottv: secondFormData.b_ottv,
-        b_shgc: secondFormData.b_shgc
-      }
+        b_shgc: secondFormData.b_shgc,
+      };
 
       updatePage("updatepagetwo", body, projectid)
         .then((res) => {
           if (nextPage) {
-            redirectPage(nextPage)
+            redirectPage(nextPage);
           } else {
             statusResponse(
               res.status,
@@ -60,7 +63,29 @@ function FormPage() {
           }
         })
         .catch((err) => {
-          toast.error('Something went wrong, check your internet and try again');
+          toast.error(
+            "Something went wrong, check your internet and try again"
+          );
+        });
+    } else if (data.thirdForm) {
+      const thirdFormData = data.thirdForm;
+      
+      updatePage("updatepagethree", thirdFormData, projectid)
+        .then((res) => {
+          if (nextPage) {
+            redirectPage(nextPage);
+          } else {
+            statusResponse(
+              res.status,
+              "Save draft failed, check your internet and try again",
+              "Your project has successfully been saved as Draft."
+            );
+          }
+        })
+        .catch((err) => {
+          toast.error(
+            "Something went wrong, check your internet and try again"
+          );
         });
     }
   };
@@ -87,10 +112,16 @@ function FormPage() {
           shouldRedirect={redirectPage}
         ></SecondForm>
       );
-    } else {
+    } else if (pageNumber === 3) {
       return (
-        <FormPageNotFound/>
+        <ThirdForm
+          projectId={projectid}
+          onceSubmitted={(data, nextPage) => onFormSubmit(data, nextPage)}
+          shouldRedirect={redirectPage}
+        ></ThirdForm>
       );
+    } else {
+      return <FormPageNotFound />;
     }
   }
 
