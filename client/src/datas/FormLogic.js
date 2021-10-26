@@ -122,3 +122,16 @@ export function calcPlugEnergyNonAC(gfa, operationalHours, nonOperatingPower) {
 export function calcPlugConsumption(gfa, plugEnergyAC, plugEnergyNonAC) {
     return Math.ceil((plugEnergyAC + plugEnergyNonAC) / gfa)
 }
+
+/// 5
+export function calcPotentialPV(pca, l, w) {
+   return Math.ceil(pca / (l * w)) 
+}
+
+export function calcPredictionElectical(potentialPv, wpeak) {
+    return Math.ceil(potentialPv * wpeak * 4 * 365)
+}
+
+export function calcPercentageElectrical(predictialElectrical) {
+    return Math.ceil(predictialElectrical/3 * 100 / 100)
+}

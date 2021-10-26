@@ -77,9 +77,6 @@ const ThirdForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
             const pageThreeData = res.data.page_three;
             const pageTwoData = res.data.page_two;
             const pageOneData = res.data.page_one;
-            console.log(pageThreeData);
-            console.log(pageTwoData);
-            console.log(pageOneData);
             setValue("firstForm", {
                 ...pageOneData
             })

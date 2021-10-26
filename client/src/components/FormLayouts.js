@@ -318,3 +318,53 @@ export function BasicInputField({ control, name, adornment }) {
     />
   );
 }
+
+export function SideButtonInput({
+  control,
+  name,
+  title,
+  subtitle,
+  defaultValue,
+}) {
+  const {
+    field: { ref, value, ...inputProps },
+    fieldState: { invalid, isTouched, isDirty },
+    formState: { touchedFields, dirtyFields },
+  } = useController({
+    name,
+    control,
+  });
+
+  const { useStyles } = require('./FormLayouts.styles'); 
+
+  return (
+    <Stack
+      direction="row"
+      alignItems="center"
+      justifyContent="space-between"
+      spacing={2}
+      minHeight={40}
+    >
+      <Stack direction="column">
+        <Typography variant="body1">{title}</Typography>
+        {subtitle && (
+          <Typography variant="caption" color="text.secondary">
+            {subtitle}
+          </Typography>
+        )}
+      </Stack>
+      <input
+        accept="image/*"
+        style={{ display: "none" }}
+        id="raised-button-file"
+        multiple
+        type="file"
+      />
+      <label htmlFor="raised-button-file">
+        <Button variant="raised" component="span" className={useStyles().button}>
+          Upload
+        </Button>
+      </label>
+    </Stack>
+  );
+}

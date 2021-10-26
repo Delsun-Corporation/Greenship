@@ -88,6 +88,24 @@ function FormPage() {
             "Something went wrong, check your internet and try again"
           );
         });
+    } else if (data.fourthForm) {
+      console.log(data.fourthForm);
+    } else if (data.fifthForm) {
+      const pageFiveData = data.fifthForm;
+
+      updatePage("updatepagefive", pageFiveData, projectid)
+        .then((res) => {
+          statusResponse(
+            res.status,
+            "Save draft failed, check your internet and try again",
+            "Your project has successfully been saved as Draft."
+          );
+        })
+        .catch((err) => {
+          toast.error(
+            "Something went wrong, check your internet and try again"
+          );
+        });
     }
   };
 
@@ -121,6 +139,14 @@ function FormPage() {
           shouldRedirect={redirectPage}
         ></ThirdForm>
       );
+    } else if (pageNumber === 4) {
+      return <FormPageNotFound />;
+    } else if (pageNumber === 5) {
+      return <FifthForm
+        projectId={projectid}
+          onceSubmitted={(data, nextPage) => onFormSubmit(data, nextPage)}
+          shouldRedirect={redirectPage}
+        ></FifthForm>
     } else {
       return <FormPageNotFound />;
     }
