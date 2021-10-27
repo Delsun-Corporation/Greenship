@@ -52,7 +52,7 @@ const ThirdForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
     });
     const { control, handleSubmit, setValue, reset, getValues } = methods
     const [isLoading, setLoading] = useState(true);
-    const [isFromNextButton, setIsFromNextButton] = useState(false);
+    const [isFromNextButton, setIsFromNextButton] = useState(true);
 
     const onSubmit = (data) => {
         const newData = {
