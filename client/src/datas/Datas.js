@@ -263,3 +263,20 @@ export const powerFactor = [
     { number: 20, power: 0.40 },
     { number: 25, power: 0.35 }
 ]
+
+export const visualComfort = [
+    { locActivity: "Public entrance halls, foyers", e: 200 },
+    { locActivity: "Public passageways, stairs", e: 100 },
+    { locActivity: "Restaurant: bars, tables", e: 150 },
+    { locActivity: "Retailing: sales areas, displays", e: 500 },
+    { locActivity: "Office: general", e: 500 },
+    { locActivity: "Office: workstations", e: 300 },
+    { locActivity: "Office: drawing boards, fine work", e: 750 },
+    { locActivity: "Workplace: fine work", e: 1000 },
+    { locActivity: "Workplace: medium work", e: 300 },
+    { locActivity: "Workplace: casual work", e: 200 },
+    { locActivity: "Education: general classrooms", e: 300 },
+    { locActivity: "Education: display boards", e: 500 },
+    { locActivity: "Home: kitchens, study areas", e: 300 },
+    { locActivity: "Home: halls, landings", e: 150 },
+]
