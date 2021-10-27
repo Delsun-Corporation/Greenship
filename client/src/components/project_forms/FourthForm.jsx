@@ -29,7 +29,8 @@ import {
     lpdReference,
     heatLoad,
     powerFactor,
-    visualComfort
+    visualComfort,
+    occupancyCategory
 } from "../../datas/Datas";
 import {
     calcZonePopulation,
@@ -38,7 +39,6 @@ import {
     calcAccessPercentage,
     calcIlluminance
 } from "../../datas/FormLogic";
-import { VictoryBar, VictoryChart, VictoryTheme } from 'victory';
 import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Brush } from 'recharts';
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -220,7 +220,7 @@ const OutdoorAirSection = ({ control, getValues, setValue }) => {
                     >
                         <CartesianGrid strokeDasharray="3 3" />
                         <XAxis type="number" dataKey="value" />
-                        <YAxis type="category" dataKey="label" tick={{ fontSize: 14 }}/>
+                        <YAxis type="category" dataKey="label" tick={{ fontSize: 14 }} />
                         <Tooltip />
                         <Bar dataKey="value" fill="#8884d8" >
                             {
@@ -248,17 +248,21 @@ const OutdoorAirSection = ({ control, getValues, setValue }) => {
                         name={`${sectionName}.d_a_rp`}
                         control={control}
                         title="Outdoor airflow rate required per person (L/s*person or cfm/person)"
+                        subtitle= "See right table for reference"
                     />
                     <ZonePopulation />
+
                     <SideInput
                         name={`${sectionName}.d_a_ra`}
                         control={control}
                         title="Outdoor airflow rate required per unit area (L/s*m2 or cfm/ft2)"
+                        subtitle= "See right table for reference"
                     />
                     <SideInput
                         name={`${sectionName}.d_a_az`}
                         control={control}
                         title="Zone floor area (m2)"
+                        
                     />
                     <Divider style={{ width: "100%" }} />
                     <Vbz />
@@ -267,6 +271,17 @@ const OutdoorAirSection = ({ control, getValues, setValue }) => {
             }
             rightComponent={
                 <Stack direction="column" spacing={2}>
+                    <Box sx={{ fontWeight: "bold" }}>Minimum Ventilation Rates</Box>
+                    <SelectInput
+                        name={"fourthForm.ventilation_option"}
+                        control={control}
+                        options={occupancyCategory}
+                        getOptionLabel="category"
+                        getOptionValue="category"
+                        placeholder="Select building type..."
+                    />
+                    <MinimumVentilationTable control={control} />
+                    <Divider style={{ width: "100%" }} />
                     <Box sx={{ fontWeight: "bold" }}>Graph: Breathing zone outdoor airflow vs MV flow rate</Box>
                     <MvGraph />
                 </Stack>
@@ -361,7 +376,7 @@ const AchSection = ({ control, getValues, setValue }) => {
                     >
                         <CartesianGrid strokeDasharray="3 3" />
                         <XAxis type="number" dataKey="value" />
-                        <YAxis type="category" dataKey="label" tick={{ fontSize: 14 }}/>
+                        <YAxis type="category" dataKey="label" tick={{ fontSize: 14 }} />
                         <Tooltip />
                         <Bar dataKey="value" fill="#8884d8" >
                             {
@@ -472,7 +487,7 @@ const AccessOutsideSection = ({ control, getValues, setValue }) => {
                     >
                         <CartesianGrid strokeDasharray="3 3" />
                         <XAxis type="number" dataKey="value" tickFormatter={tick => `${tick}%`} />
-                        <YAxis type="category" dataKey="label" tick={{ fontSize: 14 }}/>
+                        <YAxis type="category" dataKey="label" tick={{ fontSize: 14 }} />
                         <Tooltip />
                         <Bar dataKey="value" fill="#8884d8" >
                             {
@@ -744,7 +759,7 @@ const ThermalComfortSection = ({ control, getValues, setValue }) => {
                     >
                         <CartesianGrid strokeDasharray="3 3" />
                         <XAxis type="number" dataKey="value" tickFormatter={tick => `${tick}°C`} />
-                        <YAxis type="category" dataKey="label" tick={{ fontSize: 14 }}/>
+                        <YAxis type="category" dataKey="label" tick={{ fontSize: 14 }} />
                         <Tooltip />
                         <Bar dataKey="value" fill="#8884d8" >
                             {
@@ -771,7 +786,7 @@ const ThermalComfortSection = ({ control, getValues, setValue }) => {
                         name={`${sectionName}.d_e_temperature`}
                         control={control}
                         title="AC temperature setting design (°C)"
-                    />  
+                    />
 
                 </Stack>
             }
@@ -818,7 +833,7 @@ const AcousticalComfortSection = ({ control, getValues, setValue }) => {
         console.log("arr", StandardNoiseArr)
 
         const chartData = [
-            { label: "Noise level in site", value: calculate, min: 0, max: 0},
+            { label: "Noise level in site", value: calculate, min: 0, max: 0 },
             { label: "Standard allowed noise", value: 0, min: StandardNoiseArr[0], max: StandardNoiseArr[1] - StandardNoiseArr[0] }
         ]
 
@@ -839,8 +854,8 @@ const AcousticalComfortSection = ({ control, getValues, setValue }) => {
                         layout="vertical"
                     >
                         <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis type="number"  domain={[0, 'dataMax + 20']} tickCount= {6} tickFormatter={tick => `${tick} dBA`} />
-                        <YAxis type="category" dataKey="label" tick={{ fontSize: 14 }}/>
+                        <XAxis type="number" domain={[0, 'dataMax + 20']} tickCount={6} tickFormatter={tick => `${tick} dBA`} />
+                        <YAxis type="category" dataKey="label" tick={{ fontSize: 14 }} />
                         <Tooltip />
                         <Legend />
                         <Bar name="Calculated" dataKey="value" stackId="a" fill={barColors[0]} />
@@ -864,7 +879,7 @@ const AcousticalComfortSection = ({ control, getValues, setValue }) => {
                         name={`${sectionName}.d_f_noise_level`}
                         control={control}
                         title="Noise level in existing condition (dBA)"
-                    />  
+                    />
 
                 </Stack>
             }
@@ -876,4 +891,57 @@ const AcousticalComfortSection = ({ control, getValues, setValue }) => {
             }
         />
     )
+}
+
+const MinimumVentilationTable = ({ control }) => {
+    const type = useWatch({
+        control,
+        name: "fourthForm.ventilation_option.category",
+    });
+
+    function children() {
+        if (type) {
+            const temp = occupancyCategory.find((e) => e.category === type);
+            return temp.children;
+        }
+    }
+
+    if (type) {
+        return (
+            <TableContainer component={Paper}>
+                <Table size="small" aria-label="a dense table">
+                    <TableHead sx={{ backgroundColor: "orange" }}>
+                        <TableRow>
+                            <TableCell rowSpan={2}>Occupancy Category</TableCell>
+                            <TableCell colSpan={2} align="center">People Outdoor Air Rate(Rp)</TableCell>
+                            <TableCell colSpan={2} align="center">Area Outdoor Air Rate(Rp)</TableCell>
+                        </TableRow>
+                        <TableRow>
+                            <TableCell align="center">Cfm/person</TableCell>
+                            <TableCell align="center">L/s person</TableCell>
+                            <TableCell align="center">Cfm/ft2</TableCell>
+                            <TableCell align="center">L/s m2</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {children().map((row, index) => (
+                            <TableRow
+                                key={index}
+                                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                            >
+                                <TableCell component="th" scope="row">
+                                    {row.subcategory}
+                                </TableCell>
+                                <TableCell align="center">{row.rp_cfm}</TableCell>
+                                <TableCell align="center">{row.rp_ls}</TableCell>
+                                <TableCell align="center">{row.ra_cfm}</TableCell>
+                                <TableCell align="center">{row.ra_ls}</TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+        );
+    }
+    return <></>;
 }
