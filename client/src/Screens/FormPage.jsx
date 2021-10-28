@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import FirstForm from "../components/project_forms/FirstForm";
 import Navbar from "../components/Navbar";
 import { Container, Typography, Stack } from "@mui/material";
 import { useParams } from "react-router";
@@ -7,13 +6,15 @@ import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import { useHistory } from "react-router";
 import { statusResponse } from "../helpers/response";
-import SecondForm from "../components/project_forms/SecondForm";
 import { updatePage } from "../helpers/PageService";
 import { PageTwo } from "../model/pageTwo.model";
 import FormPageNotFound from "../components/project_forms/FormPageNotFound";
-import FifthForm from "../components/project_forms/FifthPage";
+
+import FirstForm from "../components/project_forms/FirstForm";
+import SecondForm from "../components/project_forms/SecondForm";
 import ThirdForm from "../components/project_forms/ThirdForm";
 import FourthForm from "../components/project_forms/FourthForm";
+import FifthForm from "../components/project_forms/FifthPage";
 
 function FormPage() {
   const { projectid, page } = useParams();
@@ -167,11 +168,13 @@ function FormPage() {
         ></ThirdForm>
       );
     } else if (pageNumber === 4) {
+      return (
       <FourthForm
         projectId={projectid}
         onceSubmitted={(data, nextPage) => onFormSubmit(data, nextPage)}
         shouldRedirect={redirectPage}
       ></FourthForm>
+      )
     } else if (pageNumber === 5) {
       return <FifthForm
         projectId={projectid}
