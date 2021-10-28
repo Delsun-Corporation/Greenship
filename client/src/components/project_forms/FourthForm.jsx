@@ -95,7 +95,7 @@ const FourthForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
           ...pageOneData
         });
         setValue("thirdForm", {
-            ...pageThreeData
+          ...pageThreeData
         })
         setValue("fourthForm", {
           ...pageFourData,
@@ -149,39 +149,39 @@ export default FourthForm;
 function defaultFormValue() {
   return {
     firstForm: {
-      a_gfa: 100,
-      a_floor_count: 10,
-      a_floor_height_avg: 2,
-      a_occupancy_density: 10,
-      a_ventilation_area: 2,
-      a_ach: 2000,
+      a_gfa: 0,
+      a_floor_count: 0,
+      a_floor_height_avg: 0,
+      a_occupancy_density: 0,
+      a_ventilation_area: 0,
+      a_ach: 0,
       a_typology_acoustic: "30-35 dBA",
     },
     thirdForm: {
-      mv_flow_rate: 10000,
+      mv_flow_rate: 0,
     },
     fourthForm: {
       d_a_is_potential: true,
-      d_a_rp: 10,
-      d_a_ra: 10,
-      d_a_az: 10,
-      d_b_velocity: 10,
-      d_c_access_area: 10,
+      d_a_rp: 0,
+      d_a_ra: 0,
+      d_a_az: 0,
+      d_b_velocity: 0,
+      d_c_access_area: 0,
       d_d_illuminance: [defaultIlluminances()],
-      d_e_temperature: 10,
-      d_f_noise_level: 10,
+      d_e_temperature: 0,
+      d_f_noise_level: 0,
     },
   };
 }
 
 function defaultIlluminances() {
   return {
-    room_activity: { locActivity: "Public entrance halls, foyers", e: 200 },
-    area: 10,
+    room_activity: { locActivity: "Public entrance halls, foyers", e: "200" },
+    area: 0,
     lamp_type: "",
-    lamp_count: 1,
-    lamp_power: 10,
-    lamp_lumen: 10,
+    lamp_count: 0,
+    lamp_power: 0,
+    lamp_lumen: 0,
   };
 }
 
@@ -613,7 +613,7 @@ const AccessOutsideSection = ({ control, getValues, setValue }) => {
   );
 };
 
-const VisualComfortSection = ({ control }) => {
+const VisualComfortSection = ({ control, getValues }) => {
   const sectionName = "fourthForm.d_d_illuminance";
 
   const { fields, append, remove } = useFieldArray({
@@ -623,6 +623,8 @@ const VisualComfortSection = ({ control }) => {
 
   const resultArr = {
     calculatedE: [],
+    standardMin: [],
+    standardMax: [],
   };
 
   const Illuminance = ({ index }) => {
@@ -634,6 +636,10 @@ const VisualComfortSection = ({ control }) => {
     const area = watchValues[index].area;
     const count = watchValues[index].lamp_count;
     const lumen = watchValues[index].lamp_lumen;
+    const standard = watchValues[index].room_activity.e + ""
+    console.log("Stand", standard)
+    var parsedStandard = standard.split(/[-]+/).map((number) => parseInt(number))
+
 
     var result = "-";
     if (area && count && lumen) {
@@ -641,8 +647,13 @@ const VisualComfortSection = ({ control }) => {
 
       if (resultArr.calculatedE.length < index) {
         resultArr.calculatedE.push(result);
+        resultArr.standardMin.push(parsedStandard[0])
+        parsedStandard.length === 2 ? resultArr.standardMax.push(parsedStandard[1]) : resultArr.standardMax.push(0)
       } else {
         resultArr.calculatedE[index] = result;
+        resultArr.standardMin[index] = parsedStandard[0]
+        parsedStandard.length === 2 ?
+          resultArr.standardMax[index] = parsedStandard[1] : resultArr.standardMax[index] = 0
       }
     }
 
@@ -673,7 +684,7 @@ const VisualComfortSection = ({ control }) => {
 
     const chartData = [];
 
-    const barColors = ["#47919b", "#7e84a3"];
+    const barColors = ["#47919b", "#7e84a3", "#82ca9d"];
 
     resultArr.calculatedE.map(function (value, index) {
       if (watchValues[index].room_activity === null) return false;
@@ -682,16 +693,20 @@ const VisualComfortSection = ({ control }) => {
         chartData.push({
           label: watchValues[index].room_activity.locActivity,
           value: value,
-          standard: watchValues[index].room_activity.e,
+          standardMin: resultArr.standardMin[index],
+          standardMax: resultArr.standardMax[index]
         });
       } else {
         chartData[index] = {
           label: watchValues[index].room_activity.locActivity,
           value: value,
-          standard: watchValues[index].room_activity.e,
+          standardMin: resultArr.standardMin[index],
+          standardMax: resultArr.standardMax[index]
         };
       }
     });
+
+    console.log("chartdata", chartData)
 
     if (resultArr.calculatedE.length !== 0) {
       return (
@@ -716,7 +731,8 @@ const VisualComfortSection = ({ control }) => {
               wrapperStyle={{ position: "relative", marginTop: "0px" }}
             />
             <Bar name="Calculated E" dataKey="value" fill={barColors[0]} />
-            <Bar name="Baseline E" dataKey="standard" fill={barColors[1]} />
+            <Bar name="Baseline standard E" dataKey="standardMin" fill={barColors[1]} stackId="a"/>
+            <Bar name="Upperline standard E" dataKey="standardMax" fill={barColors[2]} stackId="a"/>
           </BarChart>
         </ResponsiveContainer>
       );
@@ -963,7 +979,7 @@ const AcousticalComfortSection = ({ control, getValues, setValue }) => {
       },
     ];
 
-    const barColors = ["#47919b", "#7e84a3"];
+    const barColors = ["#47919b", "#7e84a3", "#82ca9d"];
 
     return (
       <Box>
@@ -1005,7 +1021,7 @@ const AcousticalComfortSection = ({ control, getValues, setValue }) => {
               name="Allowed standard"
               dataKey="max"
               stackId="a"
-              fill="#82ca9d"
+              fill={barColors[2]}
             />
           </BarChart>
         </ResponsiveContainer>
@@ -1017,7 +1033,7 @@ const AcousticalComfortSection = ({ control, getValues, setValue }) => {
     <FormLayout
       leftComponent={
         <Stack direction="column" spacing={2}>
-          <Box sx={{ fontSize: 24, fontWeight: "bold" }}>Thermal Comfort</Box>
+          <Box sx={{ fontSize: 24, fontWeight: "bold" }}>Acoustical Comfort</Box>
           <StandardNoise />
 
           <SideInput
