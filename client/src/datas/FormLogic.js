@@ -123,15 +123,39 @@ export function calcPlugConsumption(gfa, plugEnergyAC, plugEnergyNonAC) {
     return Math.ceil((plugEnergyAC + plugEnergyNonAC) / gfa)
 }
 
+/// 4a
+export function calcZonePopulation(gfa, occupancyDensity) {
+    return Math.ceil((gfa * occupancyDensity))
+}
+
+export function calcVbz(rp, pz, ra, az) {
+    return Math.ceil((rp * pz) + (ra * az))
+}
+
+/// 4b
+export function calcACH(velocity, ventilationArea, volume) {
+    return Math.ceil((velocity * ventilationArea * 3600) / volume)
+}
+
+/// 4c
+export function calcAccessPercentage(accessArea, gfa) {
+    return Math.ceil(accessArea / gfa * 100)
+}
+
+/// 4d
+export function calcIlluminance(area, count, lumen) {
+    return Math.ceil((count * lumen * 0.56) / area)
+}
+
 /// 5
 export function calcPotentialPV(pca, l, w) {
-   return Math.ceil(pca / (l * w)) 
-}
-
-export function calcPredictionElectical(potentialPv, wpeak) {
-    return Math.ceil(potentialPv * wpeak * 4 * 365)
-}
-
-export function calcPercentageElectrical(predictialElectrical) {
-    return Math.ceil(predictialElectrical/3 * 100 / 100)
-}
+    return Math.ceil(pca / (l * w)) 
+ }
+ 
+ export function calcPredictionElectical(potentialPv, wpeak) {
+     return Math.ceil(potentialPv * wpeak * 4 * 365)
+ }
+ 
+ export function calcPercentageElectrical(predictialElectrical) {
+     return Math.ceil(predictialElectrical/3 * 100 / 100)
+ }

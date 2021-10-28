@@ -216,6 +216,10 @@ const projectSchema = new Schema({
     type: Number,
     default: 0,
   },
+  d_a_az: {
+    type: Number,
+    default: 0
+  },
   d_a_rp: {
     type: Number,
     default: 0,
@@ -240,8 +244,14 @@ const projectSchema = new Schema({
     items: [
       {
         room_activity: {
-          type: Number,
-          default: 0,
+          e: {
+            type: Number,
+            default: 0
+          },
+          locActivity: {
+            type: String,
+            default: ""
+          }
         },
         area: {
           type: Number,

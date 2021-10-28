@@ -11,6 +11,7 @@ import {
   Paper,
   Divider,
   InputAdornment,
+  Switch
 } from "@mui/material";
 import {
   formChapters,
@@ -180,6 +181,7 @@ export function BlockInput({
   maxLength,
   rows,
   maxRows,
+  placeholder
 }) {
   const styles = {
     helper: {
@@ -224,6 +226,7 @@ export function BlockInput({
         helperText={
           (value ? value.length : "0") + "/" + (maxLength ? maxLength : "-")
         }
+        placeholder={placeholder}
         FormHelperTextProps={{
           style: styles.helper,
         }}
@@ -261,6 +264,35 @@ export function SelectInput({
       )}
     />
   );
+}
+
+export function ToggleInput({ control, name, title, subtitle }) {
+  const {
+      field: { ref, value, ...inputProps },
+      fieldState: { invalid, isTouched, isDirty },
+      formState: { touchedFields, dirtyFields }
+  } = useController({
+      name,
+      control
+  });
+
+  return (
+      <Stack direction="row" alignItems="center" justifyContent="space-between"
+          spacing={2} minHeight={40}>
+          <Stack direction="column">
+              <Typography variant="body1">
+                  {title}
+              </Typography>
+              {subtitle &&
+                  <Typography variant="caption" color="text.secondary">
+                      {subtitle}
+                  </Typography>
+              }
+          </Stack>
+          <Switch {...inputProps}
+                value={value} />
+      </Stack>
+  )
 }
 
 export function InlineLabel({ title, subtitle, value, bold }) {
