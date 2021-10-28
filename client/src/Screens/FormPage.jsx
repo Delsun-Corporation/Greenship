@@ -12,6 +12,7 @@ import { updatePage } from "../helpers/PageService";
 import { PageTwo } from "../model/pageTwo.model";
 import FormPageNotFound from "../components/project_forms/FormPageNotFound";
 import ThirdForm from "../components/project_forms/ThirdForm";
+import FourthForm from "../components/project_forms/FourthForm";
 
 function FormPage() {
   const { projectid, page } = useParams();
@@ -87,6 +88,26 @@ function FormPage() {
             "Something went wrong, check your internet and try again"
           );
         });
+    } else if (data.fourthForm) {
+      const fourthFormData = data.fourthForm;
+      
+      updatePage("updatepagefour", fourthFormData, projectid)
+        .then((res) => {
+          if (nextPage) {
+            redirectPage(nextPage);
+          } else {
+            statusResponse(
+              res.status,
+              "Save draft failed, check your internet and try again",
+              "Your project has successfully been saved as Draft."
+            );
+          }
+        })
+        .catch((err) => {
+          toast.error(
+            "Something went wrong, check your internet and try again"
+          );
+        });
     }
   };
 
@@ -119,6 +140,14 @@ function FormPage() {
           onceSubmitted={(data, nextPage) => onFormSubmit(data, nextPage)}
           shouldRedirect={redirectPage}
         ></ThirdForm>
+      );
+    } else if (pageNumber === 4) {
+      return (
+        <FourthForm
+          projectId={projectid}
+          onceSubmitted={(data, nextPage) => onFormSubmit(data, nextPage)}
+          shouldRedirect={redirectPage}
+        ></FourthForm>
       );
     } else {
       return <FormPageNotFound />;
