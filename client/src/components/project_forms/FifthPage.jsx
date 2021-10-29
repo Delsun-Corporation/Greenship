@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useForm, useWatch, Controller } from "react-hook-form";
-import { Stack, TextField, Typography } from "@mui/material";
+import { Box, Stack, TextField, Typography } from "@mui/material";
 import {
   FormLayout,
   FormHeader,
@@ -10,6 +10,18 @@ import {
   BasicInputField,
   SideButtonInput,
 } from "../FormLayouts";
+import {
+  BarChart,
+  Bar,
+  Cell,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+  Brush,
+} from "recharts";
 import { formChapters } from "../../datas/Datas";
 import { calcPercentageElectrical, calcPotentialPV, calcPredictionElectical } from "../../datas/FormLogic";
 import axios from "axios";
@@ -23,25 +35,25 @@ const FifthForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
     onceSubmitted(data);
   };
 
-    useEffect(() => {
-      axios
-        .get(`${process.env.REACT_APP_API_URL}/getpagefive`, {
-          params: {
-            projectId: projectId,
-          },
+  useEffect(() => {
+    axios
+      .get(`${process.env.REACT_APP_API_URL}/getpagefive`, {
+        params: {
+          projectId: projectId,
+        },
+      })
+      .then((res) => {
+        const pageFiveData = res.data.page_five;
+        console.log(pageFiveData);
+        setValue("fifthForm", {
+          ...pageFiveData
         })
-        .then((res) => {
-          const pageFiveData = res.data.page_five;
-          console.log(pageFiveData);
-          setValue("fifthForm", {
-            ...pageFiveData
-          })
-        })
-        .catch((err) => {
-          console.log(err);
-          toast.error("Something went wrong, please try again");
-        });
-    }, [projectId]);
+      })
+      .catch((err) => {
+        console.log(err);
+        toast.error("Something went wrong, please try again");
+      });
+  }, [projectId]);
 
   const CHAPTER_NUMBER = "5";
 
@@ -83,18 +95,18 @@ const FirstSection = ({ control }) => {
     });
 
     if (facadeArea && dimensionL && dimensionW) {
-    return calcPotentialPV(parseInt(facadeArea), parseInt(dimensionL), parseInt(dimensionW));
-  }
-  return NaN;
+      return calcPotentialPV(parseInt(facadeArea), parseInt(dimensionL), parseInt(dimensionW));
+    }
+    return NaN;
   }
 
   const CountPercentageElectrical = () => {
     const predictionElectrical = CountPredictionElectrical();
 
     if (predictionElectrical) {
-    return calcPercentageElectrical(parseInt(predictionElectrical));
-  }
-  return NaN;
+      return calcPercentageElectrical(parseInt(predictionElectrical));
+    }
+    return NaN;
   }
 
   const CountPredictionElectrical = () => {
@@ -107,9 +119,9 @@ const FirstSection = ({ control }) => {
     const potentialPV = CountPotentialPV()
 
     if (wpeakValue) {
-    return calcPredictionElectical(potentialPV, wpeakValue);
-  }
-  return NaN;
+      return calcPredictionElectical(potentialPV, wpeakValue);
+    }
+    return NaN;
   }
 
   const PotentialPVLabel = () => {
@@ -136,12 +148,62 @@ const FirstSection = ({ control }) => {
     const result = CountPercentageElectrical()
 
     if (isNaN(result)) {
-      return <InlineLabel title="Percentage of electrical energy mix" value={"-%"}/>
+      return <InlineLabel title="Percentage of electrical energy mix" value={"-%"} />
     } else {
-      return <InlineLabel title="Percentage of electrical energy mix" value={ result + "%"}/>
+      return <InlineLabel title="Percentage of electrical energy mix" value={result + "%"} />
     }
   }
-  
+
+  const SubsidyGraph = () => {
+    const watchValues = useWatch({
+      control,
+      name: `${sectionName}.d_e_temperature`,
+    });
+
+    const standard = 30;
+    const calculate = watchValues;
+
+    const chartData = [
+      { label: "Electric subsidy", value: calculate },
+      { label: "Target electrical energy mix", value: standard },
+    ];
+
+    const barColors = ["#47919b", "#7e84a3"];
+
+    return (
+      <Box>
+        <ResponsiveContainer width="90%" height={200}>
+          <BarChart
+            width={500}
+            height={300}
+            data={chartData}
+            margin={{
+              top: 5,
+              right: 30,
+              left: 30,
+              bottom: 5,
+            }}
+            barSize={50}
+            layout="vertical"
+          >
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis
+              type="number"
+              dataKey="value"
+              tickFormatter={(tick) => `${tick}%`}
+            />
+            <YAxis type="category" dataKey="label" tick={{ fontSize: 14 }} />
+            <Tooltip />
+            <Bar dataKey="value" fill="#8884d8">
+              {chartData.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={barColors[index % 20]} />
+              ))}
+            </Bar>
+          </BarChart>
+        </ResponsiveContainer>
+      </Box>
+    );
+  }
 
   return (
     <FormLayout
@@ -221,15 +283,18 @@ const FirstSection = ({ control }) => {
               </Stack>
             </Stack>
           </Stack>
-          <PotentialPVLabel/>
-          <PredictionElectricalLabel/>
-          <PercentageElectricalLabel/>
+          <PotentialPVLabel />
+          <PredictionElectricalLabel />
+          <PercentageElectricalLabel />
         </Stack>
       }
       rightComponent={
-        <div className="font-body">
-          
-        </div>
+        <Stack direction="column" spacing={2}>
+          <Box sx={{ fontWeight: "bold" }}>
+            Graph: Planned temperature setting vs. Greenship standard
+          </Box>
+          <SubsidyGraph />
+        </Stack>
       }
     />
   );
