@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import Navbar from "../components/Navbar";
 import { Container, Typography, Stack } from "@mui/material";
-import { useParams } from "react-router";
+import { Redirect, useParams } from "react-router";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import { useHistory } from "react-router";
@@ -15,6 +15,7 @@ import SecondForm from "../components/project_forms/SecondForm";
 import ThirdForm from "../components/project_forms/ThirdForm";
 import FourthForm from "../components/project_forms/FourthForm";
 import FifthForm from "../components/project_forms/FifthPage";
+import { isAuth } from "../helpers/auth";
 
 function FormPage() {
   const { projectid, page } = useParams();
@@ -189,6 +190,7 @@ function FormPage() {
   return (
     <div className="bg-gray-100 min-h-screen">
       <ToastContainer />
+      {!isAuth() ? <Redirect to="/login" /> : null}
       <Navbar />
       <Container maxWidth="xl">{render()}</Container>
     </div>
