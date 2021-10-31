@@ -300,13 +300,27 @@ const projectSchema = new Schema({
     type: [String],
     default: [],
   },
+  e_pv_solar_att: {
+    type: [String],
+    default: []
+  },
   e_pv_spec_wpeak: {
     type: Number,
     default: 0,
   },
   e_pv_spec_dimension: {
-    type: [Number],
-    default: 0,
+    l: {
+      type: Number,
+      default: 0
+    },
+    w: {
+      type: Number,
+      default: 0
+    },
+    h: {
+      type: Number,
+      default: 0
+    }
   },
   last_page: {
     type: Number,

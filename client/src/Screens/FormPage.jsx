@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import FirstForm from "../components/project_forms/FirstForm";
 import Navbar from "../components/Navbar";
 import { Container, Typography, Stack } from "@mui/material";
 import { useParams } from "react-router";
@@ -7,12 +6,15 @@ import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import { useHistory } from "react-router";
 import { statusResponse } from "../helpers/response";
-import SecondForm from "../components/project_forms/SecondForm";
 import { updatePage } from "../helpers/PageService";
 import { PageTwo } from "../model/pageTwo.model";
 import FormPageNotFound from "../components/project_forms/FormPageNotFound";
+
+import FirstForm from "../components/project_forms/FirstForm";
+import SecondForm from "../components/project_forms/SecondForm";
 import ThirdForm from "../components/project_forms/ThirdForm";
 import FourthForm from "../components/project_forms/FourthForm";
+import FifthForm from "../components/project_forms/FifthPage";
 
 function FormPage() {
   const { projectid, page } = useParams();
@@ -64,13 +66,14 @@ function FormPage() {
           }
         })
         .catch((err) => {
+          console.log("Error", err)
           toast.error(
             "Something went wrong, check your internet and try again"
           );
         });
     } else if (data.thirdForm) {
       const thirdFormData = data.thirdForm;
-      
+
       updatePage("updatepagethree", thirdFormData, projectid)
         .then((res) => {
           if (nextPage) {
@@ -84,14 +87,36 @@ function FormPage() {
           }
         })
         .catch((err) => {
+          console.log("Error", err)
           toast.error(
             "Something went wrong, check your internet and try again"
           );
         });
     } else if (data.fourthForm) {
       const fourthFormData = data.fourthForm;
-      
+
       updatePage("updatepagefour", fourthFormData, projectid)
+        .then((res) => {
+          if (nextPage) {
+            redirectPage(nextPage);
+          } else {
+            statusResponse(
+              res.status,
+              "Save draft failed, check your internet and try again",
+              "Your project has successfully been saved as Draft."
+            );
+          }
+        })
+        .catch((err) => {
+          console.log("Error", err)
+          toast.error(
+            "Something went wrong, check your internet and try again"
+          );
+        });
+    } else if (data.fifthForm) {
+      const pageFiveData = data.fifthForm;
+
+      updatePage("updatepagefive", pageFiveData, projectid)
         .then((res) => {
           if (nextPage) {
             redirectPage(nextPage);
@@ -108,6 +133,7 @@ function FormPage() {
             "Something went wrong, check your internet and try again"
           );
         });
+
     }
   };
 
@@ -143,12 +169,18 @@ function FormPage() {
       );
     } else if (pageNumber === 4) {
       return (
-        <FourthForm
-          projectId={projectid}
-          onceSubmitted={(data, nextPage) => onFormSubmit(data, nextPage)}
-          shouldRedirect={redirectPage}
-        ></FourthForm>
-      );
+      <FourthForm
+        projectId={projectid}
+        onceSubmitted={(data, nextPage) => onFormSubmit(data, nextPage)}
+        shouldRedirect={redirectPage}
+      ></FourthForm>
+      )
+    } else if (pageNumber === 5) {
+      return <FifthForm
+        projectId={projectid}
+        onceSubmitted={(data, nextPage) => onFormSubmit(data, nextPage)}
+        shouldRedirect={redirectPage}
+      ></FifthForm>
     } else {
       return <FormPageNotFound />;
     }

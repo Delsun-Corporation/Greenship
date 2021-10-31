@@ -91,7 +91,12 @@ export const FormHeader = ({ title, projectId, shouldRedirect }) => (
 export const FormFooter = ({ chapter, shouldRedirect, setFromNextButton }) => (
   <Stack direction="row" justifyContent="space-between" alignItems="center">
     {chapter !== "1" && (
-      <Button variant="contained" onClick={(e) => {shouldRedirect(`${(parseInt(chapter) - 1)}`)}}>
+      <Button
+        variant="contained"
+        onClick={(e) => {
+          shouldRedirect(`${parseInt(chapter) - 1}`);
+        }}
+      >
         PREV:{" "}
         {
           formChapters.find((e) => e.chapter === "" + (parseInt(chapter) - 1))
@@ -100,52 +105,72 @@ export const FormFooter = ({ chapter, shouldRedirect, setFromNextButton }) => (
       </Button>
     )}
     {chapter === "1" && <Box></Box>}
-    <Button type="submit" variant="contained" onClick={(e) => {setFromNextButton(true)}}>
-      NEXT:{" "}
-      {
-        formChapters.find((e) => e.chapter === "" + (parseInt(chapter) + 1))
-          .title
-      }
-    </Button>
+    {chapter !== "5" ? (
+      <Button
+        type="submit"
+        variant="contained"
+        onClick={(e) => {
+          setFromNextButton(true);
+        }}
+      >
+        NEXT:{" "}
+        {
+          formChapters.find((e) => e.chapter === "" + (parseInt(chapter) + 1))
+            .title
+        }
+      </Button>
+    ) : null}
   </Stack>
   /// Need logic for last page
 );
 
-export function SideInput({ control, name, title, subtitle, defaultValue, isString, minimalInput }) {
-    const {
-        field: { ref, value, ...inputProps },
-        fieldState: { invalid, isTouched, isDirty },
-        formState: { touchedFields, dirtyFields }
-    } = useController({
-        name,
-        control
-    });
+export function SideInput({
+  control,
+  name,
+  title,
+  subtitle,
+  defaultValue,
+  isString,
+  minimalInput,
+}) {
+  const {
+    field: { ref, value, ...inputProps },
+    fieldState: { invalid, isTouched, isDirty },
+    formState: { touchedFields, dirtyFields },
+  } = useController({
+    name,
+    control,
+  });
 
-    return (
-        <Stack direction="row" alignItems="center" justifyContent="space-between"
-            spacing={2} minHeight={40}>
-            <Stack direction="column">
-                <Typography variant="body1">
-                    {title}
-                </Typography>
-                {subtitle &&
-                    <Typography variant="caption" color="text.secondary">
-                        {subtitle}
-                    </Typography>
-                }
-            </Stack>
-            <TextField {...inputProps}
-                value={value || defaultValue}
-                inputProps={{ min: minimalInput, style: { textAlign: 'right' } }}
-                variant="outlined"
-                size="small"
-                type={isString ? "text" : "number"}
-                sx = {{
-                  maxWidth: "40%"
-                }}
-                />
-        </Stack>
-    )
+  return (
+    <Stack
+      direction="row"
+      alignItems="center"
+      justifyContent="space-between"
+      spacing={2}
+      minHeight={40}
+    >
+      <Stack direction="column">
+        <Typography variant="body1">{title}</Typography>
+        {subtitle && (
+          <Typography variant="caption" color="text.secondary">
+            {subtitle}
+          </Typography>
+        )}
+      </Stack>
+      <TextField
+        {...inputProps}
+        value={value || defaultValue}
+        inputProps={{ min: minimalInput, style: { textAlign: "right" } }}
+        variant="outlined"
+        size="small"
+        type={isString ? "text" : "number"}
+        sx={{
+          maxWidth: "40%",
+        }}
+      />
+    </Stack>
+  );
 }
 
 export function BlockInput({
@@ -280,7 +305,7 @@ export function InlineLabel({ title, subtitle, value, bold }) {
       minHeight={40}
     >
       <Stack direction="column">
-        { bold && <Box sx={{ fontSize: 16, fontWeight: "bold" }}>{title}</Box>}
+        {bold && <Box sx={{ fontSize: 16, fontWeight: "bold" }}>{title}</Box>}
         {!bold && <Typography variant="body1">{title}</Typography>}
         {subtitle && (
           <Typography variant="caption" color="text.secondary">
@@ -288,20 +313,18 @@ export function InlineLabel({ title, subtitle, value, bold }) {
           </Typography>
         )}
       </Stack>
-      <Box sx={{ fontWeight: "bold", textAlign: "right" }}>{value ? value : "-"}</Box>
+      <Box sx={{ fontWeight: "bold", textAlign: "right" }}>
+        {value ? value : "-"}
+      </Box>
     </Stack>
   );
 }
 
-export function BasicInputField({
-  control,
-  name,
-  adornment
-}) {
+export function BasicInputField({ control, name, adornment }) {
   const {
     field: { ref, value, ...inputProps },
     fieldState: { invalid, isTouched, isDirty },
-    formState: { touchedFields, dirtyFields }
+    formState: { touchedFields, dirtyFields },
   } = useController({
     name,
     control,
@@ -310,18 +333,70 @@ export function BasicInputField({
   });
   return (
     <TextField
-    {...inputProps} 
-    inputRef={ref}
-          checked={value}
-          value={value}
-          inputProps={{ min: 0, style: { textAlign: "right" } }}
-          variant="outlined"
-          size="small"
-          type="number"
-          className="w-24"
-          InputProps={{
-            startAdornment: <InputAdornment position="start">{adornment}</InputAdornment>
-          }}
-        />
+      {...inputProps}
+      inputRef={ref}
+      checked={value}
+      value={value}
+      inputProps={{ min: 0, style: { textAlign: "right" } }}
+      variant="outlined"
+      size="small"
+      type="number"
+      className="w-24"
+      InputProps={{
+        startAdornment: (
+          <InputAdornment position="start">{adornment}</InputAdornment>
+        ),
+      }}
+    />
+  );
+}
+
+export function SideButtonInput({
+  control,
+  name,
+  title,
+  subtitle,
+  defaultValue,
+}) {
+  const {
+    field: { ref, value, ...inputProps },
+    fieldState: { invalid, isTouched, isDirty },
+    formState: { touchedFields, dirtyFields },
+  } = useController({
+    name,
+    control,
+  });
+
+  const { useStyles } = require('./FormLayouts.styles'); 
+
+  return (
+    <Stack
+      direction="row"
+      alignItems="center"
+      justifyContent="space-between"
+      spacing={2}
+      minHeight={40}
+    >
+      <Stack direction="column">
+        <Typography variant="body1">{title}</Typography>
+        {subtitle && (
+          <Typography variant="caption" color="text.secondary">
+            {subtitle}
+          </Typography>
+        )}
+      </Stack>
+      <input
+        accept="image/*"
+        style={{ display: "none" }}
+        id="raised-button-file"
+        multiple
+        type="file"
+      />
+      <label htmlFor="raised-button-file">
+        <Button variant="raised" component="span" className={useStyles().button}>
+          Upload
+        </Button>
+      </label>
+    </Stack>
   );
 }
