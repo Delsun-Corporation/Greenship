@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import FirstForm from "../components/project_forms/FirstForm";
 import Navbar from "../components/Navbar";
-import { Container, Typography, Stack } from "@mui/material";
+import { Container, Typography, Stack, Box } from "@mui/material";
 import { useParams } from "react-router";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
@@ -13,6 +13,8 @@ import { PageTwo } from "../model/pageTwo.model";
 import FormPageNotFound from "../components/project_forms/FormPageNotFound";
 import ThirdForm from "../components/project_forms/ThirdForm";
 import FourthForm from "../components/project_forms/FourthForm";
+import FormDrawer from "../components/FormDrawer"
+import Footer from "../components/Footer.jsx";
 
 function FormPage() {
   const { projectid, page } = useParams();
@@ -70,7 +72,7 @@ function FormPage() {
         });
     } else if (data.thirdForm) {
       const thirdFormData = data.thirdForm;
-      
+
       updatePage("updatepagethree", thirdFormData, projectid)
         .then((res) => {
           if (nextPage) {
@@ -90,7 +92,7 @@ function FormPage() {
         });
     } else if (data.fourthForm) {
       const fourthFormData = data.fourthForm;
-      
+
       updatePage("updatepagefour", fourthFormData, projectid)
         .then((res) => {
           if (nextPage) {
@@ -157,8 +159,16 @@ function FormPage() {
   return (
     <div className="bg-gray-100 min-h-screen">
       <ToastContainer />
-      <Navbar />
-      <Container maxWidth="xl">{render()}</Container>
+      {/* <Navbar /> */}
+      <Box sx={{ display: 'flex' }}>
+        <FormDrawer />
+        <Box component="main"  sx={{ flexGrow: 1 }}>
+          <Container maxWidth="xl">
+            {render()}
+          </Container>
+          <Footer />
+        </Box>
+      </Box>
     </div>
   );
 }
