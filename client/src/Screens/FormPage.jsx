@@ -1,20 +1,24 @@
 import React, { useEffect } from "react";
-import FirstForm from "../components/project_forms/FirstForm";
 import Navbar from "../components/Navbar";
+
 import { Container, Typography, Stack, Box } from "@mui/material";
-import { useParams } from "react-router";
+import { Redirect, useParams } from "react-router";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import { useHistory } from "react-router";
 import { statusResponse } from "../helpers/response";
-import SecondForm from "../components/project_forms/SecondForm";
 import { updatePage } from "../helpers/PageService";
 import { PageTwo } from "../model/pageTwo.model";
 import FormPageNotFound from "../components/project_forms/FormPageNotFound";
+
+import FirstForm from "../components/project_forms/FirstForm";
+import SecondForm from "../components/project_forms/SecondForm";
 import ThirdForm from "../components/project_forms/ThirdForm";
 import FourthForm from "../components/project_forms/FourthForm";
+import FifthForm from "../components/project_forms/FifthPage";
 import FormDrawer from "../components/FormDrawer"
 import Footer from "../components/Footer.jsx";
+import { isAuth } from "../helpers/auth";
 
 function FormPage() {
   const { projectid, page } = useParams();
@@ -66,6 +70,7 @@ function FormPage() {
           }
         })
         .catch((err) => {
+          console.log("Error", err)
           toast.error(
             "Something went wrong, check your internet and try again"
           );
@@ -86,6 +91,7 @@ function FormPage() {
           }
         })
         .catch((err) => {
+          console.log("Error", err)
           toast.error(
             "Something went wrong, check your internet and try again"
           );
@@ -106,10 +112,32 @@ function FormPage() {
           }
         })
         .catch((err) => {
+          console.log("Error", err)
           toast.error(
             "Something went wrong, check your internet and try again"
           );
         });
+    } else if (data.fifthForm) {
+      const pageFiveData = data.fifthForm;
+
+      updatePage("updatepagefive", pageFiveData, projectid)
+        .then((res) => {
+          if (nextPage) {
+            redirectPage(nextPage);
+          } else {
+            statusResponse(
+              res.status,
+              "Save draft failed, check your internet and try again",
+              "Your project has successfully been saved as Draft."
+            );
+          }
+        })
+        .catch((err) => {
+          toast.error(
+            "Something went wrong, check your internet and try again"
+          );
+        });
+
     }
   };
 
@@ -145,12 +173,18 @@ function FormPage() {
       );
     } else if (pageNumber === 4) {
       return (
-        <FourthForm
-          projectId={projectid}
-          onceSubmitted={(data, nextPage) => onFormSubmit(data, nextPage)}
-          shouldRedirect={redirectPage}
-        ></FourthForm>
-      );
+      <FourthForm
+        projectId={projectid}
+        onceSubmitted={(data, nextPage) => onFormSubmit(data, nextPage)}
+        shouldRedirect={redirectPage}
+      ></FourthForm>
+      )
+    } else if (pageNumber === 5) {
+      return <FifthForm
+        projectId={projectid}
+        onceSubmitted={(data, nextPage) => onFormSubmit(data, nextPage)}
+        shouldRedirect={redirectPage}
+      ></FifthForm>
     } else {
       return <FormPageNotFound />;
     }
@@ -158,8 +192,8 @@ function FormPage() {
 
   return (
     <div className="bg-gray-100 min-h-screen">
+      {!isAuth() ? <Redirect to="/login" /> : null}
       <ToastContainer />
-      {/* <Navbar /> */}
       <Box sx={{ display: 'flex' }}>
         <FormDrawer />
         <Box component="main"  sx={{ flexGrow: 1 }}>
