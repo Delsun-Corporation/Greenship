@@ -64,7 +64,6 @@ const FirstForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
             (e) => e.type === res.data.page_one.a_typology
           ),
         });
-        console.log(res.data);
         setLoading(false);
       })
       .catch((err) => {

@@ -222,8 +222,6 @@ const OutdoorAirSection = ({ control, getValues, setValue }) => {
     const az = watchValues.d_a_az;
     const pz = resultArr.pz;
 
-    console.log(watchValues);
-
     var result = "-";
     if (rp && pz && ra && az) {
       result = calcVbz(rp, pz, ra, az);
@@ -256,8 +254,6 @@ const OutdoorAirSection = ({ control, getValues, setValue }) => {
 
     const mvFlowRate = getValues(`thirdForm.mv_flow_rate`);
     const vbz = resultArr.vbz;
-
-    console.log("MV", mvFlowRate, "VBZ", vbz);
 
     const chartData = [
       { label: "Vbz", value: vbz },
@@ -419,8 +415,6 @@ const AchSection = ({ control, getValues, setValue }) => {
 
     const achStandard = getValues(`firstForm.a_ach`);
     const achCalculate = resultArr.ach;
-
-    console.log("ACH", achStandard);
 
     const chartData = [
       { label: "ACH Calculation", value: achCalculate },
@@ -637,7 +631,6 @@ const VisualComfortSection = ({ control, getValues }) => {
     const count = watchValues[index].lamp_count;
     const lumen = watchValues[index].lamp_lumen;
     const standard = watchValues[index].room_activity.e + ""
-    console.log("Stand", standard)
     var parsedStandard = standard.split(/[-]+/).map((number) => parseInt(number))
 
 
@@ -656,8 +649,6 @@ const VisualComfortSection = ({ control, getValues }) => {
           resultArr.standardMax[index] = parsedStandard[1] : resultArr.standardMax[index] = 0
       }
     }
-
-    console.log("illum", resultArr.calculatedE);
 
     return (
       <Paper
@@ -705,8 +696,6 @@ const VisualComfortSection = ({ control, getValues }) => {
         };
       }
     });
-
-    console.log("chartdata", chartData)
 
     if (resultArr.calculatedE.length !== 0) {
       return (
@@ -966,8 +955,6 @@ const AcousticalComfortSection = ({ control, getValues, setValue }) => {
     });
 
     const calculate = watchValues;
-
-    console.log("arr", StandardNoiseArr);
 
     const chartData = [
       { label: "Noise level in site", value: calculate, min: 0, max: 0 },
