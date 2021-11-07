@@ -34,7 +34,7 @@ function App() {
       {!isAuth() ? <Redirect to="/login" /> : 
       <>
         <Navbar />
-        <div className="min-h-screen bg-gray-100 text-gray-900 flex justify-center">
+        <div className="min-h-screen bg-gray-100 text-gray-900 flex justify-center mt-20">
           <div className="max-w-screen-xl bg-transparant flex flex-1 mt-10 flex-col">
             <div className="h-1/6 flex justify-end">
               <div className="flex w-1/2 justify-start h-full flex-col">
