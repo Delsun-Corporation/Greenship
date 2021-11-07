@@ -545,7 +545,7 @@ const SidebarItem = ({ chapter, title, status, open, onClickBtn }) => {
 
     const onClickSidebarItem = (index) => {
         if (status === "disabled") {
-            // return
+            return
         }
         onClickBtn(index)
     }
