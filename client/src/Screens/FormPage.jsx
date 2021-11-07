@@ -195,9 +195,9 @@ function FormPage() {
       {!isAuth() ? <Redirect to="/login" /> : null}
       <ToastContainer />
       <Box sx={{ display: 'flex' }}>
-        <FormDrawer />
-        <Box component="main"  sx={{ flexGrow: 1 }}>
-          <Container maxWidth="xl">
+        <FormDrawer activeChapter={parseInt(page)} redirect={(path) => redirectPage(path)}/>
+        <Box component="main" sx={{ flexGrow: 1 }}>
+          <Container maxWidth="xl" sx={{marginTop: 4}}>
             {render()}
           </Container>
           <Footer />
