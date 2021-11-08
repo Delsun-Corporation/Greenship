@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import Navbar from "../components/Navbar";
-import { Container, Typography, Stack } from "@mui/material";
+
+import { Container, Typography, Stack, Box } from "@mui/material";
 import { Redirect, useParams } from "react-router";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
@@ -15,6 +16,8 @@ import SecondForm from "../components/project_forms/SecondForm";
 import ThirdForm from "../components/project_forms/ThirdForm";
 import FourthForm from "../components/project_forms/FourthForm";
 import FifthForm from "../components/project_forms/FifthPage";
+import FormDrawer from "../components/FormDrawer"
+import Footer from "../components/Footer.jsx";
 import { isAuth } from "../helpers/auth";
 
 function FormPage() {
@@ -189,10 +192,17 @@ function FormPage() {
 
   return (
     <div className="bg-gray-100 min-h-screen">
-      <ToastContainer />
       {!isAuth() ? <Redirect to="/login" /> : null}
-      <Navbar />
-      <Container maxWidth="xl">{render()}</Container>
+      <ToastContainer />
+      <Box sx={{ display: 'flex' }}>
+        <FormDrawer activeChapter={parseInt(page)} redirect={(path) => redirectPage(path)}/>
+        <Box component="main" sx={{ flexGrow: 1 }}>
+          <Container maxWidth="xl" sx={{marginTop: 4}}>
+            {render()}
+          </Container>
+          <Footer />
+        </Box>
+      </Box>
     </div>
   );
 }

@@ -44,7 +44,6 @@ const FifthForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
       })
       .then((res) => {
         const pageFiveData = res.data.page_five;
-        console.log(pageFiveData);
         setValue("fifthForm", {
           ...pageFiveData
         })
