@@ -4,11 +4,24 @@ const mongoose = require("mongoose");
 const ObjectId = mongoose.Types;
 
 exports.updatePageFiveDraft = (req, res) => {
-  const { e_facade_area, e_pv_spec_h, e_pv_spec_l, e_pv_spec_w, e_pv_spec_wpeak, projectId } = req.body;
+  const {
+    e_facade_area,
+    e_pv_spec_h,
+    e_pv_spec_l,
+    e_pv_spec_w,
+    e_pv_spec_wpeak,
+    projectId,
+  } = req.body;
 
   const objectId = ObjectId.ObjectId(projectId);
 
-  if (req.body === {} || req.body === null || req.body === undefined || projectId === null || projectId === undefined) {
+  if (
+    req.body === {} ||
+    req.body === null ||
+    req.body === undefined ||
+    projectId === null ||
+    projectId === undefined
+  ) {
     return res.status(400).json({
       message: "Request parameter is wrong",
     });
@@ -19,13 +32,13 @@ exports.updatePageFiveDraft = (req, res) => {
       project.e_facade_area = e_facade_area;
       project.e_pv_spec_wpeak = e_pv_spec_wpeak;
       project.e_pv_spec_dimension = {
-          h: e_pv_spec_h,
-          l: e_pv_spec_l,
-          w: e_pv_spec_w
-      }
+        h: e_pv_spec_h,
+        l: e_pv_spec_l,
+        w: e_pv_spec_w,
+      };
       project.project_date = new Date();
       if (project.last_page < 5) {
-        project.last_page = 5
+        project.last_page = 5;
       }
       return project.save();
     })
@@ -54,7 +67,7 @@ exports.getPageFiveDraft = (req, res) => {
   }
 
   Project.findById(objectId)
-    .select("e_facade_area e_pv_spec_wpeak e_pv_spec_dimension")
+    .select("e_facade_area e_pv_spec_wpeak e_pv_spec_dimension total_dec")
     .then((page_five) => {
       if (!page_five) {
         return res.status(400).json({
@@ -62,13 +75,21 @@ exports.getPageFiveDraft = (req, res) => {
         });
       }
 
+      const totalDesignEnergy =
+        page_five.total_dec.lighting +
+        page_five.total_dec.ac +
+        page_five.total_dec.appliances +
+        page_five.total_dec.utility +
+        page_five.total_dec.plug;
+
       return res.status(200).json({
         page_five: {
-            e_facade_area: page_five.e_facade_area,
-            e_pv_spec_wpeak: page_five.e_pv_spec_wpeak,
-            e_pv_spec_h: page_five.e_pv_spec_dimension.h,
-            e_pv_spec_l: page_five.e_pv_spec_dimension.l,
-            e_pv_spec_w: page_five.e_pv_spec_dimension.w,
+          e_facade_area: page_five.e_facade_area,
+          e_pv_spec_wpeak: page_five.e_pv_spec_wpeak,
+          e_pv_spec_h: page_five.e_pv_spec_dimension.h,
+          e_pv_spec_l: page_five.e_pv_spec_dimension.l,
+          e_pv_spec_w: page_five.e_pv_spec_dimension.w,
+          total_dec: totalDesignEnergy,
         },
         message: "Success getting page five draft",
       });
