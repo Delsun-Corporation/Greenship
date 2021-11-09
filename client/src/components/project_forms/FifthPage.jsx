@@ -107,8 +107,6 @@ const FirstSection = ({ control }) => {
       name: sectionName + "total_dec"
     })
 
-    console.log(total_dec)
-
     if (predictionElectrical) {
       return calcPercentageElectrical(parseInt(predictionElectrical), parseFloat(total_dec));
     }
