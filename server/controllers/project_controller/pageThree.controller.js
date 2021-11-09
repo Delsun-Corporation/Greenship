@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const ObjectId = mongoose.Types;
 
 exports.updatePageThreeDraft = (req, res) => {
-  const { c_ac, c_appliances, c_lighting, c_plug, c_utility, total, projectId } = req.body;
+  const { c_ac, c_appliances, c_lighting, c_plug, c_utility, total_dec, projectId } = req.body;
 
   const objectId = ObjectId.ObjectId(projectId);
 
@@ -21,7 +21,7 @@ exports.updatePageThreeDraft = (req, res) => {
       project.c_lighting.items = c_lighting;
       project.c_plug = c_plug;
       project.c_utility.items = c_utility;
-      project.total_dec = total;
+      project.total_dec = total_dec;
       project.project_date = new Date();
       if (project.last_page < 3) {
         project.last_page = 3
