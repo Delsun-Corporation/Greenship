@@ -102,8 +102,13 @@ const FirstSection = ({ control }) => {
   const CountPercentageElectrical = () => {
     const predictionElectrical = CountPredictionElectrical();
 
+    const total_dec = useWatch({
+      control,
+      name: sectionName + "total_dec"
+    })
+
     if (predictionElectrical) {
-      return calcPercentageElectrical(parseInt(predictionElectrical));
+      return calcPercentageElectrical(parseInt(predictionElectrical), parseFloat(total_dec));
     }
     return NaN;
   }

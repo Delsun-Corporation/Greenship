@@ -149,13 +149,13 @@ export function calcIlluminance(area, count, lumen) {
 
 /// 5
 export function calcPotentialPV(pca, l, w) {
-    return (pca / (l * w)) 
+    return (Math.round(pca / (l * w) / 1000000)).toFixed(2);
  }
  
  export function calcPredictionElectical(potentialPv, wpeak) {
-     return (potentialPv * wpeak * 4 * 365)
+     return (Math.round(potentialPv * wpeak * 4 * 365)).toFixed(2);
  }
  
- export function calcPercentageElectrical(predictialElectrical) {
-     return (predictialElectrical/3 * 100 / 100)
+ export function calcPercentageElectrical(predictialElectrical, total_dec) {
+     return (Math.round((predictialElectrical/total_dec * 100 / 100))).toFixed(2);
  }
