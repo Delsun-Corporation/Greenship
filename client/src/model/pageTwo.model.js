@@ -15,6 +15,10 @@ export class PageTwo {
     this.wallAreaR = parseInt(secondFormData.b_wall_area_r);
     this.wallAreaS = parseInt(secondFormData.b_wall_area_s);
     this.wallAreaW = parseInt(secondFormData.b_wall_area_w);
+    this.wallAreaNE = parseInt(secondFormData.b_wall_area_ne);
+    this.wallAreaNW = parseInt(secondFormData.b_wall_area_nw);
+    this.wallAreaSE = parseInt(secondFormData.b_wall_area_se);
+    this.wallAreaSW = parseInt(secondFormData.b_wall_area_sw);
   }
 
   getSaveDraftModel() {
@@ -34,6 +38,10 @@ export class PageTwo {
           this.wallAreaS,
           this.wallAreaE,
           this.wallAreaW,
+          this.wallAreaNE,
+          this.wallAreaSE,
+          this.wallAreaNW,
+          this.wallAreaSW,
           this.wallAreaR
       ]
 

@@ -49,7 +49,11 @@ const SecondForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
           b_wall_area_s: pageTwoData.b_wall_area[1],
           b_wall_area_e: pageTwoData.b_wall_area[2],
           b_wall_area_w: pageTwoData.b_wall_area[3],
-          b_wall_area_r: pageTwoData.b_wall_area[4],
+          b_wall_area_ne: pageTwoData.b_wall_area[4],
+          b_wall_area_se: pageTwoData.b_wall_area[5],
+          b_wall_area_nw: pageTwoData.b_wall_area[6],
+          b_wall_area_sw: pageTwoData.b_wall_area[7],
+          b_wall_area_r: pageTwoData.b_wall_area[8],
           ...res.data.page_two,
         });
       })
@@ -71,7 +75,11 @@ const SecondForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
           chapter={CHAPTER_NUMBER}
         />
         <FirstSection control={control} />
-        <FormFooter chapter={CHAPTER_NUMBER} shouldRedirect={shouldRedirect} setFromNextButton={setIsFromNextButton} />
+        <FormFooter
+          chapter={CHAPTER_NUMBER}
+          shouldRedirect={shouldRedirect}
+          setFromNextButton={setIsFromNextButton}
+        />
       </Stack>
     </form>
   );
@@ -83,6 +91,7 @@ const FirstSection = ({ control }) => {
   const sectionName = "secondForm.";
 
   function CountWWR() {
+    /// Window Area Watch
     const windowAreaN = useWatch({
       control,
       name: sectionName + "b_window_area_n",
@@ -115,6 +124,8 @@ const FirstSection = ({ control }) => {
       control,
       name: sectionName + "b_window_area_sw",
     });
+
+    /// Wall Area Watch
     const wallAreaN = useWatch({
       control,
       name: sectionName + "b_wall_area_n",
@@ -131,18 +142,43 @@ const FirstSection = ({ control }) => {
       control,
       name: sectionName + "b_wall_area_w",
     });
-    const wallAreaR = useWatch({
+    const wallAreaNE = useWatch({
       control,
-      name: sectionName + "b_wall_area_r",
+      name: sectionName + "b_wall_area_ne",
     });
-    if (windowAreaE && windowAreaN && windowAreaNE && windowAreaNW && windowAreaS && windowAreaSE && windowAreaSW && windowAreaW &&
-        wallAreaE && wallAreaN && wallAreaR && wallAreaS && wallAreaW
-      ) {
-        const collectionWindowArea = [windowAreaE, windowAreaN, windowAreaNE, windowAreaNW, windowAreaS, windowAreaSE, windowAreaSW, windowAreaW]
-        const collectionWallArea = [wallAreaE, wallAreaN, wallAreaR, wallAreaS, wallAreaW]
+    const wallAreaSE = useWatch({
+      control,
+      name: sectionName + "b_wall_area_se",
+    });
+    const wallAreaNW = useWatch({
+      control,
+      name: sectionName + "b_wall_area_nw",
+    });
+    const wallAreaSW = useWatch({
+      control,
+      name: sectionName + "b_wall_area_sw",
+    });
+      const collectionWindowArea = [
+        windowAreaE,
+        windowAreaN,
+        windowAreaNE,
+        windowAreaNW,
+        windowAreaS,
+        windowAreaSE,
+        windowAreaSW,
+        windowAreaW,
+      ];
+      const collectionWallArea = [
+        wallAreaE,
+        wallAreaN,
+        wallAreaS,
+        wallAreaW,
+        wallAreaSW,
+        wallAreaNW,
+        wallAreaSE,
+        wallAreaNE,
+      ];
       return calcWWR(collectionWindowArea, collectionWallArea) + "%";
-    }
-    return null;
   }
 
   return (
@@ -246,7 +282,6 @@ const FirstSection = ({ control }) => {
               </Stack>
             </Stack>
           </Stack>
-
           <Stack
             direction="row"
             spacing={2}
@@ -292,6 +327,40 @@ const FirstSection = ({ control }) => {
                   name={sectionName + "b_wall_area_w"}
                   control={control}
                   adornment={"W"}
+                />
+              </Stack>
+              <Stack
+                direction="row"
+                spacing={2}
+                alignItems="flex-end"
+                justifyContent="space-between"
+              >
+                <BasicInputField
+                  name={sectionName + "b_wall_area_ne"}
+                  control={control}
+                  adornment={"NE"}
+                />
+                <BasicInputField
+                  name={sectionName + "b_wall_area_se"}
+                  control={control}
+                  adornment={"SE"}
+                />
+              </Stack>
+              <Stack
+                direction="row"
+                spacing={2}
+                alignItems="flex-end"
+                justifyContent="space-between"
+              >
+                <BasicInputField
+                  name={sectionName + "b_wall_area_nw"}
+                  control={control}
+                  adornment={"NW"}
+                />
+                <BasicInputField
+                  name={sectionName + "b_wall_area_sw"}
+                  control={control}
+                  adornment={"SW"}
                 />
               </Stack>
               <Stack
