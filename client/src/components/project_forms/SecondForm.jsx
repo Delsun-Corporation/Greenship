@@ -75,7 +75,11 @@ const SecondForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
           chapter={CHAPTER_NUMBER}
         />
         <FirstSection control={control} />
-        <FormFooter chapter={CHAPTER_NUMBER} shouldRedirect={shouldRedirect} setFromNextButton={setIsFromNextButton} />
+        <FormFooter
+          chapter={CHAPTER_NUMBER}
+          shouldRedirect={shouldRedirect}
+          setFromNextButton={setIsFromNextButton}
+        />
       </Stack>
     </form>
   );
@@ -154,11 +158,44 @@ const FirstSection = ({ control }) => {
       control,
       name: sectionName + "b_wall_area_sw",
     });
-    if (windowAreaE && windowAreaN && windowAreaNE && windowAreaNW && windowAreaS && windowAreaSE && windowAreaSW && windowAreaW &&
-        wallAreaE && wallAreaN && wallAreaS && wallAreaW && wallAreaSW && wallAreaNW && wallAreaSE && wallAreaNE
-      ) {
-        const collectionWindowArea = [windowAreaE, windowAreaN, windowAreaNE, windowAreaNW, windowAreaS, windowAreaSE, windowAreaSW, windowAreaW]
-        const collectionWallArea = [wallAreaE, wallAreaN, wallAreaS, wallAreaW, wallAreaSW, wallAreaNW, wallAreaSE, wallAreaNE]
+    if (
+      typeof windowAreaE === "number" &&
+      typeof windowAreaN === "number" &&
+      typeof windowAreaNE === "number" &&
+      typeof windowAreaNW === 'number' &&
+      typeof windowAreaS === 'number' &&
+      typeof windowAreaSE === "number" &&
+      typeof windowAreaSW === "number"  &&
+      typeof windowAreaW === "number"  &&
+      typeof wallAreaE === "number"  &&
+      typeof wallAreaN === "number"  &&
+      typeof wallAreaS === "number"  &&
+      typeof wallAreaW === "number"  &&
+      typeof wallAreaSW === "number"  &&
+      typeof wallAreaNW === "number"  &&
+      typeof wallAreaSE === "number"  &&
+      typeof wallAreaNE === "number" 
+    ) {
+      const collectionWindowArea = [
+        windowAreaE,
+        windowAreaN,
+        windowAreaNE,
+        windowAreaNW,
+        windowAreaS,
+        windowAreaSE,
+        windowAreaSW,
+        windowAreaW,
+      ];
+      const collectionWallArea = [
+        wallAreaE,
+        wallAreaN,
+        wallAreaS,
+        wallAreaW,
+        wallAreaSW,
+        wallAreaNW,
+        wallAreaSE,
+        wallAreaNE,
+      ];
       return calcWWR(collectionWindowArea, collectionWallArea) + "%";
     }
     return null;
@@ -387,3 +424,27 @@ const FirstSection = ({ control }) => {
     />
   );
 };
+
+function defaultFormValue() {
+  return {
+    secondForm: {
+      b_window_area_n: 0,
+      b_window_area_s: 0,
+      b_window_area_e: 0,
+      b_window_area_w: 0,
+      b_window_area_ne: 0,
+      b_window_area_se: 0,
+      b_window_area_nw: 0,
+      b_window_area_sw: 0,
+      b_wall_area_n: 0,
+      b_wall_area_s: 0,
+      b_wall_area_e: 0,
+      b_wall_area_w: 0,
+      b_wall_area_ne: 0,
+      b_wall_area_se: 0,
+      b_wall_area_nw: 0,
+      b_wall_area_sw: 0,
+      b_wall_area_r: 0,
+    },
+  };
+}
