@@ -158,24 +158,6 @@ const FirstSection = ({ control }) => {
       control,
       name: sectionName + "b_wall_area_sw",
     });
-    if (
-      typeof windowAreaE === "number" &&
-      typeof windowAreaN === "number" &&
-      typeof windowAreaNE === "number" &&
-      typeof windowAreaNW === 'number' &&
-      typeof windowAreaS === 'number' &&
-      typeof windowAreaSE === "number" &&
-      typeof windowAreaSW === "number"  &&
-      typeof windowAreaW === "number"  &&
-      typeof wallAreaE === "number"  &&
-      typeof wallAreaN === "number"  &&
-      typeof wallAreaS === "number"  &&
-      typeof wallAreaW === "number"  &&
-      typeof wallAreaSW === "number"  &&
-      typeof wallAreaNW === "number"  &&
-      typeof wallAreaSE === "number"  &&
-      typeof wallAreaNE === "number" 
-    ) {
       const collectionWindowArea = [
         windowAreaE,
         windowAreaN,
@@ -197,8 +179,6 @@ const FirstSection = ({ control }) => {
         wallAreaNE,
       ];
       return calcWWR(collectionWindowArea, collectionWallArea) + "%";
-    }
-    return null;
   }
 
   return (
@@ -424,27 +404,3 @@ const FirstSection = ({ control }) => {
     />
   );
 };
-
-function defaultFormValue() {
-  return {
-    secondForm: {
-      b_window_area_n: 0,
-      b_window_area_s: 0,
-      b_window_area_e: 0,
-      b_window_area_w: 0,
-      b_window_area_ne: 0,
-      b_window_area_se: 0,
-      b_window_area_nw: 0,
-      b_window_area_sw: 0,
-      b_wall_area_n: 0,
-      b_wall_area_s: 0,
-      b_wall_area_e: 0,
-      b_wall_area_w: 0,
-      b_wall_area_ne: 0,
-      b_wall_area_se: 0,
-      b_wall_area_nw: 0,
-      b_wall_area_sw: 0,
-      b_wall_area_r: 0,
-    },
-  };
-}
