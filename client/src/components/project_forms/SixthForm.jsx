@@ -95,6 +95,11 @@ function defaultFormValue() {
                     ach: 20,
                     illuminance: [20]
                 }
+            },
+            fifthForm: {
+                e_result: {
+                    energy_percentage: 0
+                }
             }
         }
     )
@@ -210,6 +215,52 @@ const NetZeroSection = ({ getValues }) => {
 
     }
 
+    const MixEnergyConsumptionGraph = () => {
+        const standard = 30;
+        const calculate = getValues(`fifthForm.e_result.energy_percentage`);
+
+        const chartData = [
+            { label: "Subsidised energy mix", value: calculate },
+            { label: "Target energy mix", value: standard },
+        ];
+
+        const barColors = ["#47919b", "#7e84a3"];
+
+        return (
+            <Box>
+                <ResponsiveContainer width="99%" height={200}>
+                    <BarChart
+                        width={500}
+                        height={300}
+                        data={chartData}
+                        margin={{
+                            top: 5,
+                            right: 30,
+                            left: 30,
+                            bottom: 5,
+                        }}
+                        barSize={50}
+                        layout="vertical"
+                    >
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis
+                            type="number"
+                            dataKey="value"
+                            tickFormatter={(tick) => `${tick}%`}
+                        />
+                        <YAxis type="category" dataKey="label" tick={{ fontSize: 14 }} />
+                        <Tooltip />
+                        <Bar dataKey="value" fill="#8884d8">
+                            {chartData.map((entry, index) => (
+                                <Cell key={`cell-${index}`} fill={barColors[index % 20]} />
+                            ))}
+                        </Bar>
+                    </BarChart>
+                </ResponsiveContainer>
+            </Box>
+        );
+    }
+
     return (
         <Container maxWidth="xl" disableGutters>
             <Paper elevation={2} >
@@ -236,6 +287,7 @@ const NetZeroSection = ({ getValues }) => {
 
                     <Divider style={{ width: "100%" }} />
                     <Box sx={{ fontSize: 20, fontWeight: "bold" }}>Mix Energy Consumption</Box>
+                    <MixEnergyConsumptionGraph />
 
                 </Stack>
 
@@ -307,7 +359,7 @@ const HealthyBuildingSection = ({ getValues }) => {
 
         return (
             <Box>
-                <ResponsiveContainer width="90%" height={200}>
+                <ResponsiveContainer width="99%" height={200}>
                     <BarChart
                         width={500}
                         height={300}
@@ -352,7 +404,7 @@ const HealthyBuildingSection = ({ getValues }) => {
 
         return (
             <Box>
-                <ResponsiveContainer width="90%" height={200}>
+                <ResponsiveContainer width="99%" height={200}>
                     <BarChart
                         width={500}
                         height={300}
@@ -462,7 +514,7 @@ const HealthyBuildingSection = ({ getValues }) => {
 
         return (
             <Box>
-                <ResponsiveContainer width="90%" height={200}>
+                <ResponsiveContainer width="99%" height={200}>
                     <BarChart
                         width={500}
                         height={300}
@@ -514,7 +566,7 @@ const HealthyBuildingSection = ({ getValues }) => {
 
         return (
             <Box>
-                <ResponsiveContainer width="90%" height={200}>
+                <ResponsiveContainer width="99%" height={200}>
                     <BarChart
                         data={chartData}
                         margin={{
