@@ -170,6 +170,7 @@ function defaultFormValue() {
       d_d_illuminance: [defaultIlluminances()],
       d_e_temperature: 0,
       d_f_noise_level: 0,
+      d_total_bhc: defaultTotalBhc()
     },
   };
 }
@@ -183,6 +184,14 @@ function defaultIlluminances() {
     lamp_power: 0,
     lamp_lumen: 0,
   };
+}
+
+function defaultTotalBhc() {
+  return ({
+    vbz: 20,
+    ach: 20,
+    illuminance: [20]
+  })
 }
 
 /// SECTIONS ///
@@ -670,9 +679,6 @@ const VisualComfortSection = ({ control, getValues }) => {
       name: `${sectionName}`,
     });
 
-    const standard = 75;
-    const calculate = resultArr.accessPercentage;
-
     const chartData = [];
 
     const barColors = ["#47919b", "#7e84a3", "#82ca9d"];
@@ -720,8 +726,8 @@ const VisualComfortSection = ({ control, getValues }) => {
               wrapperStyle={{ position: "relative", marginTop: "0px" }}
             />
             <Bar name="Calculated E" dataKey="value" fill={barColors[0]} />
-            <Bar name="Baseline standard E" dataKey="standardMin" fill={barColors[1]} stackId="a"/>
-            <Bar name="Upperline standard E" dataKey="standardMax" fill={barColors[2]} stackId="a"/>
+            <Bar name="Baseline standard E" dataKey="standardMin" fill={barColors[1]} stackId="a" />
+            <Bar name="Upperline standard E" dataKey="standardMax" fill={barColors[2]} stackId="a" />
           </BarChart>
         </ResponsiveContainer>
       );

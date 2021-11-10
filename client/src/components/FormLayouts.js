@@ -105,7 +105,7 @@ export const FormFooter = ({ chapter, shouldRedirect, setFromNextButton }) => (
       </Button>
     )}
     {chapter === "1" && <Box></Box>}
-    {chapter !== "5" ? (
+    {chapter !== "6" ? (
       <Button
         type="submit"
         variant="contained"

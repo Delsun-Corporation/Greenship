@@ -16,6 +16,7 @@ import SecondForm from "../components/project_forms/SecondForm";
 import ThirdForm from "../components/project_forms/ThirdForm";
 import FourthForm from "../components/project_forms/FourthForm";
 import FifthForm from "../components/project_forms/FifthPage";
+import SixthForm from "../components/project_forms/SixthForm";
 import FormDrawer from "../components/FormDrawer"
 import Footer from "../components/Footer.jsx";
 import { isAuth } from "../helpers/auth";
@@ -185,6 +186,12 @@ function FormPage() {
         onceSubmitted={(data, nextPage) => onFormSubmit(data, nextPage)}
         shouldRedirect={redirectPage}
       ></FifthForm>
+    } else if (pageNumber === 6) {
+      return <SixthForm
+      projectId={projectid}
+      onceSubmitted={(data, nextPage) => onFormSubmit(data, nextPage)}
+      shouldRedirect={redirectPage}
+    ></SixthForm>
     } else {
       return <FormPageNotFound />;
     }
