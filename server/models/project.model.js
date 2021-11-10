@@ -107,7 +107,7 @@ const projectSchema = new Schema({
   },
   b_wall_area: {
     type: [Number],
-    default: [0, 0, 0, 0, 0],
+    default: [0, 0, 0, 0, 0, 0, 0, 0, 0],
   },
   c_lighting: {
     items: [
