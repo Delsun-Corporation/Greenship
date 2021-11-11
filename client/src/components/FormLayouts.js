@@ -105,7 +105,7 @@ export const FormFooter = ({ chapter, shouldRedirect, setFromNextButton }) => (
       </Button>
     )}
     {chapter === "1" && <Box></Box>}
-    {chapter !== "5" ? (
+    {chapter !== "6" ? (
       <Button
         type="submit"
         variant="contained"
@@ -329,12 +329,10 @@ export function BasicInputField({ control, name, adornment }) {
     name,
     control,
     rules: { required: true },
-    defaultValue: "",
   });
   return (
     <TextField
       {...inputProps}
-      inputRef={ref}
       checked={value}
       value={value}
       inputProps={{ min: 0, style: { textAlign: "right" } }}
