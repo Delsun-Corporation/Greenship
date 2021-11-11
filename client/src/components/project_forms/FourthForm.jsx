@@ -72,6 +72,7 @@ const FourthForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
     const newData = {
       fourthForm: data.fourthForm,
     };
+    console.log(newData)
 
     if (isFromNextButton) {
       onceSubmitted(newData, "5");
@@ -102,7 +103,7 @@ const FourthForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
           d_d_illuminance:
             pageFourData.d_d_illuminance.items.length === 0
               ? [defaultIlluminances()]
-              : pageFourData.d_d_illuminance.items,
+              : pageFourData.d_d_illuminance.items
         });
         setLoading(false);
       })
@@ -124,10 +125,10 @@ const FourthForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
         />
         {!isLoading && (
           <>
-            <OutdoorAirSection control={control} getValues={getValues} />
-            <AchSection control={control} getValues={getValues} />
+            <OutdoorAirSection control={control} getValues={getValues} setValue={setValue}/>
+            <AchSection control={control} getValues={getValues} setValue={setValue} />
             <AccessOutsideSection control={control} getValues={getValues} />
-            <VisualComfortSection control={control} getValues={getValues} />
+            <VisualComfortSection control={control} getValues={getValues} setValue={setValue}/>
             <ThermalComfortSection control={control} getValues={getValues} />
             <AcousticalComfortSection control={control} getValues={getValues} />
             <FormFooter
@@ -188,9 +189,9 @@ function defaultIlluminances() {
 
 function defaultTotalBhc() {
   return ({
-    vbz: 20,
-    ach: 20,
-    illuminance: [20]
+    vbz: 0,
+    ach: 0,
+    illuminance: []
   })
 }
 
@@ -222,19 +223,25 @@ const OutdoorAirSection = ({ control, getValues, setValue }) => {
   };
 
   const Vbz = () => {
-    const watchValues = useWatch({
+    const rp = useWatch({
       control,
-      name: `${sectionName}`,
+      name: `${sectionName}.d_a_rp`,
     });
-    const rp = watchValues.d_a_rp;
-    const ra = watchValues.d_a_ra;
-    const az = watchValues.d_a_az;
+    const ra = useWatch({
+      control,
+      name: `${sectionName}.d_a_ra`,
+    });
+    const az = useWatch({
+      control,
+      name: `${sectionName}.d_a_az`,
+    });
     const pz = resultArr.pz;
 
     var result = "-";
     if (rp && pz && ra && az) {
       result = calcVbz(rp, pz, ra, az);
       resultArr.vbz = result;
+      setValue("fourthForm.d_total_bhc.vbz", result)
     }
 
     return (
@@ -387,9 +394,9 @@ const AchSection = ({ control, getValues, setValue }) => {
   const ACHCalculate = () => {
     const watchValues = useWatch({
       control,
-      name: `${sectionName}`,
+      name: `${sectionName}.d_b_velocity`,
     });
-    const velocity = watchValues.d_b_velocity;
+    const velocity = watchValues;
     const ventilationArea = getValues("firstForm.a_ventilation_area");
     const volume = resultArr.volume;
 
@@ -397,6 +404,7 @@ const AchSection = ({ control, getValues, setValue }) => {
     if (velocity && ventilationArea && volume) {
       result = calcACH(velocity, ventilationArea, volume);
       resultArr.ach = result;
+      setValue(`fourthForm.d_total_bhc.ach`, result)
     }
 
     return (
@@ -616,7 +624,7 @@ const AccessOutsideSection = ({ control, getValues, setValue }) => {
   );
 };
 
-const VisualComfortSection = ({ control, getValues }) => {
+const VisualComfortSection = ({ control, getValues, setValue }) => {
   const sectionName = "fourthForm.d_d_illuminance";
 
   const { fields, append, remove } = useFieldArray({
@@ -657,6 +665,7 @@ const VisualComfortSection = ({ control, getValues }) => {
         parsedStandard.length === 2 ?
           resultArr.standardMax[index] = parsedStandard[1] : resultArr.standardMax[index] = 0
       }
+      setValue(`fourthForm.d_total_bhc.illuminance`, resultArr.calculatedE)
     }
 
     return (
