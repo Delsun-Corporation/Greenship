@@ -543,7 +543,7 @@ const ACSection = ({ control, getValues, setValue }) => {
         return <InlineLabel
             title="BSL"
             subtitle="Building Sensible Load"
-            value={result}
+            value={numberWithCommas(result.toFixed(2))}
             bold
         />
     }
@@ -561,7 +561,7 @@ const ACSection = ({ control, getValues, setValue }) => {
         return <InlineLabel
             title="PSL"
             subtitle="People Sensible Load"
-            value={result}
+            value={numberWithCommas(result.toFixed(2))}
             bold
         />
     }
@@ -579,7 +579,7 @@ const ACSection = ({ control, getValues, setValue }) => {
         return <InlineLabel
             title="PLL"
             subtitle="People Latent Load"
-            value={result}
+            value={numberWithCommas(result.toFixed(2))}
             bold
         />
     }
@@ -607,7 +607,7 @@ const ACSection = ({ control, getValues, setValue }) => {
         return <InlineLabel
             title="LSL"
             subtitle="Lighting Sensible Load"
-            value={result}
+            value={numberWithCommas(result.toFixed(2))}
             bold
         />
     }
@@ -627,7 +627,7 @@ const ACSection = ({ control, getValues, setValue }) => {
         return <InlineLabel
             title="CFM1"
             subtitle="Infiltration Load"
-            value={result}
+            value={numberWithCommas(result.toFixed(2))}
             bold
         />
     }
@@ -652,7 +652,7 @@ const ACSection = ({ control, getValues, setValue }) => {
         return <InlineLabel
             title="CFM2"
             subtitle="Ventilation Load"
-            value={result}
+            value={numberWithCommas(result.toFixed(2))}
             bold
         />
     }
@@ -667,7 +667,7 @@ const ACSection = ({ control, getValues, setValue }) => {
         return <InlineLabel
             title="Cooling Load"
             subtitle="BSL + PSL + PLL + LSL + CFM1 + CFM2"
-            value={`${isNaN(result) ? "-" : result} BTU`}
+            value={`${isNaN(result) ? "-" : numberWithCommas(result.toFixed(2))} BTU`}
             bold
         />
     }
