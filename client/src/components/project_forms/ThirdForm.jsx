@@ -11,7 +11,9 @@ import {
     Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
     Button,
     TextField,
-    Divider
+    Divider,
+    ToggleButton,
+    ToggleButtonGroup, Fade
 } from '@mui/material';
 import {
     FormLayout,
@@ -21,6 +23,20 @@ import {
     SelectInput,
     InlineLabel,
 } from "../FormLayouts";
+import {
+    BarChart,
+    Bar,
+    Cell,
+    XAxis,
+    YAxis,
+    CartesianGrid,
+    Tooltip,
+    Legend,
+    ResponsiveContainer,
+    Brush,
+    Label,
+    LabelList
+} from "recharts";
 import {
     formChapters,
     lpdReference,
@@ -68,34 +84,34 @@ const ThirdForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
 
     useEffect(() => {
         axios
-          .get(`${process.env.REACT_APP_API_URL}/getpagethree`, {
-            params: {
-              projectId: projectId,
-            },
-          })
-          .then((res) => {
-            const pageThreeData = res.data.page_three;
-            const pageTwoData = res.data.page_two;
-            const pageOneData = res.data.page_one;
-            setValue("firstForm", {
-                ...pageOneData
+            .get(`${process.env.REACT_APP_API_URL}/getpagethree`, {
+                params: {
+                    projectId: projectId,
+                },
             })
-            setValue("secondForm", {
-                ...pageTwoData
+            .then((res) => {
+                const pageThreeData = res.data.page_three;
+                const pageTwoData = res.data.page_two;
+                const pageOneData = res.data.page_one;
+                setValue("firstForm", {
+                    ...pageOneData
+                })
+                setValue("secondForm", {
+                    ...pageTwoData
+                })
+                setValue("thirdForm", {
+                    ...pageThreeData,
+                    c_lighting: (pageThreeData.c_lighting.items.length === 0 ? [defaultLightingValue()] : pageThreeData.c_lighting.items),
+                    c_appliances: (pageThreeData.c_appliances.items.length === 0 ? [defaultAppliancesValue()] : pageThreeData.c_appliances.items),
+                    c_utility: (pageThreeData.c_utility.items.length === 0 ? defaultUtilityValue() : pageThreeData.c_utility.items),
+                })
+                setLoading(false);
             })
-            setValue("thirdForm", {
-                ...pageThreeData,
-                c_lighting: (pageThreeData.c_lighting.items.length === 0 ? [defaultLightingValue()] : pageThreeData.c_lighting.items),
-                c_appliances: (pageThreeData.c_appliances.items.length === 0 ? [defaultAppliancesValue()] : pageThreeData.c_appliances.items),
-                c_utility: (pageThreeData.c_utility.items.length === 0 ? defaultUtilityValue() : pageThreeData.c_utility.items),
-            })
-            setLoading(false);
-          })
-          .catch((err) => {
-            console.log(err);
-            toast.error("Something went wrong, please try again");
-          });
-      }, [projectId]);
+            .catch((err) => {
+                console.log(err);
+                toast.error("Something went wrong, please try again");
+            });
+    }, [projectId]);
 
     const CHAPTER_NUMBER = "3";
 
@@ -109,15 +125,15 @@ const ThirdForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
                     chapter={CHAPTER_NUMBER}
                 />
                 {!isLoading && (<>
-                <LightingSection control={control} getValues={getValues} setValue={setValue} />
-                <ACSection control={control} getValues={getValues} setValue={setValue} />
-                <AppliancesSection control={control} getValues={getValues} setValue={setValue} />
-                <UtilitySection control={control} getValues={getValues} setValue={setValue} />
-                <PlugSection control={control} getValues={getValues} setValue={setValue} />
-                <TotalSection control={control} />
-                <FormFooter chapter={CHAPTER_NUMBER} setFromNextButton={setIsFromNextButton} shouldRedirect={shouldRedirect} />
+                    <LightingSection control={control} getValues={getValues} setValue={setValue} />
+                    <ACSection control={control} getValues={getValues} setValue={setValue} />
+                    <AppliancesSection control={control} getValues={getValues} setValue={setValue} />
+                    <UtilitySection control={control} getValues={getValues} setValue={setValue} />
+                    <PlugSection control={control} getValues={getValues} setValue={setValue} />
+                    <TotalSection control={control} />
+                    <FormFooter chapter={CHAPTER_NUMBER} setFromNextButton={setIsFromNextButton} shouldRedirect={shouldRedirect} />
                 </>
-        )}
+                )}
             </Stack>
 
         </form>
@@ -351,7 +367,7 @@ const LightingSection = ({ control, getValues, setValue }) => {
         />
     }
 
-    const LightingEnergyConsumption = ({index}) => {
+    const LightingEnergyConsumption = ({ index }) => {
         const watchValues = useWatch({
             control,
             name: `${sectionName}`,
@@ -362,7 +378,7 @@ const LightingSection = ({ control, getValues, setValue }) => {
         const leOperationalDay = totalLeArr.leOperationalDay[index]
         const leOperationalNonDay = totalLeArr.leOperationalNonDay[index]
         const leNonOperational = totalLeArr.leNonOperational[index]
-        
+
         var result = calcLightingEnergyConsumption(leOperationalDay, leOperationalNonDay, leNonOperational, gfa)
 
         if (totalLeArr.energyConsumption.length < index) {
@@ -394,7 +410,7 @@ const LightingSection = ({ control, getValues, setValue }) => {
             totalLeArr.energyConsumption.reduce(function (sum, item) {
                 return sum + item;
             }, 0)
-        
+
 
         setValue("thirdForm.total_dec.lighting", result)
 
@@ -472,7 +488,7 @@ const LightingSection = ({ control, getValues, setValue }) => {
                                             <LeDuringOperationalDay index={index} />
                                             <LeDuringOperationalNonDay index={index} />
                                             <LeDuringNonOperational index={index} />
-                                            <Divider sx={{ maxWidth: "100%"}} />
+                                            <Divider sx={{ maxWidth: "100%" }} />
                                             <LightingEnergyConsumption index={index} />
                                         </Stack>
 
@@ -925,7 +941,7 @@ const UtilitySection = ({ control, getValues, setValue }) => {
         })
 
         var result = "-"
-        result = (totalUtilityConsumptionArr.reduce((a, v) => a + v)).toFixed(2);
+        result = (totalUtilityConsumptionArr.reduce((a, v) => a + v));
         setValue("thirdForm.total_dec.utility", result)
 
         return (<Paper sx={{ paddingX: 2, paddingY: 1, backgroundColor: "green", color: "white" }}>
@@ -1213,53 +1229,228 @@ const TotalSection = ({ control }) => {
         name: `thirdForm.total_dec`
     })
 
-    const DesignEnergyConsumption = () => {
-        var result = watchValues.lighting + watchValues.ac + watchValues.appliances + parseFloat(watchValues.utility) + watchValues.plug
+    console.log(watchValues)
 
+    var result = watchValues.lighting + watchValues.ac + watchValues.appliances + watchValues.utility + watchValues.plug
+
+    console.log(result)
+
+    const DesignEnergyConsumption = () => {
         return (<Paper sx={{ paddingX: 2, paddingY: 1, backgroundColor: "green", color: "white" }}>
             <InlineLabel
                 title="Design Energy Consumption"
-                value={(isNaN(result) ? "-" : numberWithCommas(result.toFixed(2))) + " kWh/m2 per year"}
+                value={(isNaN(result) ? "-" : numberWithCommas(result)) + " kWh/m2 per year"}
             />
         </Paper>)
     }
 
-    var totalLighting = 0
-    if (!isNaN(watchValues.lighting) ) {totalLighting = watchValues.lighting}
+    const TotalEnergyGraph = () => {
+
+        const data = [
+            {
+                name: "Design Energy Consumption",
+                lighting: watchValues.lighting,
+                ac: watchValues.ac,
+                appliances: watchValues.appliances,
+                utility: watchValues.utility,
+                plug: watchValues.plug,
+            }
+        ];
+
+        const RenderPercentLabel = (props) => {
+            const { value, ...rest } = props.props
+            const percentage = (parseFloat(value) / parseFloat(result)) * 100
+            return <Label {...rest} value={`${percentage.toFixed(2)}%`} fontSize="20" fill="#FFFFFF"
+                fontWeight="Bold" offset={20} />
+        }
+
+        const RenderTitleLabel = ({ props, label }) => {
+            return <Label {...props} value={label} fontSize="14" fill="#FFFFFF" opacity={0.7} fontWeight="bold" offset={20} position="insideTop" />
+        }
+
+        const RenderAmountLabel = ({ props, label }) => {
+            return <Label {...props} value={numberWithCommas(label)} fontSize="14" fill="#FFFFFF" opacity={0.7} fontWeight="bold" offset={20} position="insideBottom" />
+        }
+
+        const renderLightingLabel = (props) => {
+            const { content, ...rest } = props;
+            return <>
+                <RenderPercentLabel props={rest} />
+                <RenderTitleLabel props={rest} label="LIGHTING" />
+                <RenderAmountLabel props={rest} label={data[0].lighting} />
+            </>;
+        };
+
+        const renderAcLabel = (props) => {
+            const { content, ...rest } = props;
+            return <>
+                <RenderPercentLabel props={rest} />
+                <RenderTitleLabel props={rest} label="AC" />
+                <RenderAmountLabel props={rest} label={data[0].ac} />
+            </>;
+        };
+
+        const renderAppliancesLabel = (props) => {
+            const { content, ...rest } = props;
+            return <>
+                <RenderPercentLabel props={rest} />
+                <RenderTitleLabel props={rest} label="APPLIANCES" />
+                <RenderAmountLabel props={rest} label={data[0].appliances} />
+            </>;
+        };
+
+        const renderUtilityLabel = (props) => {
+            const { content, ...rest } = props;
+            return <>
+                <RenderPercentLabel props={rest} />
+                <RenderTitleLabel props={rest} label="UTILITY" />
+                <RenderAmountLabel props={rest} label={data[0].utility} />
+            </>;
+        };
+
+        const renderPlugLabel = (props) => {
+            const { content, ...rest } = props;
+            return <>
+                <RenderPercentLabel props={rest} />
+                <RenderTitleLabel props={rest} label="PLUG" />
+                <RenderAmountLabel props={rest} label={data[0].plug} />
+            </>;
+        };
+
+        const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#e56273'];
+
+        return (
+            <Paper elevation={2} sx={{ marginX: 0 }}>
+                <ResponsiveContainer height={100} width={"100%"}>
+                    <BarChart
+                        layout="vertical"
+                        data={data}
+                        margin={0}
+                        padding={0}
+                        width={300}
+                        barCategoryGap={0}
+                        stackOffset="expand"
+                    >
+                        <XAxis hide type="number" />
+                        <YAxis hide
+                            dataKey="name"
+                            type="category"
+                            axisLine={false}
+                        />
+                        <Bar dataKey="lighting" fill={COLORS[0]} stackId="a" isAnimationActive={false} >
+                            <LabelList
+                                dataKey="lighting"
+                                position="center"
+                                content={renderLightingLabel}
+                            />
+                        </Bar>
+                        <Bar dataKey="ac" fill={COLORS[1]} stackId="a" isAnimationActive={false}>
+                            <LabelList
+                                dataKey="ac"
+                                position="center"
+                                content={renderAcLabel}
+                            />
+                        </Bar>
+                        <Bar dataKey="appliances" fill={COLORS[2]} stackId="a" isAnimationActive={false}>
+                            <LabelList
+                                dataKey="appliances"
+                                position="center"
+                                content={renderAppliancesLabel}
+                            />
+                        </Bar>
+                        <Bar dataKey="utility" fill={COLORS[3]} stackId="a" isAnimationActive={false}>
+                            <LabelList
+                                dataKey="utility"
+                                position="center"
+                                content={renderUtilityLabel}
+                            />
+                        </Bar>
+                        <Bar dataKey="plug" fill={COLORS[4]} stackId="a" isAnimationActive={false}>
+                            <LabelList
+                                dataKey="plug"
+                                position="center"
+                                content={renderPlugLabel}
+                            />
+                        </Bar>
+                    </BarChart>
+                </ResponsiveContainer>
+            </Paper>
+        );
+    }
+
+    const TotalDEC = () => {
+        return <Stack
+            direction="row"
+            divider={<Divider orientation="vertical" flexItem />}
+            spacing={4} justifyContent="center" height={100}
+        >
+            <Stack direction="column" spacing={0} alignItems="center" justifyContent="center">
+                <Box sx={{ fontSize: 14, fontWeight: "bold", color: "text.secondary" }}>LIGHTING</Box>
+                <Box sx={{ fontSize: 20, fontWeight: "bold" }}>{isNaN(watchValues.lighting) ? 0 : numberWithCommas(watchValues.lighting)}</Box>
+            </Stack>
+            <Stack direction="column" spacing={0} alignItems="center" justifyContent="center">
+                <Box sx={{ fontSize: 14, fontWeight: "bold", color: "text.secondary" }}>AC</Box>
+                <Box sx={{ fontSize: 20, fontWeight: "bold" }}>{isNaN(watchValues.ac) ? 0 : numberWithCommas(watchValues.ac)}</Box>
+            </Stack>
+            <Stack direction="column" spacing={0} alignItems="center" justifyContent="center">
+                <Box sx={{ fontSize: 14, fontWeight: "bold", color: "text.secondary" }}>APPLIANCES</Box>
+                <Box sx={{ fontSize: 20, fontWeight: "bold" }}>{numberWithCommas(watchValues.appliances)}</Box>
+            </Stack>
+            <Stack direction="column" spacing={0} alignItems="center" justifyContent="center">
+                <Box sx={{ fontSize: 14, fontWeight: "bold", color: "text.secondary" }}>UTILITY</Box>
+                <Box sx={{ fontSize: 20, fontWeight: "bold" }}>{numberWithCommas(watchValues.utility)}</Box>
+            </Stack>
+            <Stack direction="column" spacing={0} alignItems="center" justifyContent="center">
+                <Box sx={{ fontSize: 14, fontWeight: "bold", color: "text.secondary" }}>PLUG</Box>
+                <Box sx={{ fontSize: 20, fontWeight: "bold" }}>{numberWithCommas(watchValues.plug)}</Box>
+            </Stack>
+        </Stack>
+    }
+
+    const [display, setDisplay] = React.useState(true);
+
+    const handleDisplayChange = (event, newDisplay) => {
+        if (newDisplay !== null) {
+            setDisplay(newDisplay);
+        }
+    };
+
+    const ToggleView = () => {
+
+        return (
+            <ToggleButtonGroup
+                color="primary"
+                value={display}
+                exclusive
+                onChange={handleDisplayChange}
+            >
+                <ToggleButton value={true}>Graph View</ToggleButton>
+                <ToggleButton value={false}>Number View</ToggleButton>
+            </ToggleButtonGroup>
+        );
+    }
 
     return (
-        <FormLayout
-        leftComponent= {
-                <Stack
-                    direction="row"
-                    divider={<Divider orientation="vertical" flexItem />}
-                    spacing={4} justifyContent="center"
-                >
-                    <Stack direction="column" spacing={0} alignItems="center">
-                        <Box sx={{ fontSize: 14, fontWeight: "bold", color: "text.secondary" }}>LIGHTING</Box>
-                        <Box sx={{ fontSize: 20, fontWeight: "bold" }}>{isNaN(watchValues.lighting) ? 0 : numberWithCommas(watchValues.lighting)}</Box>
+        <Container maxWidth="xl" disableGutters>
+            <Paper elevation={2} >
+                <Stack direction="column" spacing={2} sx={{ padding: 4 }}>
+                    <Stack direction="row" justifyContent="space-between">
+                        <Box sx={{ fontSize: 24, fontWeight: "bold" }}>Summary of Active Design Strategy</Box>
+                        <ToggleView />
                     </Stack>
-                    <Stack direction="column" spacing={0} alignItems="center">
-                        <Box sx={{ fontSize: 14, fontWeight: "bold", color: "text.secondary" }}>AC</Box>
-                        <Box sx={{ fontSize: 20, fontWeight: "bold" }}>{isNaN(watchValues.ac) ? 0 : numberWithCommas((watchValues.ac).toFixed(2))}</Box>
-                    </Stack>
-                    <Stack direction="column" spacing={0} alignItems="center">
-                        <Box sx={{ fontSize: 14, fontWeight: "bold", color: "text.secondary" }}>APPLIANCES</Box>
-                        <Box sx={{ fontSize: 20, fontWeight: "bold" }}>{numberWithCommas(watchValues.appliances)}</Box>
-                    </Stack>
-                    <Stack direction="column" spacing={0} alignItems="center">
-                        <Box sx={{ fontSize: 14, fontWeight: "bold", color: "text.secondary" }}>UTILITY</Box>
-                        <Box sx={{ fontSize: 20, fontWeight: "bold" }}>{numberWithCommas(watchValues.utility)}</Box>
-                    </Stack>
-                    <Stack direction="column" spacing={0} alignItems="center">
-                        <Box sx={{ fontSize: 14, fontWeight: "bold", color: "text.secondary" }}>PLUG</Box>
-                        <Box sx={{ fontSize: 20, fontWeight: "bold" }}>{watchValues.plug}</Box>
-                    </Stack>
+
+                    <Box position="relative" sx={{ height: 100 }}>
+                        <Fade in={display}><Box position="absolute" height={100} width="100%" sx={{ zIndex: 9 }}><TotalEnergyGraph /></Box></Fade>
+                        <Fade in={!display}><Box position="absolute" height={100} width="100%" sx={{ zIndex: 10 }}><TotalDEC /></Box></Fade>
+                    </Box>
+
+                    {/* {(display === 'graph') && <TotalEnergyGraph />}
+                {(display === 'number') && <TotalDEC />} */}
+                    <DesignEnergyConsumption />
                 </Stack>
-        } rightComponent= {
-            <DesignEnergyConsumption />
-        }
-        />
+
+            </Paper>
+        </Container>
     )
 }
 
@@ -1375,7 +1566,6 @@ const PowerFactorTable = () => {
                                 <TableCell align="right">{powerFactor[i].power}</TableCell>
                             </TableRow>
                         ))}
-
                     </TableBody>
                 </Table>
 
@@ -1399,10 +1589,8 @@ const PowerFactorTable = () => {
                                 <TableCell align="right">{powerFactor[i + 5].power}</TableCell>
                             </TableRow>
                         ))}
-
                     </TableBody>
                 </Table>
-
             </TableContainer>
         </Stack>
 
@@ -1410,5 +1598,5 @@ const PowerFactorTable = () => {
 };
 
 function numberWithCommas(x) {
-    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return parseFloat(x).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
