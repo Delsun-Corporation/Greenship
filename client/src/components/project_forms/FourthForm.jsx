@@ -72,6 +72,7 @@ const FourthForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
     const newData = {
       fourthForm: data.fourthForm,
     };
+    console.log(newData)
 
     if (isFromNextButton) {
       onceSubmitted(newData, "5");
@@ -393,9 +394,9 @@ const AchSection = ({ control, getValues, setValue }) => {
   const ACHCalculate = () => {
     const watchValues = useWatch({
       control,
-      name: `${sectionName}`,
+      name: `${sectionName}.d_b_velocity`,
     });
-    const velocity = watchValues.d_b_velocity;
+    const velocity = watchValues;
     const ventilationArea = getValues("firstForm.a_ventilation_area");
     const volume = resultArr.volume;
 
