@@ -375,7 +375,7 @@ const LightingSection = ({ control, getValues, setValue }) => {
         return (
             <InlineLabel
                 title={`${name} Energy Consumption`}
-                value={`${isNaN(result) ? "-" : result} kWh/m2 per year`}
+                value={`${isNaN(result) ? "-" : numberWithCommas(result)} kWh/m2 per year`}
                 bold
             />
         )
@@ -401,7 +401,7 @@ const LightingSection = ({ control, getValues, setValue }) => {
         return (<Paper sx={{ paddingX: 2, paddingY: 1, backgroundColor: "green", color: "white" }}>
             <InlineLabel
                 title="Total Lighting Energy Consumption"
-                value={`${isNaN(result) ? "-" : result} kWh/m2 per year`}
+                value={`${isNaN(result) ? "-" : numberWithCommas(result)} kWh/m2 per year`}
                 bold
             />
         </Paper>
@@ -440,7 +440,7 @@ const LightingSection = ({ control, getValues, setValue }) => {
                                                     <TextField
                                                         onChange={onChange}
                                                         value={value} variant="outlined" size="small"
-                                                        label={"Item #" + (index + 1) + " name"}
+                                                        label={"Room #" + (index + 1) + " name"}
                                                         bgcolor="white"
                                                     />
                                                 )}
@@ -690,7 +690,7 @@ const ACSection = ({ control, getValues, setValue }) => {
             <Paper sx={{ paddingX: 2, paddingY: 1, backgroundColor: "green", color: "white" }}>
                 <InlineLabel
                     title="Total AC Energy Consumption"
-                    value={`${isNaN(result) ? "-" : result} kWh/m2 per year`}
+                    value={`${isNaN(result) ? "-" : numberWithCommas(result.toFixed(2))} kWh/m2 per year`}
                 />
             </Paper>
         )
@@ -765,7 +765,7 @@ const AppliancesSection = ({ control, getValues, setValue }) => {
 
         return <InlineLabel
             title="Energy Consumption"
-            value={isNaN(result) ? "-" : result + " kWh/m2 per year"}
+            value={isNaN(result) ? "-" : numberWithCommas(result) + " kWh/m2 per year"}
         />
     }
 
@@ -787,7 +787,7 @@ const AppliancesSection = ({ control, getValues, setValue }) => {
             <Paper sx={{ paddingX: 2, paddingY: 1, backgroundColor: "green", color: "white" }}>
                 <InlineLabel
                     title="Total Appliance Energy Consumption"
-                    value={(isNaN(result) ? "-" : result) + " kWh/m2 per year"}
+                    value={(isNaN(result) ? "-" : numberWithCommas(result.toFixed(2))) + " kWh/m2 per year"}
                 />
             </Paper>
         )
@@ -825,7 +825,7 @@ const AppliancesSection = ({ control, getValues, setValue }) => {
                                                     <TextField
                                                         onChange={onChange}
                                                         value={value} variant="outlined" size="small"
-                                                        label={"Item #" + (index + 1) + " name"}
+                                                        label={"Room #" + (index + 1) + " name"}
                                                         bgcolor="white"
                                                     />
                                                 )}
@@ -890,7 +890,7 @@ const UtilitySection = ({ control, getValues, setValue }) => {
 
         return <InlineLabel
             title="Energy Consumption"
-            value={(isNaN(result) ? "-" : result) + " kWh/m2 per year"}
+            value={(isNaN(result) ? "-" : numberWithCommas(result.toFixed(2))) + " kWh/m2 per year"}
             bold
         />
     }
@@ -913,7 +913,7 @@ const UtilitySection = ({ control, getValues, setValue }) => {
 
         return <InlineLabel
             title="Energy Consumption"
-            value={(isNaN(result) ? "-" : result) + " kWh/m2 per year"}
+            value={(isNaN(result) ? "-" : numberWithCommas(result.toFixed(2))) + " kWh/m2 per year"}
             bold
         />
     }
@@ -925,13 +925,13 @@ const UtilitySection = ({ control, getValues, setValue }) => {
         })
 
         var result = "-"
-        result = totalUtilityConsumptionArr.reduce((a, v) => a + v)
+        result = (totalUtilityConsumptionArr.reduce((a, v) => a + v)).toFixed(2);
         setValue("thirdForm.total_dec.utility", result)
 
         return (<Paper sx={{ paddingX: 2, paddingY: 1, backgroundColor: "green", color: "white" }}>
             <InlineLabel
                 title="Total Utility Energy Consumption"
-                value={result + " kWh/m2 per year"}
+                value={numberWithCommas(result) + " kWh/m2 per year"}
             />
         </Paper>)
     }
@@ -1129,7 +1129,7 @@ const PlugSection = ({ control, getValues, setValue }) => {
 
         return <InlineLabel
             title="Plug energy during AC hours"
-            value={result + " kWh/year"}
+            value={numberWithCommas(result) + " kWh/year"}
         />
     }
 
@@ -1150,7 +1150,7 @@ const PlugSection = ({ control, getValues, setValue }) => {
 
         return <InlineLabel
             title="Plug energy during non-AC hours"
-            value={result + " kWh/year"}
+            value={numberWithCommas(result) + " kWh/year"}
         />
     }
 
@@ -1173,7 +1173,7 @@ const PlugSection = ({ control, getValues, setValue }) => {
         return (<Paper sx={{ paddingX: 2, paddingY: 1, backgroundColor: "green", color: "white" }}>
             <InlineLabel
                 title="Total Plug Energy Consumption"
-                value={result + " kWh/m2 per year"}
+                value={numberWithCommas(result.toFixed(2)) + " kWh/m2 per year"}
             />
         </Paper>)
     }
@@ -1214,12 +1214,12 @@ const TotalSection = ({ control }) => {
     })
 
     const DesignEnergyConsumption = () => {
-        var result = watchValues.lighting + watchValues.ac + watchValues.appliances + watchValues.utility + watchValues.plug
+        var result = watchValues.lighting + watchValues.ac + watchValues.appliances + parseFloat(watchValues.utility) + watchValues.plug
 
         return (<Paper sx={{ paddingX: 2, paddingY: 1, backgroundColor: "green", color: "white" }}>
             <InlineLabel
                 title="Design Energy Consumption"
-                value={(isNaN(result) ? "-" : result) + " kWh/m2 per year"}
+                value={(isNaN(result) ? "-" : numberWithCommas(result.toFixed(2))) + " kWh/m2 per year"}
             />
         </Paper>)
     }
@@ -1237,19 +1237,19 @@ const TotalSection = ({ control }) => {
                 >
                     <Stack direction="column" spacing={0} alignItems="center">
                         <Box sx={{ fontSize: 14, fontWeight: "bold", color: "text.secondary" }}>LIGHTING</Box>
-                        <Box sx={{ fontSize: 20, fontWeight: "bold" }}>{isNaN(watchValues.lighting) ? 0 : watchValues.lighting}</Box>
+                        <Box sx={{ fontSize: 20, fontWeight: "bold" }}>{isNaN(watchValues.lighting) ? 0 : numberWithCommas(watchValues.lighting)}</Box>
                     </Stack>
                     <Stack direction="column" spacing={0} alignItems="center">
                         <Box sx={{ fontSize: 14, fontWeight: "bold", color: "text.secondary" }}>AC</Box>
-                        <Box sx={{ fontSize: 20, fontWeight: "bold" }}>{isNaN(watchValues.ac) ? 0 : watchValues.ac}</Box>
+                        <Box sx={{ fontSize: 20, fontWeight: "bold" }}>{isNaN(watchValues.ac) ? 0 : numberWithCommas((watchValues.ac).toFixed(2))}</Box>
                     </Stack>
                     <Stack direction="column" spacing={0} alignItems="center">
                         <Box sx={{ fontSize: 14, fontWeight: "bold", color: "text.secondary" }}>APPLIANCES</Box>
-                        <Box sx={{ fontSize: 20, fontWeight: "bold" }}>{watchValues.appliances}</Box>
+                        <Box sx={{ fontSize: 20, fontWeight: "bold" }}>{numberWithCommas(watchValues.appliances)}</Box>
                     </Stack>
                     <Stack direction="column" spacing={0} alignItems="center">
                         <Box sx={{ fontSize: 14, fontWeight: "bold", color: "text.secondary" }}>UTILITY</Box>
-                        <Box sx={{ fontSize: 20, fontWeight: "bold" }}>{watchValues.utility}</Box>
+                        <Box sx={{ fontSize: 20, fontWeight: "bold" }}>{numberWithCommas(watchValues.utility)}</Box>
                     </Stack>
                     <Stack direction="column" spacing={0} alignItems="center">
                         <Box sx={{ fontSize: 14, fontWeight: "bold", color: "text.secondary" }}>PLUG</Box>
@@ -1404,8 +1404,11 @@ const PowerFactorTable = () => {
                 </Table>
 
             </TableContainer>
-
         </Stack>
 
     );
 };
+
+function numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
