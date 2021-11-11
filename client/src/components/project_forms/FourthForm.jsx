@@ -72,7 +72,7 @@ const FourthForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
     const newData = {
       fourthForm: data.fourthForm,
     };
-
+    console.log(newData);
     if (isFromNextButton) {
       onceSubmitted(newData, "5");
     } else {
