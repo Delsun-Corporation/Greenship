@@ -25,7 +25,7 @@ import {
   FormLayout,
 } from "../FormLayouts";
 import { calcAccessPercentage } from "../../datas/FormLogic";
-import { formChapters } from "../../datas/Datas";
+import { formChapters, visualComfort } from "../../datas/Datas";
 import {
   BarChart,
   Bar,
@@ -73,13 +73,35 @@ const SixthForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
         setValue("thirdForm", {
             ...res.data.thirdForm,
         })
+        const temp = res.data.fourthForm.d_d_illuminance
+        var illuminanceArr = []
+        temp.map((entry, index) => {
+            console.log("entry", entry)
+            const roomActivity = visualComfort.find((element) => {
+                return element.locActivity === entry.room_activity.locActivity
+            })
+            const tempObject = {
+                room_activity: roomActivity,
+                  area: entry.area,
+                  lamp_type: entry.lamp_type,
+                  lamp_count: entry.lamp_count,
+                  lamp_power: entry.lamp_power,
+                  lamp_lumen: entry.lamp_lumen,
+            }
+            illuminanceArr.push(tempObject)
+        })
+
+        console.log(illuminanceArr)
+        
         setValue("fourthForm", {
             ...res.data.fourthForm,
+            d_d_illuminance: illuminanceArr
         })
         setValue("fifthForm", {
             ...res.data.fifthForm,
         })
         setLoading(false);
+        console.log("fourt", getValues("fourthForm"))
       })
       .catch((err) => {
         console.log(err);
