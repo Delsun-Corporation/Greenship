@@ -85,7 +85,7 @@ export const FormHeader = ({ title, projectId, shouldRedirect }) => (
       >
         Delete
       </Button>
-      <Button type="submit" variant="contained">
+      <Button type="submit" variant="contained" sx={{ backgroundColor: "steelTeal"}}>
         Save Draft
       </Button>
     </Stack>
@@ -94,10 +94,12 @@ export const FormHeader = ({ title, projectId, shouldRedirect }) => (
 );
 
 export const FormFooter = ({ chapter, shouldRedirect, setFromNextButton }) => (
+  <ThemeProvider theme={theme}>
   <Stack direction="row" justifyContent="space-between" alignItems="center">
     {chapter !== "1" && (
       <Button
         variant="contained"
+        sx={{ backgroundColor: "steelTeal"}}
         onClick={(e) => {
           shouldRedirect(`${parseInt(chapter) - 1}`);
         }}
@@ -114,6 +116,7 @@ export const FormFooter = ({ chapter, shouldRedirect, setFromNextButton }) => (
       <Button
         type="submit"
         variant="contained"
+        sx={{ backgroundColor: "steelTeal"}}
         onClick={(e) => {
           setFromNextButton(true);
         }}
@@ -126,6 +129,7 @@ export const FormFooter = ({ chapter, shouldRedirect, setFromNextButton }) => (
       </Button>
     ) : null}
   </Stack>
+  </ThemeProvider>
   /// Need logic for last page
 );
 
