@@ -331,7 +331,7 @@ const ThirdSection = ({ control }) => {
     });
     if (floorNumber && avgFloorHeight && occupancyDensity) {
       return (
-        calcRoomVolumePerPerson(floorNumber, avgFloorHeight, occupancyDensity) +
+        (calcRoomVolumePerPerson(floorNumber, avgFloorHeight, occupancyDensity)).toFixed(2) +
         " m3"
       );
     }

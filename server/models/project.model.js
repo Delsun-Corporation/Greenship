@@ -292,6 +292,20 @@ const projectSchema = new Schema({
     type: [String],
     default: 0,
   },
+  d_total_bhc: {
+    vbz: {
+      type: Number,
+      default: 0
+    },
+    ach: {
+      type: Number,
+      default: 0
+    },
+    illuminance: {
+      type: [Number],
+      default: [0]
+    }
+  },
   e_facade_area: {
     type: Number,
     default: 0,
@@ -318,6 +332,12 @@ const projectSchema = new Schema({
       default: 0
     },
     h: {
+      type: Number,
+      default: 0
+    }
+  },
+  e_result: {
+    energy_percentage: {
       type: Number,
       default: 0
     }

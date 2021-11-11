@@ -33,6 +33,10 @@ const {
     getPageFiveDraft
 } = require('../controllers/project_controller/pageFive.controller')
 
+const  {
+    getPageSixDraft
+} = require('../controllers/project_controller/pageSix.controller')
+
 router.post('/createproject', createProject);
 
 router.put('/updatepageone', updatePageOneDraft);
@@ -50,5 +54,6 @@ router.get('/getlastpage', getLastPage);
 router.get('/getpagethree', getPageThreeDraft);
 router.get('/getpagefour', getPageFourDraft);
 router.get('/getpagefive', getPageFiveDraft);
+router.get('/getpagesix', getPageSixDraft);
 
 module.exports = router;
