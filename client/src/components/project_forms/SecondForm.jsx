@@ -17,10 +17,11 @@ import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Resp
 
 const SecondForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
   const methods = useForm({
-    // defaultValues: defaultFormValue()
+    defaultValues: defaultFormValue()
   });
   const { control, handleSubmit, setValue } = methods;
   const [isFromNextButton, setIsFromNextButton] = useState(false);
+  const [isLoading, setLoading] = useState(true);
 
   const onSubmit = (data) => {
     console.log(data)
@@ -60,6 +61,7 @@ const SecondForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
           b_wall_area_r: pageTwoData.b_wall_area[8],
           ...res.data.page_two,
         });
+        setLoading(false);
       })
       .catch((err) => {
         console.log(err);
@@ -78,7 +80,11 @@ const SecondForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
           shouldRedirect={shouldRedirect}
           chapter={CHAPTER_NUMBER}
         />
-        <FirstSection control={control} />
+        {!isLoading && (
+          <>
+            <FirstSection control={control} />
+          </>
+        )}
         <FormFooter
           chapter={CHAPTER_NUMBER}
           shouldRedirect={shouldRedirect}
