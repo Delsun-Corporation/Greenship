@@ -277,6 +277,10 @@ export const heatLoad = [
             { orientation: "South", value: "2.15 (to-ti)" },
             { orientation: "East", value: "2.15 (to-ti)" },
             { orientation: "West", value: "2.16 (to-ti)" },
+            { orientation: "North East", value: "2.15 (to-ti)" },
+            { orientation: "South East", value: "2.15 (to-ti)" },
+            { orientation: "North West", value: "2.155 (to-ti)" },
+            { orientation: "South West", value: "2.155 (to-ti)" },
             { orientation: "Roof", value: "11.5 (to-ti)" }
         ]
     }

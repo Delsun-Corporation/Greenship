@@ -143,7 +143,7 @@ function defaultFormValue() {
             },
             secondForm: {
                 b_window_area: [0, 0, 0, 0, 0, 0, 0, 0],
-                b_wall_area: [0, 0, 0, 0, 0]
+                b_wall_area: [0, 0, 0, 0, 0, 0, 0, 0]
             },
             thirdForm: {
                 c_lighting: [defaultLightingValue()],
@@ -534,7 +534,7 @@ const ACSection = ({ control, getValues, setValue }) => {
         const toTi = watchValues.to_ti
 
         var result = 0
-        if (windowAreas && wallAreas && toTi && windowAreas.length === 8 && wallAreas.length === 5) {
+        if (windowAreas && wallAreas && toTi && windowAreas.length === 8 && wallAreas.length === 9) {
             result = calcBSL(windowAreas, wallAreas, windowHeatLoad, wallHeatLoad, toTi)
         }
 
