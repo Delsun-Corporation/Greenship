@@ -329,12 +329,10 @@ export function BasicInputField({ control, name, adornment }) {
     name,
     control,
     rules: { required: true },
-    defaultValue: "",
   });
   return (
     <TextField
       {...inputProps}
-      inputRef={ref}
       checked={value}
       value={value}
       inputProps={{ min: 0, style: { textAlign: "right" } }}
