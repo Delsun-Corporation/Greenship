@@ -11,7 +11,8 @@ import {
   Paper,
   Divider,
   InputAdornment,
-  Switch
+  Switch,
+  ThemeProvider
 } from "@mui/material";
 import {
   formChapters,
@@ -21,6 +22,7 @@ import {
 } from "../datas/Datas";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { theme } from "../assets/Theme";
 
 export const FormLayout = ({ leftComponent, rightComponent }) => (
   <Container maxWidth="xl" disableGutters>
@@ -50,6 +52,7 @@ const deleteProject = (id) => {
 };
 
 export const FormHeader = ({ title, projectId, shouldRedirect }) => (
+  <ThemeProvider theme={theme}>
   <Stack direction="row" justifyContent="space-between" alignItems="center">
     <Stack direction="column">
       <Box sx={{ fontWeight: "medium", fontSize: 18, color: "text.secondary" }}>
@@ -60,6 +63,7 @@ export const FormHeader = ({ title, projectId, shouldRedirect }) => (
     <Stack direction="row" spacing={2}>
       <Button
         variant="contained"
+        sx={{ backgroundColor: "candyPink"}}
         onClick={(e) => {
           deleteProject(projectId)
             .then((res) => {
@@ -81,18 +85,21 @@ export const FormHeader = ({ title, projectId, shouldRedirect }) => (
       >
         Delete
       </Button>
-      <Button type="submit" variant="contained">
+      <Button type="submit" variant="contained" sx={{ backgroundColor: "steelTeal"}}>
         Save Draft
       </Button>
     </Stack>
   </Stack>
+  </ThemeProvider>
 );
 
 export const FormFooter = ({ chapter, shouldRedirect, setFromNextButton }) => (
+  <ThemeProvider theme={theme}>
   <Stack direction="row" justifyContent="space-between" alignItems="center">
     {chapter !== "1" && (
       <Button
         variant="contained"
+        sx={{ backgroundColor: "steelTeal"}}
         onClick={(e) => {
           shouldRedirect(`${parseInt(chapter) - 1}`);
         }}
@@ -109,6 +116,7 @@ export const FormFooter = ({ chapter, shouldRedirect, setFromNextButton }) => (
       <Button
         type="submit"
         variant="contained"
+        sx={{ backgroundColor: "steelTeal"}}
         onClick={(e) => {
           setFromNextButton(true);
         }}
@@ -121,6 +129,7 @@ export const FormFooter = ({ chapter, shouldRedirect, setFromNextButton }) => (
       </Button>
     ) : null}
   </Stack>
+  </ThemeProvider>
   /// Need logic for last page
 );
 

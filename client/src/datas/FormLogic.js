@@ -22,7 +22,8 @@ export function calcRoomVolumePerPerson(floorNumber, avgFloorHeight, occupancyDe
 export function calcWWR(collectionWindowArea, collectionWallArea) {
     const totalWindowArea = sumValue(collectionWindowArea);
     const totalWallArea = sumValue(collectionWallArea);
-    return ((totalWindowArea / totalWallArea).toFixed(2));
+    const applySeparator = numberWithCommas(((totalWindowArea / totalWallArea).toFixed(2)));
+    return applySeparator;
 }
 
 function sumValue(array) {
@@ -157,5 +158,9 @@ export function calcPotentialPV(pca, l, w) {
  }
  
  export function calcPercentageElectrical(predictialElectrical, total_dec) {
-     return (predictialElectrical/total_dec * 100 / 100).toFixed(2);
+    return (predictialElectrical/total_dec * 100 / 100).toFixed(2);
  }
+
+ function numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
