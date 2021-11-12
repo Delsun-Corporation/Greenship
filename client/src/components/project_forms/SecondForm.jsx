@@ -10,7 +10,7 @@ import {
   BasicInputField,
 } from "../FormLayouts";
 import { formChapters } from "../../datas/Datas";
-import { calcWWR } from "../../datas/FormLogic";
+import { calcWWR, numberFormat } from "../../datas/FormLogic";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Brush, PieChart, Pie, Sector } from 'recharts';
@@ -255,7 +255,7 @@ const FirstSection = ({ control }) => {
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis type="number" dataKey="value" tickFormatter={(tick) => `${tick}kWh/m2`} />
             <YAxis type="category" dataKey="label" tick={{ fontSize: 14 }} />
-            <Tooltip />
+            <Tooltip formatter={(value) => numberFormat(value)}/>
             <Bar dataKey="value" fill="#8884d8" >
               {
                 chartData.map((entry, index) => (
@@ -305,12 +305,12 @@ const FirstSection = ({ control }) => {
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis
               type="number"
-              domain={[0, "dataMax + 20"]}
+              domain={[0, "dataMax + 0.5"]}
               tickCount={6}
               tickFormatter={(tick) => `${tick}`}
             />
             <YAxis type="category" dataKey="label" tick={{ fontSize: 14 }} />
-            <Tooltip />
+            <Tooltip formatter={(value) => numberFormat(value)}/>
             <Legend />
             <Bar
               name="Calculated"
@@ -370,12 +370,12 @@ const FirstSection = ({ control }) => {
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis
               type="number"
-              domain={[0, "dataMax + 20"]}
+              domain={[0, "dataMax + 0.2"]}
               tickCount={6}
               tickFormatter={(tick) => `${tick}%`}
             />
             <YAxis type="category" dataKey="label" tick={{ fontSize: 14 }} />
-            <Tooltip />
+            <Tooltip formatter={(value) => numberFormat(value)}/>
             <Legend />
             <Bar
               name="Calculated"
@@ -607,7 +607,7 @@ const FirstSection = ({ control }) => {
         </Stack>
       }
       rightComponent={
-        <Stack direction="column" spacing={2} sx={{ padding: 4 }}>
+        <Stack direction="column" spacing={2} sx={{}}>
           <Box sx={{ fontSize: 20, fontWeight: "bold" }}>Graph: Calculated OTTV vs Baseline</Box>
           <OttvGraph />
           <Divider style={{ width: "100%" }} />
