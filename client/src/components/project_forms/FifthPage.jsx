@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { useForm, useWatch, Controller } from "react-hook-form";
-import { Box, Stack, TextField, Typography } from "@mui/material";
+import { useForm, useWatch } from "react-hook-form";
+import { Box, Stack, Typography } from "@mui/material";
 import {
   FormLayout,
   FormHeader,
@@ -8,7 +8,6 @@ import {
   SideInput,
   InlineLabel,
   BasicInputField,
-  SideButtonInput,
 } from "../FormLayouts";
 import {
   BarChart,
@@ -18,15 +17,14 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend,
   ResponsiveContainer,
-  Brush,
 } from "recharts";
 import { formChapters } from "../../datas/Datas";
 import {
   calcPercentageElectrical,
   calcPotentialPV,
   calcPredictionElectical,
+  numberFormat
 } from "../../datas/FormLogic";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -276,7 +274,7 @@ const FirstSection = ({ control, setValue, getValues }) => {
               tickFormatter={(tick) => `${tick}%`}
             />
             <YAxis type="category" dataKey="label" tick={{ fontSize: 14 }} />
-            <Tooltip />
+            <Tooltip formatter={(value) => numberFormat(value)}/>
             <Bar dataKey="value" fill="#8884d8">
               {chartData.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={barColors[index % 20]} />

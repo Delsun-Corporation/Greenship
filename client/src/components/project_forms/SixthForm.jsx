@@ -5,26 +5,15 @@ import {
   Paper,
   Stack,
   Container,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Button,
   Divider,
   Typography,
 } from "@mui/material";
 import {
   FormHeader,
   FormFooter,
-  InlineLabel,
   FormLayout,
 } from "../FormLayouts";
-import { calcAccessPercentage } from "../../datas/FormLogic";
+import { calcAccessPercentage, numberFormat } from "../../datas/FormLogic";
 import { formChapters, visualComfort } from "../../datas/Datas";
 import {
   BarChart,
@@ -36,7 +25,6 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
-  Brush,
   PieChart,
   Pie,
   Sector,
@@ -232,10 +220,10 @@ const NetZeroSection = ({ getValues }) => {
               type="number"
               dataKey="value"
               domain={[0, "dataMax"]}
-              tickFormatter={(tick) => `${tick}°C`}
+              tickFormatter={(tick) => `${numberFormat(tick)}°C`}
             />
             <YAxis type="category" dataKey="label" tick={{ fontSize: 14 }} />
-            <Tooltip />
+            <Tooltip formatter={(value) => numberFormat(value)}/>
             <Bar dataKey="value" fill="#8884d8">
               {chartData.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={barColors[index % 20]} />
@@ -324,10 +312,10 @@ const NetZeroSection = ({ getValues }) => {
             <XAxis
               type="number"
               dataKey="value"
-              tickFormatter={(tick) => `${tick}%`}
+              tickFormatter={(tick) => `${numberFormat(tick)}%`}
             />
             <YAxis type="category" dataKey="label" tick={{ fontSize: 14 }} />
-            <Tooltip />
+            <Tooltip formatter={(value) => numberFormat(value)}/>
             <Bar dataKey="value" fill="#8884d8">
               {chartData.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={barColors[index % 20]} />
@@ -419,7 +407,7 @@ const HealthyBuildingSection = ({ getValues }) => {
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis type="number" dataKey="value" />
             <YAxis type="category" dataKey="label" tick={{ fontSize: 14 }} />
-            <Tooltip />
+            <Tooltip formatter={(value) => numberFormat(value)}/>
             <Bar dataKey="value" fill="#8884d8">
               {chartData.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={barColors[index % 20]} />
@@ -461,7 +449,7 @@ const HealthyBuildingSection = ({ getValues }) => {
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis type="number" dataKey="value" />
             <YAxis type="category" dataKey="label" tick={{ fontSize: 14 }} />
-            <Tooltip />
+            <Tooltip formatter={(value) => numberFormat(value)}/>
             <Bar dataKey="value" fill="#8884d8">
               {chartData.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={barColors[index % 20]} />
@@ -507,10 +495,10 @@ const HealthyBuildingSection = ({ getValues }) => {
             <XAxis
               type="number"
               dataKey="value"
-              tickFormatter={(tick) => `${tick}%`}
+              tickFormatter={(tick) => `${numberFormat(tick)}%`}
             />
             <YAxis type="category" dataKey="label" tick={{ fontSize: 14 }} />
-            <Tooltip />
+            <Tooltip formatter={(value) => numberFormat(value)}/>
             <Bar dataKey="value" fill="#8884d8">
               {chartData.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={barColors[index % 20]} />
@@ -573,7 +561,7 @@ const HealthyBuildingSection = ({ getValues }) => {
           <CartesianGrid strokeDasharray="3 3" />
           <YAxis type="category" dataKey="label" tick={{ fontSize: 14 }} />
           <XAxis type="number" dataKey="value" />
-          <Tooltip />
+          <Tooltip formatter={(value) => numberFormat(value)}/>
           <Legend
             height={10}
             wrapperStyle={{ position: "relative", marginTop: "0px" }}
@@ -627,10 +615,10 @@ const HealthyBuildingSection = ({ getValues }) => {
             <XAxis
               type="number"
               dataKey="value"
-              tickFormatter={(tick) => `${tick}°C`}
+              tickFormatter={(tick) => `${numberFormat(tick)}°C`}
             />
             <YAxis type="category" dataKey="label" tick={{ fontSize: 14 }} />
-            <Tooltip />
+            <Tooltip formatter={(value) => numberFormat(value)}/>
             <Bar dataKey="value" fill="#8884d8">
               {chartData.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={barColors[index % 20]} />
@@ -680,10 +668,10 @@ const HealthyBuildingSection = ({ getValues }) => {
               type="number"
               domain={[0, "dataMax + 20"]}
               tickCount={6}
-              tickFormatter={(tick) => `${tick} dBA`}
+              tickFormatter={(tick) => `${numberFormat(tick)} dBA`}
             />
             <YAxis type="category" dataKey="label" tick={{ fontSize: 14 }} />
-            <Tooltip />
+            <Tooltip formatter={(value) => numberFormat(value)}/>
             <Legend />
             <Bar
               name="Calculated"
@@ -886,7 +874,7 @@ const renderActiveShape = (props) => {
         fontWeight="bold"
         textAnchor={textAnchor}
         fill="#333"
-      >{`${value}`}</text>
+      >{`${numberFormat(value)}`}</text>
       <text
         x={ex + (cos >= 0 ? 1 : -1) * 12}
         y={ey}
@@ -902,7 +890,7 @@ const renderActiveShape = (props) => {
         textAnchor={textAnchor}
         fill="#999"
       >
-        {`(${(percent * 100).toFixed(2)}%)`}
+        {`(${numberFormat(percent * 100)}%)`}
       </text>
     </g>
   );

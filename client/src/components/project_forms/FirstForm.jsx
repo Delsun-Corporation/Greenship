@@ -32,6 +32,7 @@ import {
   calcNonOperatingHoursPerYear,
   calcOccupancy,
   calcRoomVolumePerPerson,
+  numberFormat
 } from "../../datas/FormLogic";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -143,7 +144,7 @@ const SecondSection = ({ control }) => {
     });
     if (operationalHours && workingDays) {
       return (
-        calcOperatingHoursPerYear(operationalHours, workingDays) + " hours"
+        numberFormat(calcOperatingHoursPerYear(operationalHours, workingDays)) + " hours"
       );
     }
     return NaN;
@@ -161,7 +162,7 @@ const SecondSection = ({ control }) => {
     const holidays = useWatch({ control, name: sectionName + "a_holidays" });
     if (operationalHours && workingDays && holidays) {
       return (
-        calcNonOperatingHoursPerYear(operationalHours, workingDays, holidays) +
+        numberFormat(calcNonOperatingHoursPerYear(operationalHours, workingDays, holidays)) +
         " hours"
       );
     }
@@ -175,7 +176,7 @@ const SecondSection = ({ control }) => {
       name: sectionName + "a_occupancy_density",
     });
     if (occupancyDensity && gfa) {
-      return calcOccupancy(gfa, occupancyDensity) + " pax";
+      return numberFormat(calcOccupancy(gfa, occupancyDensity)) + " pax";
     }
     return NaN;
   }
@@ -331,7 +332,7 @@ const ThirdSection = ({ control }) => {
     });
     if (floorNumber && avgFloorHeight && occupancyDensity) {
       return (
-        (calcRoomVolumePerPerson(floorNumber, avgFloorHeight, occupancyDensity)).toFixed(2) +
+        numberFormat(calcRoomVolumePerPerson(floorNumber, avgFloorHeight, occupancyDensity)) +
         " m3"
       );
     }

@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useForm, useFieldArray, Controller, useWatch } from "react-hook-form";
 import {
   Box,
-  Container,
   Paper,
   Stack,
   Accordion,
@@ -15,9 +14,7 @@ import {
   TableHead,
   TableRow,
   Button,
-  TextField,
   Divider,
-  Switch,
 } from "@mui/material";
 import {
   FormLayout,
@@ -31,9 +28,6 @@ import {
 } from "../FormLayouts";
 import {
   formChapters,
-  lpdReference,
-  heatLoad,
-  powerFactor,
   visualComfort,
   occupancyCategory,
 } from "../../datas/Datas";
@@ -43,6 +37,7 @@ import {
   calcACH,
   calcAccessPercentage,
   calcIlluminance,
+  numberFormat
 } from "../../datas/FormLogic";
 import {
   BarChart,
@@ -54,7 +49,6 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
-  Brush,
 } from "recharts";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -254,7 +248,7 @@ const OutdoorAirSection = ({ control, getValues, setValue }) => {
       >
         <InlineLabel
           title="Breathing zone outdoor airflow (Vbz)"
-          value={`${result} l/s`}
+          value={`${numberFormat(result)} l/s`}
           bold
         />
       </Paper>
@@ -296,7 +290,7 @@ const OutdoorAirSection = ({ control, getValues, setValue }) => {
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis type="number" dataKey="value" />
             <YAxis type="category" dataKey="label" tick={{ fontSize: 14 }} />
-            <Tooltip />
+            <Tooltip formatter={(value) => numberFormat(value)}/>
             <Bar dataKey="value" fill="#8884d8">
               {chartData.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={barColors[index % 20]} />
@@ -417,7 +411,7 @@ const AchSection = ({ control, getValues, setValue }) => {
       >
         <InlineLabel
           title="Air Changes per Hour (ACH) Calculation"
-          value={result}
+          value={numberFormat(result)}
         />
       </Paper>
     );
@@ -458,7 +452,7 @@ const AchSection = ({ control, getValues, setValue }) => {
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis type="number" dataKey="value" />
             <YAxis type="category" dataKey="label" tick={{ fontSize: 14 }} />
-            <Tooltip />
+            <Tooltip formatter={(value) => numberFormat(value)}/>
             <Bar dataKey="value" fill="#8884d8">
               {chartData.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={barColors[index % 20]} />
@@ -536,7 +530,7 @@ const AccessOutsideSection = ({ control, getValues, setValue }) => {
       >
         <InlineLabel
           title="Percentage of area with access to outside view"
-          value={`${result} %`}
+          value={`${numberFormat(result)} %`}
         />
       </Paper>
     );
@@ -581,7 +575,7 @@ const AccessOutsideSection = ({ control, getValues, setValue }) => {
               tickFormatter={(tick) => `${tick}%`}
             />
             <YAxis type="category" dataKey="label" tick={{ fontSize: 14 }} />
-            <Tooltip />
+            <Tooltip formatter={(value) => numberFormat(value)}/>
             <Bar dataKey="value" fill="#8884d8">
               {chartData.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={barColors[index % 20]} />
@@ -676,7 +670,7 @@ const VisualComfortSection = ({ control, getValues, setValue }) => {
           color: "white",
         }}
       >
-        <InlineLabel title="Calculated E" value={`${result}`} />
+        <InlineLabel title="Calculated E" value={`${numberFormat(result)}`} />
       </Paper>
     );
   };
@@ -728,7 +722,7 @@ const VisualComfortSection = ({ control, getValues, setValue }) => {
             <CartesianGrid strokeDasharray="3 3" />
             <YAxis type="category" dataKey="label" tick={{ fontSize: 14 }} />
             <XAxis type="number" dataKey="value" />
-            <Tooltip />
+            <Tooltip formatter={(value) => numberFormat(value)}/>
             <Legend
               height={10}
               wrapperStyle={{ position: "relative", marginTop: "0px" }}
@@ -908,7 +902,7 @@ const ThermalComfortSection = ({ control, getValues, setValue }) => {
               tickFormatter={(tick) => `${tick}°C`}
             />
             <YAxis type="category" dataKey="label" tick={{ fontSize: 14 }} />
-            <Tooltip />
+            <Tooltip formatter={(value) => numberFormat(value)}/>
             <Bar dataKey="value" fill="#8884d8">
               {chartData.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={barColors[index % 20]} />
@@ -1004,7 +998,7 @@ const AcousticalComfortSection = ({ control, getValues, setValue }) => {
               tickFormatter={(tick) => `${tick} dBA`}
             />
             <YAxis type="category" dataKey="label" tick={{ fontSize: 14 }} />
-            <Tooltip />
+            <Tooltip formatter={(value) => numberFormat(value)}/>
             <Legend />
             <Bar
               name="Calculated"
