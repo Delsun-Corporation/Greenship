@@ -61,6 +61,8 @@ import {
 import axios from "axios";
 import { toast } from "react-toastify";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { theme } from "../../assets/Theme";
+import { ThemeProvider } from '@mui/material';
 
 const ThirdForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
     const methods = useForm({
@@ -425,6 +427,7 @@ const LightingSection = ({ control, getValues, setValue }) => {
     }
 
     return (
+        <ThemeProvider theme={theme}>
         <FormLayout
             leftComponent={
                 <Stack direction="column" spacing={2}>
@@ -432,7 +435,14 @@ const LightingSection = ({ control, getValues, setValue }) => {
                         <Box sx={{ fontSize: 24, fontWeight: "bold" }}>Lighting</Box>
                         <Button variant="contained" onClick={() => {
                             append(defaultLightingValue())
-                        }}>
+                        }}
+                        sx={{backgroundColor: "steelTeal",
+                                                    ...({
+                                                        "&:hover": {
+                                                            backgroundColor: ("steelTeal"),
+                                                        }
+                                                    }) }}
+                        >
                             ADD ITEM
                         </Button>
                     </Stack>
@@ -461,7 +471,16 @@ const LightingSection = ({ control, getValues, setValue }) => {
                                                     />
                                                 )}
                                             />
-                                            <Button variant="contained" onClick={() => remove(index)} color="warning">Delete</Button>
+                                            <Button variant="contained" 
+                                            onClick={() => remove(index)} 
+                                            sx={{backgroundColor: "candyPink",
+                                                    ...({
+                                                        "&:hover": {
+                                                            backgroundColor: ("candyPink"),
+                                                        }
+                                                    }) }}>
+                                                Delete
+                                            </Button>
                                         </Stack>
                                     </AccordionSummary>
                                     <AccordionDetails>
@@ -517,6 +536,7 @@ const LightingSection = ({ control, getValues, setValue }) => {
                 </Stack>
             }
         />
+        </ThemeProvider>
     );
 };
 
@@ -810,6 +830,7 @@ const AppliancesSection = ({ control, getValues, setValue }) => {
     }
 
     return (
+        <ThemeProvider theme={theme}>
         <FormLayout
             leftComponent={
                 <Stack direction="column" spacing={2}>
@@ -817,7 +838,14 @@ const AppliancesSection = ({ control, getValues, setValue }) => {
                         <Box sx={{ fontSize: 24, fontWeight: "bold" }}>Appliances</Box>
                         <Button variant="contained" onClick={() => {
                             append(defaultAppliancesValue())
-                        }}>
+                        }}
+                        sx={{backgroundColor: "steelTeal",
+                                                    ...({
+                                                        "&:hover": {
+                                                            backgroundColor: ("steelTeal"),
+                                                        }
+                                                    }) }}
+                        >
                             ADD ITEM
                         </Button>
                     </Stack>
@@ -846,7 +874,17 @@ const AppliancesSection = ({ control, getValues, setValue }) => {
                                                     />
                                                 )}
                                             />
-                                            <Button variant="contained" onClick={() => remove(index)} color="warning">Delete</Button>
+                                            <Button variant="contained" 
+                                                    onClick={() => remove(index)} 
+                                                    sx={{backgroundColor: "candyPink",
+                                                    ...({
+                                                        "&:hover": {
+                                                            backgroundColor: ("candyPink"),
+                                                        }
+                                                    }) }}
+                                            >
+                                                Delete
+                                            </Button>
                                         </Stack>
                                     </AccordionSummary>
                                     <AccordionDetails>
@@ -878,6 +916,7 @@ const AppliancesSection = ({ control, getValues, setValue }) => {
                 </Stack>
             }
         />
+        </ThemeProvider>
     );
 }
 
