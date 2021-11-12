@@ -14,7 +14,7 @@ exports.getPageSixDraft = (req, res) => {
     }
   
     Project.findById(objectId)
-      .select("a_typology a_ach c_utility total_dec d_b_velocity d_c_access_area d_d_illuminance d_e_temperature d_total_bhc d_f_noise_level e_result")
+      .select("a_typology a_gfa a_ach c_utility total_dec d_b_velocity d_c_access_area d_d_illuminance d_e_temperature d_total_bhc d_f_noise_level e_result")
       .then((result) => {
         if (!result) {
           return res.status(400).json({
@@ -56,6 +56,7 @@ exports.getPageSixDraft = (req, res) => {
             a_typology_eci: a_typology_eci,
             a_typology_acoustic: a_typology_acoustic,
             a_ach: result.a_ach,
+            a_gfa: result.a_gfa
         },
         thirdForm: {
             mv_flow_rate: mv_flow_rate,

@@ -23,13 +23,19 @@ import {
   Brush,
 } from "recharts";
 import { formChapters } from "../../datas/Datas";
-import { calcPercentageElectrical, calcPotentialPV, calcPredictionElectical } from "../../datas/FormLogic";
+import {
+  calcPercentageElectrical,
+  calcPotentialPV,
+  calcPredictionElectical,
+} from "../../datas/FormLogic";
 import axios from "axios";
 import { toast } from "react-toastify";
 
+var e_result;
+
 const FifthForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
   const methods = useForm({
-    defaultValues: defaultFormValue()
+    defaultValues: defaultFormValue(),
   });
   const { control, handleSubmit, setValue, getValues } = methods;
   const [isFromNextButton, setIsFromNextButton] = useState(false);
@@ -37,11 +43,11 @@ const FifthForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
 
   const onSubmit = (data) => {
     const newData = {
-      fifthForm: data.fifthForm
-    }
-    console.log(newData)
+      fifthForm: data.fifthForm,
+    };
+    console.log(newData);
     if (isFromNextButton) {
-      onceSubmitted(newData, '6');
+      onceSubmitted(newData, "6");
     } else {
       onceSubmitted(newData);
     }
@@ -57,8 +63,10 @@ const FifthForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
       .then((res) => {
         const pageFiveData = res.data.page_five;
         setValue("fifthForm", {
-          ...pageFiveData
-        })
+          ...pageFiveData,
+          e_result: e_result
+        });
+        setLoading(false);
       })
       .catch((err) => {
         console.log(err);
@@ -77,8 +85,20 @@ const FifthForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
           shouldRedirect={shouldRedirect}
           chapter={CHAPTER_NUMBER}
         />
-        <FirstSection control={control} setValue={setValue} getValues={getValues} />
-        <FormFooter chapter={CHAPTER_NUMBER} shouldRedirect={shouldRedirect} setFromNextButton={setIsFromNextButton} />
+        {!isLoading && (
+          <>
+            <FirstSection
+          control={control}
+          setValue={setValue}
+          getValues={getValues}
+        />
+          </>
+        )}
+        <FormFooter
+          chapter={CHAPTER_NUMBER}
+          shouldRedirect={shouldRedirect}
+          setFromNextButton={setIsFromNextButton}
+        />
       </Stack>
     </form>
   );
@@ -94,8 +114,8 @@ function defaultFormValue() {
       e_pv_spec_wpeak: 0,
       e_pv_spec_dimension: [0, 0, 0],
       e_result: {
-        energy_percentage: 0
-      }
+        energy_percentage: 0,
+      },
     },
   };
 }
@@ -107,10 +127,9 @@ const FirstSection = ({ control, setValue, getValues }) => {
     potentialPV: 0,
     predictionElectrical: 0,
     percentageEnergyMix: 0,
-  }
+  };
 
   const PotentialPVLabel = () => {
-
     const facadeArea = useWatch({
       control,
       name: sectionName + "e_facade_area",
@@ -126,20 +145,27 @@ const FirstSection = ({ control, setValue, getValues }) => {
       name: sectionName + "e_pv_spec_w",
     });
 
-    var result = 0
+    var result = 0;
 
     if (facadeArea && dimensionL && dimensionW) {
       result = calcPotentialPV(facadeArea, dimensionL, dimensionW);
     }
 
-    resultArr.potentialPV = result
+    resultArr.potentialPV = result;
 
     if (isNaN(result)) {
-      return <InlineLabel title="Potential PV numbers to be installed" value={'-'} />
+      return (
+        <InlineLabel title="Potential PV numbers to be installed" value={"-"} />
+      );
     } else {
-      return <InlineLabel title="Potential PV numbers to be installed" value={result} />
+      return (
+        <InlineLabel
+          title="Potential PV numbers to be installed"
+          value={result}
+        />
+      );
     }
-  }
+  };
 
   const PredictionElectricalLabel = () => {
     const watchValue = useWatch({
@@ -147,22 +173,32 @@ const FirstSection = ({ control, setValue, getValues }) => {
       name: sectionName,
     });
 
-    const pv = resultArr.potentialPV
-    const wpeakValue = watchValue.e_pv_spec_wpeak
+    const pv = resultArr.potentialPV;
+    const wpeakValue = watchValue.e_pv_spec_wpeak;
 
-    var result = 0
+    var result = 0;
     if (wpeakValue) {
       result = calcPredictionElectical(pv, wpeakValue);
     }
 
-    resultArr.predictionElectrical = result
+    resultArr.predictionElectrical = result;
 
     if (isNaN(result)) {
-      return <InlineLabel title="Prediction of Electrical energy" value={"- kWh/m2 per year"} />
+      return (
+        <InlineLabel
+          title="Prediction of Electrical energy"
+          value={"- kWh/m2 per year"}
+        />
+      );
     } else {
-      return <InlineLabel title="Prediction of Electrical energy" value={(result) + " kWh/m2 per year"} />
+      return (
+        <InlineLabel
+          title="Prediction of Electrical energy"
+          value={result + " kWh/m2 per year"}
+        />
+      );
     }
-  }
+  };
 
   const PercentageElectricalLabel = () => {
     const watchValues = useWatch({
@@ -171,22 +207,35 @@ const FirstSection = ({ control, setValue, getValues }) => {
     });
 
     var predictionElectrical = resultArr.predictionElectrical;
-    const total_dec = getValues("fifthForm.total_dec")
+    const total_dec = getValues("fifthForm.total_dec");
 
-    var result = 0
+    var result = 0;
     if (predictionElectrical) {
-      result = calcPercentageElectrical(parseInt(predictionElectrical), parseFloat(total_dec))
+      result = calcPercentageElectrical(
+        parseInt(predictionElectrical),
+        parseFloat(total_dec)
+      );
     }
 
-    resultArr.percentageEnergyMix = result
-    setValue("fifthValue.e_result.energy_percentage", result)
+    resultArr.percentageEnergyMix = result;
+    setValue("fifthValue.e_result.energy_percentage", result);
+    e_result = {
+      energy_percentage: result
+    }
 
     if (isNaN(result)) {
-      return <InlineLabel title="Percentage of electrical energy mix" value={"-%"} />
+      return (
+        <InlineLabel title="Percentage of electrical energy mix" value={"-%"} />
+      );
     } else {
-      return <InlineLabel title="Percentage of electrical energy mix" value={result + "%"} />
+      return (
+        <InlineLabel
+          title="Percentage of electrical energy mix"
+          value={result + "%"}
+        />
+      );
     }
-  }
+  };
 
   const SubsidyGraph = () => {
     const watchValues = useWatch({
@@ -237,7 +286,7 @@ const FirstSection = ({ control, setValue, getValues }) => {
         </ResponsiveContainer>
       </Box>
     );
-  }
+  };
 
   return (
     <FormLayout
@@ -325,7 +374,8 @@ const FirstSection = ({ control, setValue, getValues }) => {
       rightComponent={
         <Stack direction="column" spacing={2}>
           <Box sx={{ fontWeight: "bold" }}>
-            Graph: Subsidised electrical energy from renewable energy vs. government energy mix target
+            Graph: Subsidised electrical energy from renewable energy vs.
+            government energy mix target
           </Box>
           <SubsidyGraph />
         </Stack>

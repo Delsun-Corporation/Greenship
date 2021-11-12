@@ -10,6 +10,7 @@ exports.updatePageFiveDraft = (req, res) => {
     e_pv_spec_l,
     e_pv_spec_w,
     e_pv_spec_wpeak,
+    e_result,
     projectId,
   } = req.body;
 
@@ -31,6 +32,7 @@ exports.updatePageFiveDraft = (req, res) => {
     .then((project) => {
       project.e_facade_area = e_facade_area;
       project.e_pv_spec_wpeak = e_pv_spec_wpeak;
+      project.e_result = e_result;
       project.e_pv_spec_dimension = {
         h: e_pv_spec_h,
         l: e_pv_spec_l,
