@@ -255,7 +255,7 @@ const FirstSection = ({ control }) => {
             layout="vertical"
           >
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis type="number" dataKey="value" tickFormatter={(tick) => `${tick}kWh/m2`} />
+            <XAxis type="number" dataKey="value" tickFormatter={(tick) => `${numberFormat(tick)}kWh/m2`} />
             <YAxis type="category" dataKey="label" tick={{ fontSize: 14 }} />
             <Tooltip formatter={(value) => numberFormat(value)} />
             <Bar dataKey="value" fill="#8884d8" >
@@ -309,7 +309,7 @@ const FirstSection = ({ control }) => {
               type="number"
               domain={[0, "dataMax + 0.5"]}
               tickCount={6}
-              tickFormatter={(tick) => `${tick}`}
+              tickFormatter={(tick) => `${numberFormat(tick)}`}
             />
             <YAxis type="category" dataKey="label" tick={{ fontSize: 14 }} />
             <Tooltip formatter={(value) => numberFormat(value)} />
@@ -374,7 +374,7 @@ const FirstSection = ({ control }) => {
               type="number"
               domain={[0, "dataMax + 0.2"]}
               tickCount={6}
-              tickFormatter={(tick) => `${tick}%`}
+              tickFormatter={(tick) => `${numberFormat(tick)}%`}
             />
             <YAxis type="category" dataKey="label" tick={{ fontSize: 14 }} />
             <Tooltip formatter={(value) => numberFormat(value)} />

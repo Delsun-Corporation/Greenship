@@ -13,7 +13,8 @@ import {
   InputAdornment,
   Switch,
   Skeleton,
-  ThemeProvider
+  ThemeProvider,
+  Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions
 } from "@mui/material";
 import {
   formChapters,
@@ -41,111 +42,151 @@ export const FormLayout = ({ leftComponent, rightComponent }) => (
   </Container>
 );
 
-const deleteProject = (id) => {
-  return axios.delete(`${process.env.REACT_APP_API_URL}/deleteproject`, {
-    data: {
-      projectId: id,
-    },
-  });
-};
 
-export const FormHeader = ({ title, projectId, shouldRedirect }) => (
-  <ThemeProvider theme={theme}>
-    <Stack direction="row" justifyContent="space-between" alignItems="center">
-      <Stack direction="column">
-        <Box sx={{ fontWeight: "medium", fontSize: 18, color: "text.secondary" }}>
-          CREATE NEW PROJECT
-        </Box>
-        <Box sx={{ fontWeight: "bold", fontSize: 32 }}>{title}</Box>
+
+export const FormHeader = ({ title, projectId, shouldRedirect }) => {
+  const [open, setOpen] = React.useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const deleteProject = (id) => {
+    return axios.delete(`${process.env.REACT_APP_API_URL}/deleteproject`, {
+      data: {
+        projectId: id,
+      },
+    });
+  };
+
+  return (
+    <ThemeProvider theme={theme}>
+      <Stack direction="row" justifyContent="space-between" alignItems="center">
+        <Stack direction="column">
+          <Box sx={{ fontWeight: "medium", fontSize: 18, color: "text.secondary" }}>
+            CREATE NEW PROJECT
+          </Box>
+          <Box sx={{ fontWeight: "bold", fontSize: 32 }}>{title}</Box>
+        </Stack>
+        <Stack direction="row" spacing={2}>
+          <Button
+            variant="contained"
+            color="error"
+            sx={{ backgroundColor: "candyPink" }}
+            onClick={handleClickOpen}
+          >
+            Delete
+          </Button>
+          <Dialog
+            open={open}
+            onClose={handleClose}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+          >
+            <DialogTitle id="alert-dialog-title">
+              {"Delete Project"}
+            </DialogTitle>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+                Are you sure you want to delete this project? This action cannot be undone.
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleClose}>Cancel</Button>
+              <Button variant="contained"
+              color="error"
+                sx={{ backgroundColor: "candyPink" }} onClick={
+                  (e) => {
+                    deleteProject(projectId)
+                      .then((res) => {
+                        if (res.status === 200) {
+                          if (res.data.message) {
+                            toast.success(res.data.message);
+                            shouldRedirect("/");
+                          }
+                        } else {
+                          if (res.data.message) {
+                            toast.error(res.data.message);
+                          }
+                        }
+                        setOpen(false)
+                      })
+                      .catch((err) => {
+                        toast.error("Something went wrong, please try again!");
+                      });
+                  }} autoFocus>
+                Delete
+              </Button>
+            </DialogActions>
+          </Dialog>
+          <Button type="submit" variant="contained" sx={{ backgroundColor: "steelTeal" }}>
+            Save Draft
+          </Button>
+        </Stack>
       </Stack>
-      <Stack direction="row" spacing={2}>
-        <Button
-          variant="contained"
-          sx={{ backgroundColor: "candyPink" }}
-          onClick={(e) => {
-            deleteProject(projectId)
-              .then((res) => {
-                if (res.status === 200) {
-                  if (res.data.message) {
-                    toast.success(res.data.message);
-                    shouldRedirect("/");
-                  }
-                } else {
-                  if (res.data.message) {
-                    toast.error(res.data.message);
-                  }
-                }
-              })
-              .catch((err) => {
-                toast.error("Something went wrong, please try again!");
-              });
-          }}
-        >
-          Delete
-        </Button>
-        <Button type="submit" variant="contained" sx={{ backgroundColor: "steelTeal" }}>
-          Save Draft
-        </Button>
-      </Stack>
-    </Stack>
-  </ThemeProvider>
-);
+    </ThemeProvider>
+  )
+};
 
 export const FormFooter = ({ chapter, shouldRedirect, setFromNextButton }) => {
   return (
-  <ThemeProvider theme={theme}>
-    <Stack direction="row" justifyContent="space-between" alignItems="center">
-      {chapter !== "1" && (
-        <Button
-          variant="contained"
-          sx={{ backgroundColor: "steelTeal" }}
-          onClick={(e) => {
-            shouldRedirect(`${parseInt(chapter) - 1}`);
-          }}
-        >
-          PREV:{" "}
-          {
-            formChapters.find((e) => e.chapter === "" + (parseInt(chapter) - 1))
-              .title
-          }
-        </Button>
-      )}
-      {chapter === "1" && <Box></Box>}
-      {chapter !== "6" ? (
-        <Button
-          type="submit"
-          variant="contained"
-          sx={{ backgroundColor: "steelTeal" }}
-          onClick={(e) => {
-            setFromNextButton(true);
-          }}
-        >
-          NEXT:{" "}
-          {
-            formChapters.find((e) => e.chapter === "" + (parseInt(chapter) + 1))
-              .title
-          }
-        </Button>
-      ) : null}
-    </Stack>
-  </ThemeProvider>
+    <ThemeProvider theme={theme}>
+      <Stack direction="row" justifyContent="space-between" alignItems="center">
+        {chapter !== "1" && (
+          <Button
+            variant="contained"
+            sx={{ backgroundColor: "steelTeal" }}
+            onClick={(e) => {
+              shouldRedirect(`${parseInt(chapter) - 1}`);
+            }}
+          >
+            PREV:{" "}
+            {
+              formChapters.find((e) => e.chapter === "" + (parseInt(chapter) - 1))
+                .title
+            }
+          </Button>
+        )}
+        {chapter === "1" && <Box></Box>}
+        {chapter !== "6" ? (
+          <Button
+            type="submit"
+            variant="contained"
+            sx={{ backgroundColor: "steelTeal" }}
+            onClick={(e) => {
+              setFromNextButton(true);
+            }}
+          >
+            NEXT:{" "}
+            {
+              formChapters.find((e) => e.chapter === "" + (parseInt(chapter) + 1))
+                .title
+            }
+          </Button>
+        ) : null}
+      </Stack>
+    </ThemeProvider>
   )
 };
 
 export const SkeletonSection = () => {
 
   const SkeletonBlockInput = () => {
-    return ( 
+    return (
       <Stack
         direction="column"
         spacing={0}
       >
         <Typography variant="h5" width="50%">
-            <Skeleton variant="text" />
-          </Typography>
-          <Typography variant="h2" width="100%">
-            <Skeleton variant="text" />
-          </Typography>
+          <Skeleton variant="text" />
+        </Typography>
+        <Typography variant="h2" width="100%">
+          <Skeleton variant="text" />
+        </Typography>
       </Stack>
     )
   }
@@ -162,7 +203,7 @@ export const SkeletonSection = () => {
           <Typography variant="h5">
             <Skeleton variant="text" />
           </Typography>
-          <Skeleton variant="text" width="40%"/>
+          <Skeleton variant="text" width="40%" />
 
         </Stack>
         <Typography variant="h2" width="30%">
@@ -192,16 +233,16 @@ export const SkeletonSection = () => {
       }
       rightComponent={
         <Stack direction="column" spacing={2}>
-        <SkeletonSideInput />
-        <Typography variant="h1" width="100%">
-          <Skeleton variant="text" />
-        </Typography>
-        <Skeleton variant="text" width="40%"/>
-        <Skeleton variant="rectangular" width="100%" height={200} />
-        <Skeleton variant="text" width="40%"/>
-        <Skeleton variant="rectangular" width="100%" height={200} />
-        <Skeleton variant="text" width="40%"/>
-        <Skeleton variant="rectangular" width="100%" height={200} />
+          <SkeletonSideInput />
+          <Typography variant="h1" width="100%">
+            <Skeleton variant="text" />
+          </Typography>
+          <Skeleton variant="text" width="40%" />
+          <Skeleton variant="rectangular" width="100%" height={200} />
+          <Skeleton variant="text" width="40%" />
+          <Skeleton variant="rectangular" width="100%" height={200} />
+          <Skeleton variant="text" width="40%" />
+          <Skeleton variant="rectangular" width="100%" height={200} />
         </Stack>
       } />
   );
