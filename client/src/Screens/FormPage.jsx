@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 
 import { Container, Typography, Stack, Box } from "@mui/material";
@@ -24,6 +24,7 @@ import { isAuth } from "../helpers/auth";
 function FormPage() {
   const { projectid, page } = useParams();
   const history = useHistory();
+  const [isLoading, setLoading] = useState(true);
 
   const onFormSubmit = (data, nextPage) => {
     if (data.firstForm) {
@@ -36,6 +37,7 @@ function FormPage() {
         .then((res) => {
           if (nextPage) {
             redirectPage(nextPage);
+            setLoading(false)
           } else {
             statusResponse(
               res.status,
@@ -62,6 +64,7 @@ function FormPage() {
         .then((res) => {
           if (nextPage) {
             redirectPage(nextPage);
+            setLoading(false)
           } else {
             statusResponse(
               res.status,
@@ -83,6 +86,7 @@ function FormPage() {
         .then((res) => {
           if (nextPage) {
             redirectPage(nextPage);
+            setLoading(false)
           } else {
             statusResponse(
               res.status,
@@ -104,6 +108,7 @@ function FormPage() {
         .then((res) => {
           if (nextPage) {
             redirectPage(nextPage);
+            setLoading(false)
           } else {
             statusResponse(
               res.status,
@@ -125,6 +130,7 @@ function FormPage() {
         .then((res) => {
           if (nextPage) {
             redirectPage(nextPage);
+            setLoading(false)
           } else {
             statusResponse(
               res.status,
@@ -140,6 +146,8 @@ function FormPage() {
         });
 
     }
+
+    
   };
 
   const redirectPage = (path) => {
@@ -148,6 +156,10 @@ function FormPage() {
 
   function render() {
     const pageNumber = parseInt(page);
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    })
     if (pageNumber === 1) {
       return (
         <FirstForm
@@ -204,7 +216,7 @@ function FormPage() {
       <Box sx={{ display: 'flex' }}>
         <FormDrawer activeChapter={parseInt(page)} redirect={(path) => redirectPage(path)}/>
         <Box component="main" sx={{ flexGrow: 1 }}>
-          <Container maxWidth="xl" sx={{marginTop: 4}}>
+          <Container maxWidth="xl" sx={{marginTop: 4, minHeight: "100vh"}}>
             {render()}
           </Container>
           <Footer />

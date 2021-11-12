@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useForm, useWatch, Controller } from "react-hook-form";
-import { Stack, TextField, Typography, Box, Divider } from "@mui/material";
+import { Stack, TextField, Typography, Box, Divider, Skeleton } from "@mui/material";
 import {
   FormLayout,
   FormHeader,
@@ -8,6 +8,7 @@ import {
   SideInput,
   InlineLabel,
   BasicInputField,
+  SkeletonSection
 } from "../FormLayouts";
 import { formChapters } from "../../datas/Datas";
 import { calcWWR, numberFormat } from "../../datas/FormLogic";
@@ -80,16 +81,17 @@ const SecondForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
           shouldRedirect={shouldRedirect}
           chapter={CHAPTER_NUMBER}
         />
+        {isLoading && <SkeletonSection />}
         {!isLoading && (
           <>
             <FirstSection control={control} />
+            <FormFooter
+              chapter={CHAPTER_NUMBER}
+              shouldRedirect={shouldRedirect}
+              setFromNextButton={setIsFromNextButton}
+            />
           </>
         )}
-        <FormFooter
-          chapter={CHAPTER_NUMBER}
-          shouldRedirect={shouldRedirect}
-          setFromNextButton={setIsFromNextButton}
-        />
       </Stack>
     </form>
   );
@@ -255,7 +257,7 @@ const FirstSection = ({ control }) => {
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis type="number" dataKey="value" tickFormatter={(tick) => `${tick}kWh/m2`} />
             <YAxis type="category" dataKey="label" tick={{ fontSize: 14 }} />
-            <Tooltip formatter={(value) => numberFormat(value)}/>
+            <Tooltip formatter={(value) => numberFormat(value)} />
             <Bar dataKey="value" fill="#8884d8" >
               {
                 chartData.map((entry, index) => (
@@ -310,7 +312,7 @@ const FirstSection = ({ control }) => {
               tickFormatter={(tick) => `${tick}`}
             />
             <YAxis type="category" dataKey="label" tick={{ fontSize: 14 }} />
-            <Tooltip formatter={(value) => numberFormat(value)}/>
+            <Tooltip formatter={(value) => numberFormat(value)} />
             <Legend />
             <Bar
               name="Calculated"
@@ -375,7 +377,7 @@ const FirstSection = ({ control }) => {
               tickFormatter={(tick) => `${tick}%`}
             />
             <YAxis type="category" dataKey="label" tick={{ fontSize: 14 }} />
-            <Tooltip formatter={(value) => numberFormat(value)}/>
+            <Tooltip formatter={(value) => numberFormat(value)} />
             <Legend />
             <Bar
               name="Calculated"

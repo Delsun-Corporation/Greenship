@@ -20,6 +20,7 @@ import {
   BlockInput,
   SelectInput,
   InlineLabel,
+  SkeletonSection
 } from "../FormLayouts";
 import {
   formChapters,
@@ -84,6 +85,7 @@ const FirstForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
           shouldRedirect={shouldRedirect}
           chapter={CHAPTER_NUMBER}
         />
+        {isLoading && <SkeletonSection />}
         {!isLoading && (
           <>
             <FirstSection control={control} />
