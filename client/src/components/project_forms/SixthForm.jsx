@@ -12,6 +12,7 @@ import {
   FormHeader,
   FormFooter,
   FormLayout,
+  SkeletonSection
 } from "../FormLayouts";
 import { calcAccessPercentage, numberFormat } from "../../datas/FormLogic";
 import { formChapters, visualComfort } from "../../datas/Datas";
@@ -108,6 +109,7 @@ const SixthForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
           shouldRedirect={shouldRedirect}
           chapter={CHAPTER_NUMBER}
         />
+        {isLoading && <SkeletonSection />}
         {!isLoading && (
           <>
             <NetZeroSection getValues={getValues} />

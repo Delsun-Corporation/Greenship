@@ -12,13 +12,11 @@ import {
   Divider,
   InputAdornment,
   Switch,
+  Skeleton,
   ThemeProvider
 } from "@mui/material";
 import {
   formChapters,
-  occupancyCategory,
-  buildingTypology,
-  AchReference,
 } from "../datas/Datas";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -53,85 +51,161 @@ const deleteProject = (id) => {
 
 export const FormHeader = ({ title, projectId, shouldRedirect }) => (
   <ThemeProvider theme={theme}>
-  <Stack direction="row" justifyContent="space-between" alignItems="center">
-    <Stack direction="column">
-      <Box sx={{ fontWeight: "medium", fontSize: 18, color: "text.secondary" }}>
-        CREATE NEW PROJECT
-      </Box>
-      <Box sx={{ fontWeight: "bold", fontSize: 32 }}>{title}</Box>
-    </Stack>
-    <Stack direction="row" spacing={2}>
-      <Button
-        variant="contained"
-        sx={{ backgroundColor: "candyPink"}}
-        onClick={(e) => {
-          deleteProject(projectId)
-            .then((res) => {
-              if (res.status === 200) {
-                if (res.data.message) {
-                  toast.success(res.data.message);
-                  shouldRedirect("/");
+    <Stack direction="row" justifyContent="space-between" alignItems="center">
+      <Stack direction="column">
+        <Box sx={{ fontWeight: "medium", fontSize: 18, color: "text.secondary" }}>
+          CREATE NEW PROJECT
+        </Box>
+        <Box sx={{ fontWeight: "bold", fontSize: 32 }}>{title}</Box>
+      </Stack>
+      <Stack direction="row" spacing={2}>
+        <Button
+          variant="contained"
+          sx={{ backgroundColor: "candyPink" }}
+          onClick={(e) => {
+            deleteProject(projectId)
+              .then((res) => {
+                if (res.status === 200) {
+                  if (res.data.message) {
+                    toast.success(res.data.message);
+                    shouldRedirect("/");
+                  }
+                } else {
+                  if (res.data.message) {
+                    toast.error(res.data.message);
+                  }
                 }
-              } else {
-                if (res.data.message) {
-                  toast.error(res.data.message);
-                }
-              }
-            })
-            .catch((err) => {
-              toast.error("Something went wrong, please try again!");
-            });
-        }}
-      >
-        Delete
-      </Button>
-      <Button type="submit" variant="contained" sx={{ backgroundColor: "steelTeal"}}>
-        Save Draft
-      </Button>
+              })
+              .catch((err) => {
+                toast.error("Something went wrong, please try again!");
+              });
+          }}
+        >
+          Delete
+        </Button>
+        <Button type="submit" variant="contained" sx={{ backgroundColor: "steelTeal" }}>
+          Save Draft
+        </Button>
+      </Stack>
     </Stack>
-  </Stack>
   </ThemeProvider>
 );
 
-export const FormFooter = ({ chapter, shouldRedirect, setFromNextButton }) => (
+export const FormFooter = ({ chapter, shouldRedirect, setFromNextButton }) => {
+  return (
   <ThemeProvider theme={theme}>
-  <Stack direction="row" justifyContent="space-between" alignItems="center">
-    {chapter !== "1" && (
-      <Button
-        variant="contained"
-        sx={{ backgroundColor: "steelTeal"}}
-        onClick={(e) => {
-          shouldRedirect(`${parseInt(chapter) - 1}`);
-        }}
-      >
-        PREV:{" "}
-        {
-          formChapters.find((e) => e.chapter === "" + (parseInt(chapter) - 1))
-            .title
-        }
-      </Button>
-    )}
-    {chapter === "1" && <Box></Box>}
-    {chapter !== "6" ? (
-      <Button
-        type="submit"
-        variant="contained"
-        sx={{ backgroundColor: "steelTeal"}}
-        onClick={(e) => {
-          setFromNextButton(true);
-        }}
-      >
-        NEXT:{" "}
-        {
-          formChapters.find((e) => e.chapter === "" + (parseInt(chapter) + 1))
-            .title
-        }
-      </Button>
-    ) : null}
-  </Stack>
+    <Stack direction="row" justifyContent="space-between" alignItems="center">
+      {chapter !== "1" && (
+        <Button
+          variant="contained"
+          sx={{ backgroundColor: "steelTeal" }}
+          onClick={(e) => {
+            shouldRedirect(`${parseInt(chapter) - 1}`);
+          }}
+        >
+          PREV:{" "}
+          {
+            formChapters.find((e) => e.chapter === "" + (parseInt(chapter) - 1))
+              .title
+          }
+        </Button>
+      )}
+      {chapter === "1" && <Box></Box>}
+      {chapter !== "6" ? (
+        <Button
+          type="submit"
+          variant="contained"
+          sx={{ backgroundColor: "steelTeal" }}
+          onClick={(e) => {
+            setFromNextButton(true);
+          }}
+        >
+          NEXT:{" "}
+          {
+            formChapters.find((e) => e.chapter === "" + (parseInt(chapter) + 1))
+              .title
+          }
+        </Button>
+      ) : null}
+    </Stack>
   </ThemeProvider>
-  /// Need logic for last page
-);
+  )
+};
+
+export const SkeletonSection = () => {
+
+  const SkeletonBlockInput = () => {
+    return ( 
+      <Stack
+        direction="column"
+        spacing={0}
+      >
+        <Typography variant="h5" width="50%">
+            <Skeleton variant="text" />
+          </Typography>
+          <Typography variant="h2" width="100%">
+            <Skeleton variant="text" />
+          </Typography>
+      </Stack>
+    )
+  }
+
+  const SkeletonSideInput = () => {
+    return (
+      <Stack
+        direction="row"
+        alignItems="center"
+        justifyContent="space-between"
+        spacing={2}
+      >
+        <Stack direction="column" width="50%">
+          <Typography variant="h5">
+            <Skeleton variant="text" />
+          </Typography>
+          <Skeleton variant="text" width="40%"/>
+
+        </Stack>
+        <Typography variant="h2" width="30%">
+          <Skeleton variant="text" />
+        </Typography>
+      </Stack>
+    )
+  }
+
+  return (
+    <FormLayout
+      leftComponent={
+        <Stack direction="column" spacing={2}>
+          <SkeletonBlockInput />
+          <SkeletonSideInput />
+          <SkeletonSideInput />
+          <SkeletonSideInput />
+          <SkeletonBlockInput />
+          <SkeletonSideInput />
+          <SkeletonSideInput />
+          <SkeletonSideInput />
+          <SkeletonBlockInput />
+          <SkeletonSideInput />
+          <SkeletonSideInput />
+          <SkeletonSideInput />
+        </Stack>
+      }
+      rightComponent={
+        <Stack direction="column" spacing={2}>
+        <SkeletonSideInput />
+        <Typography variant="h1" width="100%">
+          <Skeleton variant="text" />
+        </Typography>
+        <Skeleton variant="text" width="40%"/>
+        <Skeleton variant="rectangular" width="100%" height={200} />
+        <Skeleton variant="text" width="40%"/>
+        <Skeleton variant="rectangular" width="100%" height={200} />
+        <Skeleton variant="text" width="40%"/>
+        <Skeleton variant="rectangular" width="100%" height={200} />
+        </Stack>
+      } />
+  );
+}
 
 export function SideInput({
   control,
@@ -277,30 +351,30 @@ export function SelectInput({
 
 export function ToggleInput({ control, name, title, subtitle }) {
   const {
-      field: { ref, value, ...inputProps },
-      fieldState: { invalid, isTouched, isDirty },
-      formState: { touchedFields, dirtyFields }
+    field: { ref, value, ...inputProps },
+    fieldState: { invalid, isTouched, isDirty },
+    formState: { touchedFields, dirtyFields }
   } = useController({
-      name,
-      control
+    name,
+    control
   });
 
   return (
-      <Stack direction="row" alignItems="center" justifyContent="space-between"
-          spacing={2} minHeight={40}>
-          <Stack direction="column">
-              <Typography variant="body1">
-                  {title}
-              </Typography>
-              {subtitle &&
-                  <Typography variant="caption" color="text.secondary">
-                      {subtitle}
-                  </Typography>
-              }
-          </Stack>
-          <Switch {...inputProps}
-                value={value} />
+    <Stack direction="row" alignItems="center" justifyContent="space-between"
+      spacing={2} minHeight={40}>
+      <Stack direction="column">
+        <Typography variant="body1">
+          {title}
+        </Typography>
+        {subtitle &&
+          <Typography variant="caption" color="text.secondary">
+            {subtitle}
+          </Typography>
+        }
       </Stack>
+      <Switch {...inputProps}
+        value={value} />
+    </Stack>
   )
 }
 
@@ -374,7 +448,7 @@ export function SideButtonInput({
     control,
   });
 
-  const { useStyles } = require('./FormLayouts.styles'); 
+  const { useStyles } = require('./FormLayouts.styles');
 
   return (
     <Stack

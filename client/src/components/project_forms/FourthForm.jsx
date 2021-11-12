@@ -27,6 +27,7 @@ import {
   BlockInput,
   InlineLabel,
   ToggleInput,
+  SkeletonSection
 } from "../FormLayouts";
 import {
   formChapters,
@@ -119,6 +120,7 @@ const FourthForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
           projectId={projectId}
           chapter={CHAPTER_NUMBER}
         />
+        {isLoading && <SkeletonSection />}
         {!isLoading && (
           <>
             <OutdoorAirSection control={control} getValues={getValues} setValue={setValue}/>

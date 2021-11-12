@@ -22,6 +22,7 @@ import {
     SideInput,
     SelectInput,
     InlineLabel,
+    SkeletonSection
 } from "../FormLayouts";
 import {
     BarChart,
@@ -122,6 +123,7 @@ const ThirdForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
                     shouldRedirect={shouldRedirect}
                     chapter={CHAPTER_NUMBER}
                 />
+                {isLoading && <SkeletonSection />}
                 {!isLoading && (<>
                     <LightingSection control={control} getValues={getValues} setValue={setValue} />
                     <ACSection control={control} getValues={getValues} setValue={setValue} />

@@ -8,6 +8,7 @@ import {
   SideInput,
   InlineLabel,
   BasicInputField,
+  SkeletonSection
 } from "../FormLayouts";
 import {
   BarChart,
@@ -83,6 +84,7 @@ const FifthForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
           shouldRedirect={shouldRedirect}
           chapter={CHAPTER_NUMBER}
         />
+        {isLoading && <SkeletonSection />}
         {!isLoading && (
           <>
             <FirstSection
