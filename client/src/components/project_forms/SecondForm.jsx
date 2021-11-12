@@ -17,10 +17,11 @@ import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Resp
 
 const SecondForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
   const methods = useForm({
-    // defaultValues: defaultFormValue()
+    defaultValues: defaultFormValue()
   });
   const { control, handleSubmit, setValue } = methods;
   const [isFromNextButton, setIsFromNextButton] = useState(false);
+  const [isLoading, setLoading] = useState(true);
 
   const onSubmit = (data) => {
     console.log(data)
@@ -60,6 +61,7 @@ const SecondForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
           b_wall_area_r: pageTwoData.b_wall_area[8],
           ...res.data.page_two,
         });
+        setLoading(false);
       })
       .catch((err) => {
         console.log(err);
@@ -78,7 +80,11 @@ const SecondForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
           shouldRedirect={shouldRedirect}
           chapter={CHAPTER_NUMBER}
         />
-        <FirstSection control={control} />
+        {!isLoading && (
+          <>
+            <FirstSection control={control} />
+          </>
+        )}
         <FormFooter
           chapter={CHAPTER_NUMBER}
           shouldRedirect={shouldRedirect}
@@ -94,25 +100,25 @@ export default SecondForm;
 function defaultFormValue() {
   return {
     secondForm: {
-      b_ottv: 10,
-      b_shgc: 10,
-      b_window_area_n: 10,
-      b_window_area_s: 10,
-      b_window_area_e: 10,
-      b_window_area_w: 10,
-      b_window_area_ne: 10,
-      b_window_area_se: 10,
-      b_window_area_nw: 10,
-      b_window_area_sw: 10,
-      b_wall_area_n: 10,
-      b_wall_area_s: 10,
-      b_wall_area_e: 10,
-      b_wall_area_w: 10,
-      b_wall_area_ne: 10,
-      b_wall_area_se: 10,
-      b_wall_area_nw: 10,
-      b_wall_area_sw: 10,
-      b_wall_area_r: 10,
+      b_ottv: 0,
+      b_shgc: 0,
+      b_window_area_n: 0,
+      b_window_area_s: 0,
+      b_window_area_e: 0,
+      b_window_area_w: 0,
+      b_window_area_ne: 0,
+      b_window_area_se: 0,
+      b_window_area_nw: 0,
+      b_window_area_sw: 0,
+      b_wall_area_n: 0,
+      b_wall_area_s: 0,
+      b_wall_area_e: 0,
+      b_wall_area_w: 0,
+      b_wall_area_ne: 0,
+      b_wall_area_se: 0,
+      b_wall_area_nw: 0,
+      b_wall_area_sw: 0,
+      b_wall_area_r: 0,
     },
   };
 }

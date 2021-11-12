@@ -15,6 +15,7 @@ exports.updatePageFourDraft = (req, res) => {
     d_d_illuminance,
     d_e_temperature,
     d_f_noise_level,
+    d_total_bhc
   } = req.body;
 
   const objectId = ObjectId.ObjectId(projectId);
@@ -42,6 +43,7 @@ exports.updatePageFourDraft = (req, res) => {
       project.d_d_illuminance.items = d_d_illuminance;
       project.d_e_temperature = d_e_temperature;
       project.d_f_noise_level = d_f_noise_level;
+      project.d_total_bhc = d_total_bhc;
       project.project_date = new Date();
       if (project.last_page < 4) {
         project.last_page = 4;
