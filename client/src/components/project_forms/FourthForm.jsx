@@ -18,6 +18,7 @@ import {
   TextField,
   Divider,
   Switch,
+  ThemeProvider,
 } from "@mui/material";
 import {
   FormLayout,
@@ -59,6 +60,7 @@ import {
 import axios from "axios";
 import { toast } from "react-toastify";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { theme } from "../../assets/Theme";
 
 const FourthForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
   const methods = useForm({
@@ -595,6 +597,7 @@ const AccessOutsideSection = ({ control, getValues, setValue }) => {
   };
 
   return (
+    <ThemeProvider theme={theme}>
     <FormLayout
       leftComponent={
         <Stack direction="column" spacing={2}>
@@ -621,6 +624,7 @@ const AccessOutsideSection = ({ control, getValues, setValue }) => {
         </Stack>
       }
     />
+    </ThemeProvider>
   );
 };
 
@@ -750,6 +754,7 @@ const VisualComfortSection = ({ control, getValues, setValue }) => {
   };
 
   return (
+    <ThemeProvider theme={theme}>
     <FormLayout
       leftComponent={
         <Stack direction="column" spacing={2}>
@@ -760,6 +765,12 @@ const VisualComfortSection = ({ control, getValues, setValue }) => {
               onClick={() => {
                 append(defaultIlluminances());
               }}
+              sx={{backgroundColor: "steelTeal",
+                                                    ...({
+                                                        "&:hover": {
+                                                            backgroundColor: ("steelTeal"),
+                                                        }
+                                                    }) }}
             >
               ADD ITEM
             </Button>
@@ -789,7 +800,12 @@ const VisualComfortSection = ({ control, getValues, setValue }) => {
                       <Button
                         variant="contained"
                         onClick={() => remove(index)}
-                        color="warning"
+                        sx={{backgroundColor: "candyPink",
+                                                    ...({
+                                                        "&:hover": {
+                                                            backgroundColor: ("candyPink"),
+                                                        }
+                                                    }) }}
                       >
                         Delete
                       </Button>
@@ -864,6 +880,7 @@ const VisualComfortSection = ({ control, getValues, setValue }) => {
         </Stack>
       }
     />
+    </ThemeProvider>
   );
 };
 
