@@ -158,6 +158,7 @@ function defaultFormValue() {
     },
     thirdForm: {
       mv_flow_rate: 0,
+      mv_amount: 0,
     },
     fourthForm: {
       d_a_is_potential: true,
@@ -323,7 +324,7 @@ const OutdoorAirSection = ({ control, getValues, setValue }) => {
           <SideInput
             name={`${sectionName}.d_a_rp`}
             control={control}
-            title="Outdoor airflow rate required per person (L/s*person or cfm/person)"
+            title="Outdoor airflow rate required per person (L/s*person)"
             subtitle="See right table for reference"
           />
           <ZonePopulation />
@@ -331,7 +332,7 @@ const OutdoorAirSection = ({ control, getValues, setValue }) => {
           <SideInput
             name={`${sectionName}.d_a_ra`}
             control={control}
-            title="Outdoor airflow rate required per unit area (L/s*m2 or cfm/ft2)"
+            title="Outdoor airflow rate required per unit area (L/s*m2)"
             subtitle="See right table for reference"
           />
           <SideInput

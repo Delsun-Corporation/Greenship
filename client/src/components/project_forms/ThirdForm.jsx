@@ -781,13 +781,14 @@ const AppliancesSection = ({ control, getValues, setValue }) => {
             defaultValue: fields
         })
 
+        const gfa = getValues("firstForm.a_gfa")
         const amount = watchValues[index].amount
         const watt = watchValues[index].watt
         const operationalHours = getValues("firstForm.a_operational_hours")
 
         var result = 0
-        if (amount && watt && operationalHours) {
-            result = calcApplianceConsumption(amount, watt, operationalHours)
+        if (amount && watt && operationalHours && gfa) {
+            result = calcApplianceConsumption(amount, watt, operationalHours, gfa)
         }
 
         if (totalAppliances.length < index) {
@@ -1087,7 +1088,7 @@ const UtilitySection = ({ control, getValues, setValue }) => {
                                     <SideInput
                                         name={`${sectionName}.2.watt`}
                                         control={control}
-                                        title="Power Density"
+                                        title="Power Density (watt)"
                                     />
                                 </Box>
                             </Stack>
@@ -1110,7 +1111,7 @@ const UtilitySection = ({ control, getValues, setValue }) => {
                                     <SideInput
                                         name={`${sectionName}.3.watt`}
                                         control={control}
-                                        title="Power Density"
+                                        title="Power Density (watt)"
                                     />
                                 </Box>
                             </Stack>
@@ -1144,7 +1145,7 @@ const UtilitySection = ({ control, getValues, setValue }) => {
                                     <SideInput
                                         name={`${sectionName}.4.mv_flow_rate`}
                                         control={control}
-                                        title="MV flow rate"
+                                        title="MV flow rate (l/s)"
                                     />
                                 </Box>
                             </Stack>
@@ -1238,12 +1239,14 @@ const PlugSection = ({ control, getValues, setValue }) => {
                     <SideInput
                         name={`${sectionName}.operating_power`}
                         control={control}
-                        title="Plug power density during operating hours"
+                        title="Plug power density during operating hours (W/m2)"
+                        subtitle="Baseline 10 W/m2"
                     />
                     <SideInput
                         name={`${sectionName}.nonoperating_power`}
                         control={control}
-                        title="Plug power density during non-operating hours"
+                        title="Plug power density during non-operating hours (W/m2)"
+                        subtitle="Baseline 1 W/m2"
                     />
                     <PlugEnergyAC />
                     <PlugEnergyNonAC />

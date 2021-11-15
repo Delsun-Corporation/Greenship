@@ -36,7 +36,7 @@ function sumValue(array) {
 
 /// 3a
 export function calcLightingEnergyConsumption(leOperationalDay, leOperationalNonDay, leNonOperational, gfa) {
-    return (leOperationalDay + leOperationalNonDay + leNonOperational) / gfa
+    return (leOperationalDay + leOperationalNonDay + leNonOperational) / gfa / 1000
 }
 
 /// 3a2
@@ -98,8 +98,8 @@ export function convertCoolingLoad(coolingLoad, operationalHours, workingDays, g
 }
 
 /// 3c
-export function calcApplianceConsumption(amount, watt, operationalHours) {
-    return (amount * watt * operationalHours)
+export function calcApplianceConsumption(amount, watt, operationalHours, gfa) {
+    return (amount * watt * operationalHours / 1000 / gfa)
 }
 
 /// 3d
@@ -108,7 +108,7 @@ export function calcLiftConsumption(gfa, operationalHours, watt, amount, capacit
 }
 
 export function calcUtilityConsumption(gfa, operationalHours, watt, amount) {
-    return (watt * amount * operationalHours / gfa)
+    return (watt * amount * operationalHours / 1000 / gfa)
 }
 
 /// 3e
@@ -121,7 +121,7 @@ export function calcPlugEnergyNonAC(gfa, operationalHours, nonOperatingPower) {
 }
 
 export function calcPlugConsumption(gfa, plugEnergyAC, plugEnergyNonAC) {
-    return ((plugEnergyAC + plugEnergyNonAC) / gfa)
+    return ((plugEnergyAC + plugEnergyNonAC) / 1000 / gfa)
 }
 
 /// 4a
@@ -154,7 +154,7 @@ export function calcPotentialPV(pca, l, w) {
  }
  
  export function calcPredictionElectical(potentialPv, wpeak) {
-     return (potentialPv * wpeak * 4 * 365).toFixed(2);
+     return (potentialPv * wpeak * 4 * 365 / 1000).toFixed(2);
  }
  
  export function calcPercentageElectrical(predictialElectrical, total_dec) {
@@ -162,5 +162,10 @@ export function calcPotentialPV(pca, l, w) {
  }
 
 export function numberFormat(x) {
-    return new Intl.NumberFormat('en', { minimumFractionDigits: 0, maximumFractionDigits: 2 }).format(x)
+    var result = new Intl.NumberFormat('en', { minimumFractionDigits: 0, maximumFractionDigits: 2 }).format(x)
+    console.log(result)
+    if (isNaN(result)) {
+        return 0
+    }
+    return result
 }
