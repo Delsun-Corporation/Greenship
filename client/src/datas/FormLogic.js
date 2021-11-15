@@ -10,7 +10,7 @@ export function calcNonOperatingHoursPerYear(operationalHours, workingDays, holi
 
 /// 1a6
 export function calcOccupancy(gfa, occupancyDensity) {
-    return (gfa * occupancyDensity)
+    return (gfa * occupancyDensity / 100)
 }
 
 /// 1b1
@@ -22,14 +22,17 @@ export function calcRoomVolumePerPerson(floorNumber, avgFloorHeight, occupancyDe
 export function calcWWR(collectionWindowArea, collectionWallArea) {
     const totalWindowArea = sumValue(collectionWindowArea);
     const totalWallArea = sumValue(collectionWallArea);
-    const applySeparator = numberFormat(totalWindowArea / totalWallArea);
+    const applySeparator = numberFormat(totalWindowArea / totalWallArea * 100);
     return applySeparator;
 }
 
 function sumValue(array) {
     let sum = 0;
     for (let i = 0; i < array.length; i++) {
-        sum += parseInt(array[i]);
+        
+        if (!isNaN(array[i]), array[i] !== "") {
+            sum += parseInt(array[i]);
+        }
     }
     return sum
 }
@@ -129,8 +132,8 @@ export function calcZonePopulation(gfa, occupancyDensity) {
     return ((gfa * occupancyDensity))
 }
 
-export function calcVbz(rp, pz, ra, az) {
-    return ((rp * pz) + (ra * az))
+export function calcVbz(rp, pz, ra, az, mvAmount) {
+    return ((rp * pz) + (ra * az)) / mvAmount
 }
 
 /// 4b
@@ -162,10 +165,11 @@ export function calcPotentialPV(pca, l, w) {
  }
 
 export function numberFormat(x) {
-    var result = new Intl.NumberFormat('en', { minimumFractionDigits: 0, maximumFractionDigits: 2 }).format(x)
-    console.log(result)
-    if (isNaN(result)) {
-        return 0
+    var result = new Intl.NumberFormat('en', { minimumFractionDigits: 0, maximumFractionDigits: 2 }).format(parseFloat(x))
+
+    if (result) {
+        return result
     }
-    return result
+    return 0
+    
 }

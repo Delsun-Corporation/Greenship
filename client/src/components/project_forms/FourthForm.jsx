@@ -235,6 +235,7 @@ const OutdoorAirSection = ({ control, getValues, setValue }) => {
       name: `${sectionName}.d_a_az`,
     });
     const pz = resultArr.pz;
+    const mvAmount = getValues("thirdForm.mv_amount")
 
     var result = "-";
     if (rp && pz && ra && az) {

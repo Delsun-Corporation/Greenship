@@ -452,18 +452,18 @@ export function BasicInputField({ control, name, adornment }) {
   } = useController({
     name,
     control,
-    rules: { required: true },
   });
   return (
     <TextField
       {...inputProps}
-      checked={value}
-      value={value}
+      value={parseInt(value) || 0}
       inputProps={{ min: 0, style: { textAlign: "right" } }}
       variant="outlined"
       size="small"
       type="number"
       className="w-24"
+      type="number"
+      defaultValue={0}
       InputProps={{
         startAdornment: (
           <InputAdornment position="start">{adornment}</InputAdornment>

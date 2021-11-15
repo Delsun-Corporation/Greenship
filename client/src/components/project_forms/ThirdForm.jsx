@@ -73,7 +73,6 @@ const ThirdForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
         const newData = {
             thirdForm: data.thirdForm
         }
-        console.log("DATA", data)
         if (isFromNextButton) {
             onceSubmitted(newData, '4');
         } else {
@@ -1268,11 +1267,7 @@ const TotalSection = ({ control }) => {
         name: `thirdForm.total_dec`
     })
 
-    console.log(watchValues)
-
     var result = watchValues.lighting + watchValues.ac + watchValues.appliances + watchValues.utility + watchValues.plug
-
-    console.log(result)
 
     const DesignEnergyConsumption = () => {
         return (<Paper sx={{ paddingX: 2, paddingY: 1, backgroundColor: "green", color: "white" }}>
