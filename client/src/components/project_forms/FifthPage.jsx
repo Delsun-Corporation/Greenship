@@ -60,7 +60,11 @@ const FifthForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
         },
       })
       .then((res) => {
+        const pageOneData = res.data.page_one
         const pageFiveData = res.data.page_five;
+        setValue("fifthForm", {
+          ...pageOneData
+        });
         setValue("fifthForm", {
           ...pageFiveData,
           e_result: e_result
@@ -108,8 +112,11 @@ export default FifthForm;
 
 function defaultFormValue() {
   return {
+    firstForm: {
+      a_gfa: 0
+    },
     fifthForm: {
-      total_dec: 200000,
+      total_dec: 0,
       e_facade_area: 0,
       e_pv_spec_wpeak: 0,
       e_pv_spec_dimension: [0, 0, 0],
@@ -175,10 +182,11 @@ const FirstSection = ({ control, setValue, getValues }) => {
 
     const pv = resultArr.potentialPV;
     const wpeakValue = watchValue.e_pv_spec_wpeak;
+    const gfa = getValues("firstForm.a_gfa")
 
     var result = 0;
     if (wpeakValue) {
-      result = calcPredictionElectical(pv, wpeakValue);
+      result = calcPredictionElectical(pv, wpeakValue, gfa);
     }
 
     resultArr.predictionElectrical = result;

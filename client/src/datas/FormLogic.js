@@ -116,15 +116,15 @@ export function calcUtilityConsumption(gfa, operationalHours, watt, amount) {
 
 /// 3e
 export function calcPlugEnergyAC(gfa, operationalHours, operatingPower) {
-    return (operatingPower * operationalHours * gfa)
+    return (operatingPower * operationalHours * gfa / 1000)
 }
 
 export function calcPlugEnergyNonAC(gfa, operationalHours, nonOperatingPower) {
-    return (nonOperatingPower * (24 - operationalHours) * gfa)
+    return (nonOperatingPower * (24 - operationalHours) * gfa / 1000)
 }
 
 export function calcPlugConsumption(gfa, plugEnergyAC, plugEnergyNonAC) {
-    return ((plugEnergyAC + plugEnergyNonAC) / 1000 / gfa)
+    return ((plugEnergyAC + plugEnergyNonAC) / gfa)
 }
 
 /// 4a
@@ -156,8 +156,8 @@ export function calcPotentialPV(pca, l, w) {
     return (pca / ((l * w) / 1000000)).toFixed(2);
  }
  
- export function calcPredictionElectical(potentialPv, wpeak) {
-     return (potentialPv * wpeak * 4 * 365 / 1000).toFixed(2);
+ export function calcPredictionElectical(potentialPv, wpeak, gfa) {
+     return (potentialPv * wpeak * 4 * 365 / gfa / 1000).toFixed(2);
  }
  
  export function calcPercentageElectrical(predictialElectrical, total_dec) {
@@ -165,6 +165,10 @@ export function calcPotentialPV(pca, l, w) {
  }
 
 export function numberFormat(value, numberOfDigits = 2) {
+    if (isNaN(value)) {
+        return 0
+    }
+
     var result = new Intl.NumberFormat('en', { minimumFractionDigits: 0, maximumFractionDigits: numberOfDigits }).format(value)
 
     if (result) {
