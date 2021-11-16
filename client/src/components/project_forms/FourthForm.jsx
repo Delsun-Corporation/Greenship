@@ -89,6 +89,7 @@ const FourthForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
         const pageThreeData = res.data.page_three;
         const pageFourData = res.data.page_four;
         const pageOneData = res.data.page_one;
+        console.log(pageThreeData);
         setValue("firstForm", {
           ...pageOneData
         });
@@ -238,8 +239,8 @@ const OutdoorAirSection = ({ control, getValues, setValue }) => {
     const mvAmount = getValues("thirdForm.mv_amount")
 
     var result = "-";
-    if (rp && pz && ra && az) {
-      result = calcVbz(rp, pz, ra, az);
+    if (rp && pz && ra && az && mvAmount) {
+      result = calcVbz(rp, pz, ra, az, mvAmount);
       resultArr.vbz = result;
       setValue("fourthForm.d_total_bhc.vbz", result)
     }

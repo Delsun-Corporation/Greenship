@@ -85,7 +85,8 @@ exports.getPageFourDraft = (req, res) => {
         });
       }
 
-      var mw_flow_rate = result.c_utility.items[4].mv_flow_rate;
+      const mw_flow_rate = result.c_utility.items[4].mv_flow_rate;
+      const mv_amount = result.c_utility.items[4].amount;
       var a_typology = result.a_typology;
       var a_typology_acoustic = '';
 
@@ -101,7 +102,8 @@ exports.getPageFourDraft = (req, res) => {
 
       return res.status(200).json({
         page_three: {
-            mv_flow_rate: mw_flow_rate
+            mv_flow_rate: mw_flow_rate,
+            mv_amount: mv_amount
         },
         page_one: {
           a_gfa: result.a_gfa,
