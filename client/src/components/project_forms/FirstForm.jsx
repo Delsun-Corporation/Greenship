@@ -117,7 +117,10 @@ const FirstSection = ({ control }) => {
             rows={1}
             maxLength={50}
           />
-
+        </Stack>
+      }
+      rightComponent={
+        <Stack direction="column" spacing={2}>
           <BlockInput
             name={sectionName + "project_desc"}
             control={control}
@@ -127,7 +130,6 @@ const FirstSection = ({ control }) => {
           />
         </Stack>
       }
-      rightComponent={<>Building Image</>}
     />
   );
 };
@@ -178,7 +180,7 @@ const SecondSection = ({ control }) => {
       name: sectionName + "a_occupancy_density",
     });
     if (occupancyDensity && gfa) {
-      return numberFormat(calcOccupancy(gfa, occupancyDensity)) + " pax";
+      return calcOccupancy(gfa, occupancyDensity).toFixed() + " person";
     }
     return NaN;
   }
@@ -213,7 +215,7 @@ const SecondSection = ({ control }) => {
           <SideInput
             name={sectionName + "a_gfa"}
             control={control}
-            title="Grass Floor Area (m2)"
+            title="Gross Floor Area (m2)"
           />
           <SideInput
             name={sectionName + "a_floor_count"}
@@ -260,7 +262,7 @@ const SecondSection = ({ control }) => {
           <SideInput
             name={sectionName + "a_occupancy_density"}
             control={control}
-            title="Occupancy Density (pax/m2)"
+            title="Occupancy Density (person/100m2)"
             subtitle="Refer to table below"
           />
           <InlineLabel title="Occupancy" value={Occupancy()} />

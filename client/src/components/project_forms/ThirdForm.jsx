@@ -441,7 +441,7 @@ const LightingSection = ({ control, getValues, setValue }) => {
                                                         }
                                                     }) }}
                         >
-                            ADD ITEM
+                            ADD Room
                         </Button>
                     </Stack>
 
@@ -866,7 +866,7 @@ const AppliancesSection = ({ control, getValues, setValue }) => {
                                                     <TextField
                                                         onChange={onChange}
                                                         value={value} variant="outlined" size="small"
-                                                        label={"Room #" + (index + 1) + " name"}
+                                                        label={"Item #" + (index + 1) + " name"}
                                                         bgcolor="white"
                                                     />
                                                 )}
@@ -1070,7 +1070,7 @@ const UtilitySection = ({ control, getValues, setValue }) => {
             }
             rightComponent={
                 <Stack direction="column" spacing={2}>
-                    <Box sx={{ fontSize: 16, fontWeight: "bold" }}>Pump and STP</Box>
+                    <Box sx={{ fontSize: 16, fontWeight: "bold" }}>Pump and Sewage Treatment Plant (STP)</Box>
 
                     <Paper variant="outlined" sx={{ padding: 2 }}>
                         <Stack spacing={1} direction="column">

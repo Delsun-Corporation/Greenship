@@ -410,14 +410,14 @@ const FirstSection = ({ control }) => {
           <SideInput
             name={`${sectionName}.b_ottv`}
             control={control}
-            title="OTTV (kWh/m2)"
+            title="Overall Thermal Transfer Value (kWh/m2)"
             subtitle="OTTV Baseline: 45kWh/m2"
           />
 
           <SideInput
             name={`${sectionName}.b_shgc`}
             control={control}
-            title="SHGC"
+            title="Solar Heat Gain Coefficient"
             subtitle="SHGC Baseline: 0.6 - 0.7"
           />
 
@@ -605,7 +605,7 @@ const FirstSection = ({ control }) => {
               </Stack>
             </Stack>
           </Stack>
-          <InlineLabel title="WWR" subtitle="Baseline 30-40%" value={CountWWR()} />
+          <InlineLabel title="Window to Wall Ratio" subtitle="WWR Baseline 30-40%" value={CountWWR()} />
         </Stack>
       }
       rightComponent={
