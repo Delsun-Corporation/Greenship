@@ -6,6 +6,7 @@ import { Button } from "@mui/material";
 import ProjectCards from "./components/project_card/ProjectCards";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
+import Footer from "./components/Footer";
 
 function App() {
   const history = useHistory();
@@ -80,6 +81,7 @@ function App() {
           </div>}
           </div>
         </div>
+        <Footer/>
         </>
       }
     </div>

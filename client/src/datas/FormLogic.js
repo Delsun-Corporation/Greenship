@@ -164,8 +164,8 @@ export function calcPotentialPV(pca, l, w) {
     return (predictialElectrical/total_dec * 100 / 100).toFixed(2);
  }
 
-export function numberFormat(x) {
-    var result = new Intl.NumberFormat('en', { minimumFractionDigits: 0, maximumFractionDigits: 2 }).format(parseFloat(x))
+export function numberFormat(value, numberOfDigits = 2) {
+    var result = new Intl.NumberFormat('en', { minimumFractionDigits: 0, maximumFractionDigits: numberOfDigits }).format(value)
 
     if (result) {
         return result
