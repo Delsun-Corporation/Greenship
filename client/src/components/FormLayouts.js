@@ -253,7 +253,7 @@ export function SideInput({
   name,
   title,
   subtitle,
-  defaultValue,
+  defaultValue = 0,
   isString,
   minimalInput,
 }) {
@@ -265,6 +265,11 @@ export function SideInput({
     name,
     control,
   });
+
+  const handleKey = (e) => {
+    //... rest of your code
+    e.preventDefault()
+   }
 
   return (
     <Stack
@@ -288,6 +293,7 @@ export function SideInput({
         inputProps={{ min: minimalInput, style: { textAlign: "right" } }}
         variant="outlined"
         size="small"
+        inputMode="numeric"
         type={isString ? "text" : "number"}
         sx={{
           maxWidth: "40%",

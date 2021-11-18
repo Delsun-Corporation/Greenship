@@ -219,7 +219,7 @@ const OutdoorAirSection = ({ control, getValues, setValue }) => {
       resultArr.pz = result;
     }
 
-    return <InlineLabel title="Zone Population (person)" value={result} />;
+    return <InlineLabel title="Zone Population (person)" value={numberFormat(result)} />;
   };
 
   const Vbz = () => {
@@ -274,7 +274,7 @@ const OutdoorAirSection = ({ control, getValues, setValue }) => {
 
     const chartData = [
       { label: "Vbz", value: vbz },
-      { label: "MV flow rate", value: mvFlowRate },
+      { label: "MV flow rate", value: mvFlowRate / 1000 },
     ];
 
     const barColors = ["#47919b", "#7e84a3"];
@@ -389,7 +389,7 @@ const AchSection = ({ control, getValues, setValue }) => {
       resultArr.volume = result;
     }
 
-    return <InlineLabel title="Volume" value={result + " m3"} />;
+    return <InlineLabel title="Volume" value={numberFormat(result) + " m3"} />;
   };
 
   const ACHCalculate = () => {
@@ -487,7 +487,7 @@ const AchSection = ({ control, getValues, setValue }) => {
           />
           <InlineLabel
             title="Area of ventilation"
-            value={getValues(`firstForm.a_ventilation_area`) + " m2"}
+            value={numberFormat(getValues(`firstForm.a_ventilation_area`)) + " m2"}
           />
           <Volume />
           <Divider style={{ width: "100%" }} />

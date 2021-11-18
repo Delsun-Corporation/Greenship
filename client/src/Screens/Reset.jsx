@@ -3,12 +3,16 @@ import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import authPict from "../assets/authPict.jpeg";
 
-const Reset = ({ match }) => {
+const Reset = ({ match, history }) => {
   const [formData, setFormData] = useState({
     password1: "",
     password2: "",
     token: true,
   });
+
+  const redirect = () => {
+    history.push("/");
+  };
 
   const { password1, password2, token } = formData;
 
@@ -33,7 +37,7 @@ const Reset = ({ match }) => {
         })
         .then((res) => {
           setFormData({ ...formData, password1: "", password2: "" });
-          toast.success(res.data.message);
+          redirect()
         })
         .catch((err) => {
           toast.error(`${err.response.data.error}`);
