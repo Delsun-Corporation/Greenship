@@ -156,8 +156,8 @@ export function calcPotentialPV(pca, l, w) {
     return (pca / ((l * w) / 1000000)).toFixed(2);
  }
  
- export function calcPredictionElectical(potentialPv, wpeak) {
-     return (potentialPv * wpeak * 4 * 365 / 1000).toFixed(2);
+ export function calcPredictionElectical(potentialPv, wpeak, gfa) {
+     return (potentialPv * wpeak * 4 * 365 / 1000 / gfa).toFixed(2);
  }
  
  export function calcPercentageElectrical(predictialElectrical, total_dec) {

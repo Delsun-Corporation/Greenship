@@ -175,10 +175,11 @@ const FirstSection = ({ control, setValue, getValues }) => {
 
     const pv = resultArr.potentialPV;
     const wpeakValue = watchValue.e_pv_spec_wpeak;
+    const gfa = watchValue.a_gfa;
 
     var result = 0;
     if (wpeakValue) {
-      result = calcPredictionElectical(pv, wpeakValue);
+      result = calcPredictionElectical(pv, wpeakValue, gfa);
     }
 
     resultArr.predictionElectrical = result;
