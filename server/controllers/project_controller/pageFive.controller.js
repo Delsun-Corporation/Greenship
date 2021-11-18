@@ -69,7 +69,7 @@ exports.getPageFiveDraft = (req, res) => {
   }
 
   Project.findById(objectId)
-    .select("e_facade_area e_pv_spec_wpeak e_pv_spec_dimension total_dec")
+    .select("e_facade_area e_pv_spec_wpeak e_pv_spec_dimension total_dec a_gfa")
     .then((page_five) => {
       if (!page_five) {
         return res.status(400).json({
@@ -92,6 +92,7 @@ exports.getPageFiveDraft = (req, res) => {
           e_pv_spec_l: page_five.e_pv_spec_dimension.l,
           e_pv_spec_w: page_five.e_pv_spec_dimension.w,
           total_dec: totalDesignEnergy,
+          a_gfa: page_five.a_gfa,
         },
         message: "Success getting page five draft",
       });
