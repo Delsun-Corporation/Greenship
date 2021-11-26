@@ -1,5 +1,18 @@
 const Project = require('../../models/project.model');
 const mongoose = require('mongoose');
+const multer = require('multer');
+
+const storage = multer.diskStorage({
+  destination: function(req, file, cb) {
+    cb(null, './uploads/');
+  },
+  filename: function(req, file, cb) {
+    cb(null, new Date().toISOString() + file.originalname);
+  }
+})
+
+// add limits: fileSize in here to limit image size
+const upload = multer({storage: storage});
 
 const ObjectId = mongoose.Types;
 
@@ -47,6 +60,7 @@ exports.getPageOneDraft = (req, res) => {
     const updatedVentilationArea = req.body.a_ventilation_area;
     const updatedAch = req.body.a_ach;
     const updatedProvince = req.body.a_location_province;
+    console.log(req.file);
   
     Project.findById(objectId)
       .then((project) => {
@@ -83,3 +97,5 @@ exports.getPageOneDraft = (req, res) => {
         });
       });
   };
+
+  exports.uploadProjectImage = upload.single('projectImage')
