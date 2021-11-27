@@ -104,7 +104,7 @@ const Navbar = ({ open, handleDrawerClose }) => {
 
     return (
         <ThemeProvider theme={theme}>
-            <AppBar position="fixed" open={open} >
+            <AppBar position="fixed" open={open} sx={{ backgroundColor: "steelTeal"}} >
                 <Toolbar disableGutters sx={{ backgroundColor: "steelTeal", paddingRight: 4 }}>
                     <Box sx={{
                         marginX: 2,

@@ -42,8 +42,8 @@ const projectSchema = new Schema({
     default: "",
   },
   a_location_image: {
-    type: [String],
-    default: [],
+    type: String,
+    default: "",
   },
   a_gfa: {
     type: Number,
@@ -78,8 +78,8 @@ const projectSchema = new Schema({
     default: 0,
   },
   a_orientation_image: {
-    type: [String],
-    default: [],
+    type: String,
+    default: "",
   },
   a_micro_noise_image: {
     type: String,
@@ -125,16 +125,16 @@ const projectSchema = new Schema({
           default: 0,
         },
         lpd_operate_attach: {
-          type: [String],
-          default: [],
+          type: String,
+          default: "",
         },
         lpd_nonoperate: {
           type: Number,
           default: 0,
         },
         lpd_nonoperate_attach: {
-          type: [String],
-          default: [],
+          type: String,
+          default: "",
         },
       },
     ],
@@ -184,12 +184,15 @@ const projectSchema = new Schema({
         },
         mv_flow_rate: {
           type: Number,
+          default: 0,
         },
         lift_capacity: {
           type: Number,
+          default: 0
         },
         lift_velocity: {
           type: Number,
+          default: 0
         },
       },
     ],
@@ -229,16 +232,16 @@ const projectSchema = new Schema({
     default: 0,
   },
   d_c_access_att: {
-    type: [String],
-    default: [],
+    type: String,
+    default: "",
   },
   d_c_access_area: {
     type: Number,
     default: 0,
   },
   d_d_lighting_plan_att: {
-    type: [String],
-    default: [],
+    type: String,
+    default: "",
   },
   d_d_illuminance: {
     items: [
@@ -285,24 +288,38 @@ const projectSchema = new Schema({
     default: 0,
   },
   d_f_noise_att: {
-    type: [String],
-    default: [],
+    type: String,
+    default: "",
   },
   d_f_noise_control_att: {
-    type: [String],
-    default: 0,
+    type: String,
+    default: "",
+  },
+  d_total_bhc: {
+    vbz: {
+      type: Number,
+      default: 0
+    },
+    ach: {
+      type: Number,
+      default: 0
+    },
+    illuminance: {
+      type: [Number],
+      default: [0]
+    }
   },
   e_facade_area: {
     type: Number,
     default: 0,
   },
   e_pv_install_att: {
-    type: [String],
-    default: [],
+    type: String,
+    default: "",
   },
   e_pv_solar_att: {
-    type: [String],
-    default: []
+    type: String,
+    default: ""
   },
   e_pv_spec_wpeak: {
     type: Number,
@@ -318,6 +335,12 @@ const projectSchema = new Schema({
       default: 0
     },
     h: {
+      type: Number,
+      default: 0
+    }
+  },
+  e_result: {
+    energy_percentage: {
       type: Number,
       default: 0
     }

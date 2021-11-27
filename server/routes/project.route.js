@@ -12,6 +12,7 @@ const {
 const {
     getPageOneDraft,
     updatePageOneDraft,
+    uploadProjectImage
 } = require('../controllers/project_controller/pageOne.controller');
 
 const {
@@ -26,21 +27,27 @@ const {
 
 const {
     updatePageFourDraft,
-    getPageFourDraft
+    getPageFourDraft,
+    uploadPageFourImages
 } = require('../controllers/project_controller/pageFour.controller')
 
 const {
     updatePageFiveDraft,
-    getPageFiveDraft
+    getPageFiveDraft,
+    uploadPageFiveImages
 } = require('../controllers/project_controller/pageFive.controller')
+
+const  {
+    getPageSixDraft
+} = require('../controllers/project_controller/pageSix.controller')
 
 router.post('/createproject', createProject);
 
-router.put('/updatepageone', updatePageOneDraft);
+router.put('/updatepageone', uploadProjectImage ,updatePageOneDraft);
 router.put('/updatepagetwo', updatePageTwoDraft);
 router.put('/updatepagethree', updatePageThreeDraft);
-router.put('/updatepagefour', updatePageFourDraft);
-router.put('/updatepagefive', updatePageFiveDraft);
+router.put('/updatepagefour',uploadPageFourImages, updatePageFourDraft);
+router.put('/updatepagefive',uploadPageFiveImages, updatePageFiveDraft);
 router.put('/toggle/status', toggleProjectStatus);
 
 router.delete('/deleteproject', deleteProject);
@@ -52,5 +59,6 @@ router.get('/getlastpage', getLastPage);
 router.get('/getpagethree', getPageThreeDraft);
 router.get('/getpagefour', getPageFourDraft);
 router.get('/getpagefive', getPageFiveDraft);
+router.get('/getpagesix', getPageSixDraft);
 
 module.exports = router;

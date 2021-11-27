@@ -22,7 +22,7 @@ export function calcRoomVolumePerPerson(floorNumber, avgFloorHeight, occupancyDe
 export function calcWWR(collectionWindowArea, collectionWallArea) {
     const totalWindowArea = sumValue(collectionWindowArea);
     const totalWallArea = sumValue(collectionWallArea);
-    const applySeparator = numberWithCommas(((totalWindowArea / totalWallArea).toFixed(2)));
+    const applySeparator = numberFormat(totalWindowArea / totalWallArea);
     return applySeparator;
 }
 
@@ -36,7 +36,7 @@ function sumValue(array) {
 
 /// 3a
 export function calcLightingEnergyConsumption(leOperationalDay, leOperationalNonDay, leNonOperational, gfa) {
-    return (leOperationalDay + leOperationalNonDay + leNonOperational)/gfa
+    return (leOperationalDay + leOperationalNonDay + leNonOperational) / gfa
 }
 
 /// 3a2
@@ -82,7 +82,7 @@ export function calcPLL(gfa, occupancyDensity) {
 
 export function calcLSL(gfa, totalLpdOperational, totalLpdNonOperational) {
     return ((totalLpdOperational + totalLpdNonOperational) * gfa * 1.25 * 3.4)
-} 
+}
 
 export function calcCFM1(ach, gfa, floorCount, floorHeightAvg) {
     return (ach * gfa * floorCount * floorHeightAvg * 35.31 / 60)
@@ -161,6 +161,6 @@ export function calcPotentialPV(pca, l, w) {
     return (predictialElectrical/total_dec * 100 / 100).toFixed(2);
  }
 
- function numberWithCommas(x) {
-    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+export function numberFormat(value, numberOfDigits = 2) {
+    return new Intl.NumberFormat('en', { minimumFractionDigits: 0, maximumFractionDigits: numberOfDigits }).format(value)
 }

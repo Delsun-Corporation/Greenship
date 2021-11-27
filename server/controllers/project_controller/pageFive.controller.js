@@ -2,6 +2,34 @@ const Project = require("../../models/project.model");
 const mongoose = require("mongoose");
 
 const ObjectId = mongoose.Types;
+const multer = require("multer");
+const { mimeTypeValidator } = require("../../helpers/valid");
+
+const pvInstallAttachmentKey = "e_pv_install_att";
+const pvSolarAttachmentKey = "e_pv_solar_att";
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "./uploads/");
+  },
+  filename: function (req, file, cb) {
+    cb(null, new Date().toISOString() + file.originalname);
+  },
+});
+
+const fileFilter = (req, file, cb) => {
+  if (mimeTypeValidator(file.mimetype)) {
+    cb(null, true);
+  } else {
+    cb(null, false);
+  }
+};
+
+// add limits: fileSize in here to limit image size
+const upload = multer({
+  storage: storage,
+  fileFilter: fileFilter,
+});
 
 exports.updatePageFiveDraft = (req, res) => {
   const {
@@ -10,10 +38,15 @@ exports.updatePageFiveDraft = (req, res) => {
     e_pv_spec_l,
     e_pv_spec_w,
     e_pv_spec_wpeak,
+    e_result,
     projectId,
   } = req.body;
 
   const objectId = ObjectId.ObjectId(projectId);
+
+  const files = req.files;
+  var e_pv_install_att = ""
+  var e_pv_solar_att = "";
 
   if (
     req.body === {} ||
@@ -27,10 +60,23 @@ exports.updatePageFiveDraft = (req, res) => {
     });
   }
 
+  if(files) {
+    if (files[pvSolarAttachmentKey] !== undefined) {
+      e_pv_solar_att = `${process.env.SERVER_URL}/${files[pvSolarAttachmentKey][0].path}`;
+    }
+  
+    if (files[pvInstallAttachmentKey] !== undefined) {
+      e_pv_install_att = `${process.env.SERVER_URL}/${files[pvInstallAttachmentKey][0].path}`;
+    }
+  }
+
   Project.findById(objectId)
     .then((project) => {
       project.e_facade_area = e_facade_area;
       project.e_pv_spec_wpeak = e_pv_spec_wpeak;
+      project.e_result = e_result;
+      project.e_pv_install_att = e_pv_install_att;
+      project.e_pv_solar_att = e_pv_solar_att;
       project.e_pv_spec_dimension = {
         h: e_pv_spec_h,
         l: e_pv_spec_l,
@@ -50,6 +96,7 @@ exports.updatePageFiveDraft = (req, res) => {
       }
     })
     .catch((err) => {
+      console.log(err);
       res.status(500).json({
         message: "Internal server error",
       });
@@ -67,7 +114,7 @@ exports.getPageFiveDraft = (req, res) => {
   }
 
   Project.findById(objectId)
-    .select("e_facade_area e_pv_spec_wpeak e_pv_spec_dimension total_dec")
+    .select(`e_facade_area e_pv_spec_wpeak e_pv_spec_dimension total_dec ${pvSolarAttachmentKey} ${pvInstallAttachmentKey}`)
     .then((page_five) => {
       if (!page_five) {
         return res.status(400).json({
@@ -90,6 +137,8 @@ exports.getPageFiveDraft = (req, res) => {
           e_pv_spec_l: page_five.e_pv_spec_dimension.l,
           e_pv_spec_w: page_five.e_pv_spec_dimension.w,
           total_dec: totalDesignEnergy,
+          e_pv_solar_att: page_five.e_pv_solar_att,
+          e_pv_install_att: page_five.e_pv_install_att,
         },
         message: "Success getting page five draft",
       });
@@ -100,3 +149,8 @@ exports.getPageFiveDraft = (req, res) => {
       });
     });
 };
+
+exports.uploadPageFiveImages = upload.fields([
+  { name: pvSolarAttachmentKey, maxCount: 1 },
+  { name: pvInstallAttachmentKey, maxCount: 1 }
+]);

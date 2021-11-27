@@ -3,7 +3,7 @@ import { ToastContainer, toast } from "react-toastify";
 import { isAuth } from "../helpers/auth";
 import axios from "axios";
 import jwt from "jsonwebtoken";
-import { Redirect } from "react-router-dom";
+import { Redirect, useHistory } from "react-router-dom";
 import authPict from "../assets/authPict.jpeg";
 
 const Activate = ({ match }) => {
@@ -12,6 +12,8 @@ const Activate = ({ match }) => {
     token: '',
     show: true,
   });
+
+  const history = useHistory();
 
   useEffect(() => {
     let token = match.params.token;
@@ -33,7 +35,7 @@ const Activate = ({ match }) => {
       })
       .then((res) => {
         setFormData({ ...formData, show: false });
-        toast.success(res.data.message);
+        history.push('/');
       })
       .catch((err) => {
         toast.error(err.response.data.error);

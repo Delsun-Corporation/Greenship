@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useForm, useWatch, Controller } from "react-hook-form";
-import { Stack, TextField, Typography, Box, Divider } from "@mui/material";
+import { Stack, TextField, Typography, Box, Divider, Skeleton } from "@mui/material";
 import {
   FormLayout,
   FormHeader,
@@ -8,19 +8,21 @@ import {
   SideInput,
   InlineLabel,
   BasicInputField,
+  SkeletonSection
 } from "../FormLayouts";
 import { formChapters } from "../../datas/Datas";
-import { calcWWR } from "../../datas/FormLogic";
+import { calcWWR, numberFormat } from "../../datas/FormLogic";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Brush, PieChart, Pie, Sector } from 'recharts';
 
 const SecondForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
   const methods = useForm({
-    // defaultValues: defaultFormValue()
+    defaultValues: defaultFormValue()
   });
   const { control, handleSubmit, setValue } = methods;
   const [isFromNextButton, setIsFromNextButton] = useState(false);
+  const [isLoading, setLoading] = useState(true);
 
   const onSubmit = (data) => {
     console.log(data)
@@ -60,6 +62,7 @@ const SecondForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
           b_wall_area_r: pageTwoData.b_wall_area[8],
           ...res.data.page_two,
         });
+        setLoading(false);
       })
       .catch((err) => {
         console.log(err);
@@ -78,12 +81,17 @@ const SecondForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
           shouldRedirect={shouldRedirect}
           chapter={CHAPTER_NUMBER}
         />
-        <FirstSection control={control} />
-        <FormFooter
-          chapter={CHAPTER_NUMBER}
-          shouldRedirect={shouldRedirect}
-          setFromNextButton={setIsFromNextButton}
-        />
+        {isLoading && <SkeletonSection />}
+        {!isLoading && (
+          <>
+            <FirstSection control={control} />
+            <FormFooter
+              chapter={CHAPTER_NUMBER}
+              shouldRedirect={shouldRedirect}
+              setFromNextButton={setIsFromNextButton}
+            />
+          </>
+        )}
       </Stack>
     </form>
   );
@@ -94,25 +102,25 @@ export default SecondForm;
 function defaultFormValue() {
   return {
     secondForm: {
-      b_ottv: 10,
-      b_shgc: 10,
-      b_window_area_n: 10,
-      b_window_area_s: 10,
-      b_window_area_e: 10,
-      b_window_area_w: 10,
-      b_window_area_ne: 10,
-      b_window_area_se: 10,
-      b_window_area_nw: 10,
-      b_window_area_sw: 10,
-      b_wall_area_n: 10,
-      b_wall_area_s: 10,
-      b_wall_area_e: 10,
-      b_wall_area_w: 10,
-      b_wall_area_ne: 10,
-      b_wall_area_se: 10,
-      b_wall_area_nw: 10,
-      b_wall_area_sw: 10,
-      b_wall_area_r: 10,
+      b_ottv: 0,
+      b_shgc: 0,
+      b_window_area_n: 0,
+      b_window_area_s: 0,
+      b_window_area_e: 0,
+      b_window_area_w: 0,
+      b_window_area_ne: 0,
+      b_window_area_se: 0,
+      b_window_area_nw: 0,
+      b_window_area_sw: 0,
+      b_wall_area_n: 0,
+      b_wall_area_s: 0,
+      b_wall_area_e: 0,
+      b_wall_area_w: 0,
+      b_wall_area_ne: 0,
+      b_wall_area_se: 0,
+      b_wall_area_nw: 0,
+      b_wall_area_sw: 0,
+      b_wall_area_r: 0,
     },
   };
 }
@@ -247,9 +255,9 @@ const FirstSection = ({ control }) => {
             layout="vertical"
           >
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis type="number" dataKey="value" tickFormatter={(tick) => `${tick}kWh/m2`} />
+            <XAxis type="number" dataKey="value" tickFormatter={(tick) => `${numberFormat(tick)}kWh/m2`} />
             <YAxis type="category" dataKey="label" tick={{ fontSize: 14 }} />
-            <Tooltip />
+            <Tooltip formatter={(value) => numberFormat(value)} />
             <Bar dataKey="value" fill="#8884d8" >
               {
                 chartData.map((entry, index) => (
@@ -299,12 +307,12 @@ const FirstSection = ({ control }) => {
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis
               type="number"
-              domain={[0, "dataMax + 20"]}
+              domain={[0, "dataMax + 0.5"]}
               tickCount={6}
-              tickFormatter={(tick) => `${tick}`}
+              tickFormatter={(tick) => `${numberFormat(tick)}`}
             />
             <YAxis type="category" dataKey="label" tick={{ fontSize: 14 }} />
-            <Tooltip />
+            <Tooltip formatter={(value) => numberFormat(value)} />
             <Legend />
             <Bar
               name="Calculated"
@@ -364,12 +372,12 @@ const FirstSection = ({ control }) => {
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis
               type="number"
-              domain={[0, "dataMax + 20"]}
+              domain={[0, "dataMax + 0.2"]}
               tickCount={6}
-              tickFormatter={(tick) => `${tick}%`}
+              tickFormatter={(tick) => `${numberFormat(tick)}%`}
             />
             <YAxis type="category" dataKey="label" tick={{ fontSize: 14 }} />
-            <Tooltip />
+            <Tooltip formatter={(value) => numberFormat(value)} />
             <Legend />
             <Bar
               name="Calculated"
@@ -402,14 +410,14 @@ const FirstSection = ({ control }) => {
           <SideInput
             name={`${sectionName}.b_ottv`}
             control={control}
-            title="OTTV (kWh/m2)"
+            title="Overall Thermal Transfer Value (kWh/m2)"
             subtitle="OTTV Baseline: 45kWh/m2"
           />
 
           <SideInput
             name={`${sectionName}.b_shgc`}
             control={control}
-            title="SHGC"
+            title="Solar Heat Gain Coefficient"
             subtitle="SHGC Baseline: 0.6 - 0.7"
           />
 
@@ -597,11 +605,11 @@ const FirstSection = ({ control }) => {
               </Stack>
             </Stack>
           </Stack>
-          <InlineLabel title="WWR" subtitle="Baseline 30-40%" value={CountWWR()} />
+          <InlineLabel title="Window to Wall Ratio" subtitle="WWR Baseline 30-40%" value={CountWWR()} />
         </Stack>
       }
       rightComponent={
-        <Stack direction="column" spacing={2} sx={{ padding: 4 }}>
+        <Stack direction="column" spacing={2} sx={{}}>
           <Box sx={{ fontSize: 20, fontWeight: "bold" }}>Graph: Calculated OTTV vs Baseline</Box>
           <OttvGraph />
           <Divider style={{ width: "100%" }} />

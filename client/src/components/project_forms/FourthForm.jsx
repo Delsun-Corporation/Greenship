@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useForm, useFieldArray, Controller, useWatch } from "react-hook-form";
 import {
   Box,
-  Container,
   Paper,
   Stack,
   Accordion,
@@ -15,9 +14,9 @@ import {
   TableHead,
   TableRow,
   Button,
-  TextField,
   Divider,
   Switch,
+  ThemeProvider,
 } from "@mui/material";
 import {
   FormLayout,
@@ -28,12 +27,10 @@ import {
   BlockInput,
   InlineLabel,
   ToggleInput,
+  SkeletonSection
 } from "../FormLayouts";
 import {
   formChapters,
-  lpdReference,
-  heatLoad,
-  powerFactor,
   visualComfort,
   occupancyCategory,
 } from "../../datas/Datas";
@@ -43,6 +40,7 @@ import {
   calcACH,
   calcAccessPercentage,
   calcIlluminance,
+  numberFormat
 } from "../../datas/FormLogic";
 import {
   BarChart,
@@ -54,11 +52,11 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
-  Brush,
 } from "recharts";
 import axios from "axios";
 import { toast } from "react-toastify";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { theme } from "../../assets/Theme";
 
 const FourthForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
   const methods = useForm({
@@ -72,7 +70,7 @@ const FourthForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
     const newData = {
       fourthForm: data.fourthForm,
     };
-
+    console.log(newData);
     if (isFromNextButton) {
       onceSubmitted(newData, "5");
     } else {
@@ -102,7 +100,7 @@ const FourthForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
           d_d_illuminance:
             pageFourData.d_d_illuminance.items.length === 0
               ? [defaultIlluminances()]
-              : pageFourData.d_d_illuminance.items,
+              : pageFourData.d_d_illuminance.items
         });
         setLoading(false);
       })
@@ -122,12 +120,13 @@ const FourthForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
           projectId={projectId}
           chapter={CHAPTER_NUMBER}
         />
+        {isLoading && <SkeletonSection />}
         {!isLoading && (
           <>
-            <OutdoorAirSection control={control} getValues={getValues} />
-            <AchSection control={control} getValues={getValues} />
+            <OutdoorAirSection control={control} getValues={getValues} setValue={setValue}/>
+            <AchSection control={control} getValues={getValues} setValue={setValue} />
             <AccessOutsideSection control={control} getValues={getValues} />
-            <VisualComfortSection control={control} getValues={getValues} />
+            <VisualComfortSection control={control} getValues={getValues} setValue={setValue}/>
             <ThermalComfortSection control={control} getValues={getValues} />
             <AcousticalComfortSection control={control} getValues={getValues} />
             <FormFooter
@@ -188,9 +187,9 @@ function defaultIlluminances() {
 
 function defaultTotalBhc() {
   return ({
-    vbz: 20,
-    ach: 20,
-    illuminance: [20]
+    vbz: 0,
+    ach: 0,
+    illuminance: []
   })
 }
 
@@ -222,19 +221,25 @@ const OutdoorAirSection = ({ control, getValues, setValue }) => {
   };
 
   const Vbz = () => {
-    const watchValues = useWatch({
+    const rp = useWatch({
       control,
-      name: `${sectionName}`,
+      name: `${sectionName}.d_a_rp`,
     });
-    const rp = watchValues.d_a_rp;
-    const ra = watchValues.d_a_ra;
-    const az = watchValues.d_a_az;
+    const ra = useWatch({
+      control,
+      name: `${sectionName}.d_a_ra`,
+    });
+    const az = useWatch({
+      control,
+      name: `${sectionName}.d_a_az`,
+    });
     const pz = resultArr.pz;
 
     var result = "-";
     if (rp && pz && ra && az) {
       result = calcVbz(rp, pz, ra, az);
       resultArr.vbz = result;
+      setValue("fourthForm.d_total_bhc.vbz", result)
     }
 
     return (
@@ -248,7 +253,7 @@ const OutdoorAirSection = ({ control, getValues, setValue }) => {
       >
         <InlineLabel
           title="Breathing zone outdoor airflow (Vbz)"
-          value={`${result} l/s`}
+          value={`${numberFormat(result)} l/s`}
           bold
         />
       </Paper>
@@ -290,7 +295,7 @@ const OutdoorAirSection = ({ control, getValues, setValue }) => {
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis type="number" dataKey="value" />
             <YAxis type="category" dataKey="label" tick={{ fontSize: 14 }} />
-            <Tooltip />
+            <Tooltip formatter={(value) => numberFormat(value)}/>
             <Bar dataKey="value" fill="#8884d8">
               {chartData.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={barColors[index % 20]} />
@@ -387,9 +392,9 @@ const AchSection = ({ control, getValues, setValue }) => {
   const ACHCalculate = () => {
     const watchValues = useWatch({
       control,
-      name: `${sectionName}`,
+      name: `${sectionName}.d_b_velocity`,
     });
-    const velocity = watchValues.d_b_velocity;
+    const velocity = watchValues;
     const ventilationArea = getValues("firstForm.a_ventilation_area");
     const volume = resultArr.volume;
 
@@ -397,6 +402,7 @@ const AchSection = ({ control, getValues, setValue }) => {
     if (velocity && ventilationArea && volume) {
       result = calcACH(velocity, ventilationArea, volume);
       resultArr.ach = result;
+      setValue(`fourthForm.d_total_bhc.ach`, result)
     }
 
     return (
@@ -410,7 +416,7 @@ const AchSection = ({ control, getValues, setValue }) => {
       >
         <InlineLabel
           title="Air Changes per Hour (ACH) Calculation"
-          value={result}
+          value={numberFormat(result)}
         />
       </Paper>
     );
@@ -451,7 +457,7 @@ const AchSection = ({ control, getValues, setValue }) => {
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis type="number" dataKey="value" />
             <YAxis type="category" dataKey="label" tick={{ fontSize: 14 }} />
-            <Tooltip />
+            <Tooltip formatter={(value) => numberFormat(value)}/>
             <Bar dataKey="value" fill="#8884d8">
               {chartData.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={barColors[index % 20]} />
@@ -529,7 +535,7 @@ const AccessOutsideSection = ({ control, getValues, setValue }) => {
       >
         <InlineLabel
           title="Percentage of area with access to outside view"
-          value={`${result} %`}
+          value={`${numberFormat(result)} %`}
         />
       </Paper>
     );
@@ -574,7 +580,7 @@ const AccessOutsideSection = ({ control, getValues, setValue }) => {
               tickFormatter={(tick) => `${tick}%`}
             />
             <YAxis type="category" dataKey="label" tick={{ fontSize: 14 }} />
-            <Tooltip />
+            <Tooltip formatter={(value) => numberFormat(value)}/>
             <Bar dataKey="value" fill="#8884d8">
               {chartData.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={barColors[index % 20]} />
@@ -587,6 +593,7 @@ const AccessOutsideSection = ({ control, getValues, setValue }) => {
   };
 
   return (
+    <ThemeProvider theme={theme}>
     <FormLayout
       leftComponent={
         <Stack direction="column" spacing={2}>
@@ -613,10 +620,11 @@ const AccessOutsideSection = ({ control, getValues, setValue }) => {
         </Stack>
       }
     />
+    </ThemeProvider>
   );
 };
 
-const VisualComfortSection = ({ control, getValues }) => {
+const VisualComfortSection = ({ control, getValues, setValue }) => {
   const sectionName = "fourthForm.d_d_illuminance";
 
   const { fields, append, remove } = useFieldArray({
@@ -657,6 +665,7 @@ const VisualComfortSection = ({ control, getValues }) => {
         parsedStandard.length === 2 ?
           resultArr.standardMax[index] = parsedStandard[1] : resultArr.standardMax[index] = 0
       }
+      setValue(`fourthForm.d_total_bhc.illuminance`, resultArr.calculatedE)
     }
 
     return (
@@ -668,7 +677,7 @@ const VisualComfortSection = ({ control, getValues }) => {
           color: "white",
         }}
       >
-        <InlineLabel title="Calculated E" value={`${result}`} />
+        <InlineLabel title="Calculated E" value={`${numberFormat(result)}`} />
       </Paper>
     );
   };
@@ -720,7 +729,7 @@ const VisualComfortSection = ({ control, getValues }) => {
             <CartesianGrid strokeDasharray="3 3" />
             <YAxis type="category" dataKey="label" tick={{ fontSize: 14 }} />
             <XAxis type="number" dataKey="value" />
-            <Tooltip />
+            <Tooltip formatter={(value) => numberFormat(value)}/>
             <Legend
               height={10}
               wrapperStyle={{ position: "relative", marginTop: "0px" }}
@@ -741,6 +750,7 @@ const VisualComfortSection = ({ control, getValues }) => {
   };
 
   return (
+    <ThemeProvider theme={theme}>
     <FormLayout
       leftComponent={
         <Stack direction="column" spacing={2}>
@@ -751,6 +761,12 @@ const VisualComfortSection = ({ control, getValues }) => {
               onClick={() => {
                 append(defaultIlluminances());
               }}
+              sx={{backgroundColor: "steelTeal",
+                                                    ...({
+                                                        "&:hover": {
+                                                            backgroundColor: ("steelTeal"),
+                                                        }
+                                                    }) }}
             >
               ADD ITEM
             </Button>
@@ -780,7 +796,12 @@ const VisualComfortSection = ({ control, getValues }) => {
                       <Button
                         variant="contained"
                         onClick={() => remove(index)}
-                        color="warning"
+                        sx={{backgroundColor: "candyPink",
+                                                    ...({
+                                                        "&:hover": {
+                                                            backgroundColor: ("candyPink"),
+                                                        }
+                                                    }) }}
                       >
                         Delete
                       </Button>
@@ -855,6 +876,7 @@ const VisualComfortSection = ({ control, getValues }) => {
         </Stack>
       }
     />
+    </ThemeProvider>
   );
 };
 
@@ -900,7 +922,7 @@ const ThermalComfortSection = ({ control, getValues, setValue }) => {
               tickFormatter={(tick) => `${tick}°C`}
             />
             <YAxis type="category" dataKey="label" tick={{ fontSize: 14 }} />
-            <Tooltip />
+            <Tooltip formatter={(value) => numberFormat(value)}/>
             <Bar dataKey="value" fill="#8884d8">
               {chartData.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={barColors[index % 20]} />
@@ -996,7 +1018,7 @@ const AcousticalComfortSection = ({ control, getValues, setValue }) => {
               tickFormatter={(tick) => `${tick} dBA`}
             />
             <YAxis type="category" dataKey="label" tick={{ fontSize: 14 }} />
-            <Tooltip />
+            <Tooltip formatter={(value) => numberFormat(value)}/>
             <Legend />
             <Bar
               name="Calculated"

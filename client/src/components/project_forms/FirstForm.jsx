@@ -20,6 +20,7 @@ import {
   BlockInput,
   SelectInput,
   InlineLabel,
+  SkeletonSection
 } from "../FormLayouts";
 import {
   formChapters,
@@ -32,6 +33,7 @@ import {
   calcNonOperatingHoursPerYear,
   calcOccupancy,
   calcRoomVolumePerPerson,
+  numberFormat
 } from "../../datas/FormLogic";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -83,6 +85,7 @@ const FirstForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
           shouldRedirect={shouldRedirect}
           chapter={CHAPTER_NUMBER}
         />
+        {isLoading && <SkeletonSection />}
         {!isLoading && (
           <>
             <FirstSection control={control} />
@@ -114,7 +117,10 @@ const FirstSection = ({ control }) => {
             rows={1}
             maxLength={50}
           />
-
+        </Stack>
+      }
+      rightComponent={
+        <Stack direction="column" spacing={2}>
           <BlockInput
             name={sectionName + "project_desc"}
             control={control}
@@ -124,7 +130,6 @@ const FirstSection = ({ control }) => {
           />
         </Stack>
       }
-      rightComponent={<>Building Image</>}
     />
   );
 };
@@ -143,7 +148,7 @@ const SecondSection = ({ control }) => {
     });
     if (operationalHours && workingDays) {
       return (
-        calcOperatingHoursPerYear(operationalHours, workingDays) + " hours"
+        numberFormat(calcOperatingHoursPerYear(operationalHours, workingDays)) + " hours"
       );
     }
     return NaN;
@@ -161,7 +166,7 @@ const SecondSection = ({ control }) => {
     const holidays = useWatch({ control, name: sectionName + "a_holidays" });
     if (operationalHours && workingDays && holidays) {
       return (
-        calcNonOperatingHoursPerYear(operationalHours, workingDays, holidays) +
+        numberFormat(calcNonOperatingHoursPerYear(operationalHours, workingDays, holidays)) +
         " hours"
       );
     }
@@ -175,7 +180,7 @@ const SecondSection = ({ control }) => {
       name: sectionName + "a_occupancy_density",
     });
     if (occupancyDensity && gfa) {
-      return calcOccupancy(gfa, occupancyDensity) + " pax";
+      return calcOccupancy(gfa, occupancyDensity).toFixed() + " person";
     }
     return NaN;
   }
@@ -210,7 +215,7 @@ const SecondSection = ({ control }) => {
           <SideInput
             name={sectionName + "a_gfa"}
             control={control}
-            title="Grass Floor Area (m2)"
+            title="Gross Floor Area (m2)"
           />
           <SideInput
             name={sectionName + "a_floor_count"}
@@ -257,7 +262,7 @@ const SecondSection = ({ control }) => {
           <SideInput
             name={sectionName + "a_occupancy_density"}
             control={control}
-            title="Occupancy Density (pax/m2)"
+            title="Occupancy Density (person/100m2)"
             subtitle="Refer to table below"
           />
           <InlineLabel title="Occupancy" value={Occupancy()} />
@@ -331,7 +336,7 @@ const ThirdSection = ({ control }) => {
     });
     if (floorNumber && avgFloorHeight && occupancyDensity) {
       return (
-        calcRoomVolumePerPerson(floorNumber, avgFloorHeight, occupancyDensity) +
+        numberFormat(calcRoomVolumePerPerson(floorNumber, avgFloorHeight, occupancyDensity)) +
         " m3"
       );
     }

@@ -3,6 +3,38 @@ const mongoose = require("mongoose");
 
 const ObjectId = mongoose.Types;
 
+const multer = require("multer");
+const { mimeTypeValidator } = require("../../helpers/valid");
+
+const aAttachmentKey = "d_a_attachment";
+const accessKey = "d_c_access_att";
+const lightingPlanKey = "d_d_lighting_plan_att";
+const fNoiseKey = "d_f_noise_att";
+const noiseControlKey = "d_f_noise_control_att";
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "./uploads/");
+  },
+  filename: function (req, file, cb) {
+    cb(null, new Date().toISOString() + file.originalname);
+  },
+});
+
+const fileFilter = (req, file, cb) => {
+  if (mimeTypeValidator(file.mimetype)) {
+    cb(null, true);
+  } else {
+    cb(null, false);
+  }
+};
+
+// add limits: fileSize in here to limit image size
+const upload = multer({
+  storage: storage,
+  fileFilter: fileFilter,
+});
+
 exports.updatePageFourDraft = (req, res) => {
   const {
     projectId,
@@ -15,10 +47,17 @@ exports.updatePageFourDraft = (req, res) => {
     d_d_illuminance,
     d_e_temperature,
     d_f_noise_level,
+    d_total_bhc
   } = req.body;
 
-  const objectId = ObjectId.ObjectId(projectId);
+  const files = req.files;
+  var d_a_attachment = ""
+  var d_c_access_att = "";
+  var d_d_lighting_plan_att = "";
+  var d_f_noise_att = "";
+  var d_f_noise_control_att = "";
 
+  const objectId = ObjectId.ObjectId(projectId);
   if (
     req.body === {} ||
     req.body === null ||
@@ -29,6 +68,28 @@ exports.updatePageFourDraft = (req, res) => {
     return res.status(400).json({
       message: "Request parameter is wrong",
     });
+  }
+
+  if(files) {
+    if (files[aAttachmentKey] !== undefined) {
+      d_a_attachment = `${process.env.SERVER_URL}/${files[aAttachmentKey][0].path}`;
+    }
+  
+    if (files[accessKey] !== undefined) {
+      d_c_access_att = `${process.env.SERVER_URL}/${files[accessKey][0].path}`;
+    }
+  
+    if (files[lightingPlanKey] !== undefined) {
+      d_d_lighting_plan_att = `${process.env.SERVER_URL}/${files[lightingPlanKey][0].path}`;
+    }
+  
+    if (files[noiseControlKey] !== undefined) {
+      d_f_noise_control_att = `${process.env.SERVER_URL}/${files[noiseControlKey][0].path}`;
+    }
+  
+    if (files[fNoiseKey] !== undefined) {
+      d_f_noise_att = `${process.env.SERVER_URL}/${files[fNoiseKey][0].path}`;
+    }
   }
 
   Project.findById(objectId)
@@ -42,6 +103,12 @@ exports.updatePageFourDraft = (req, res) => {
       project.d_d_illuminance.items = d_d_illuminance;
       project.d_e_temperature = d_e_temperature;
       project.d_f_noise_level = d_f_noise_level;
+      project.d_total_bhc = d_total_bhc;
+      project.d_f_noise_att = d_f_noise_att;
+      project.d_f_noise_control_att = d_f_noise_control_att;
+      project.d_a_attachment = d_a_attachment;
+      project.d_d_lighting_plan_att = d_d_lighting_plan_att;
+      project.d_c_access_att = d_c_access_att;
       project.project_date = new Date();
       if (project.last_page < 4) {
         project.last_page = 4;
@@ -56,6 +123,7 @@ exports.updatePageFourDraft = (req, res) => {
       }
     })
     .catch((err) => {
+      console.log(err);
       res.status(500).json({
         message: "Internal server error",
       });
@@ -74,7 +142,7 @@ exports.getPageFourDraft = (req, res) => {
 
   Project.findById(objectId)
     .select(
-      "a_gfa a_occupancy_density a_ach a_floor_count a_floor_height_avg a_ventilation_area a_ach a_typology c_utility d_a_is_potential d_a_rp d_a_ra d_a_az d_b_velocity d_c_access_area d_d_illuminance d_e_temperature d_f_noise_level"
+      `a_gfa a_occupancy_density a_ach a_floor_count a_floor_height_avg a_ventilation_area a_ach a_typology c_utility d_a_is_potential d_a_rp d_a_ra d_a_az d_b_velocity d_c_access_area d_d_illuminance d_e_temperature d_f_noise_level ${accessKey} ${aAttachmentKey} ${lightingPlanKey} ${fNoiseKey} ${noiseControlKey}`
     )
     .then((result) => {
       if (!result) {
@@ -119,14 +187,28 @@ exports.getPageFourDraft = (req, res) => {
             d_c_access_area: result.d_c_access_area,
             d_d_illuminance: result.d_d_illuminance,
             d_e_temperature: result.d_e_temperature,
-            d_f_noise_level: result.d_f_noise_level
+            d_f_noise_level: result.d_f_noise_level,
+            d_a_attachment: result.d_a_attachment,
+            d_f_noise_att: result.d_f_noise_att,
+            d_c_access_att: result.d_c_access_att,
+            d_d_lighting_plan_att: result.d_d_lighting_plan_att,
+            d_f_noise_control_att: result.d_f_noise_control_att
         },
         message: "Success getting page four draft",
       });
     })
     .catch((err) => {
+      console.log(err);
       return res.status(500).json({
         message: "Internal server error",
       });
     });
 };
+
+exports.uploadPageFourImages = upload.fields([
+  { name: aAttachmentKey, maxCount: 1 },
+  { name: accessKey, maxCount: 1 },
+  { name: lightingPlanKey, maxCount: 1 },
+  { name: noiseControlKey, maxCount: 1 },
+  { name: fNoiseKey, maxCount: 1 },
+]);
