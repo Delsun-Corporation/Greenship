@@ -72,6 +72,7 @@ exports.updatePageOneDraft = (req, res) => {
   const updatedVentilationArea = req.body.a_ventilation_area;
   const updatedAch = req.body.a_ach;
   const updatedProvince = req.body.a_location_province;
+  const files = req.files;
   var projectImage =
     "https://firebasestorage.googleapis.com/v0/b/ina-website-326209.appspot.com/o/resource%2FNoImageDefault.png?alt=media&token=ac9bfea9-44db-4dca-9293-64da65636021";
   var locationImage = "";
@@ -85,24 +86,26 @@ exports.updatePageOneDraft = (req, res) => {
   const orientationKeyName = "a_orientation_image";
   const microKeyName = "a_micro_noise_image";
 
-  if (req.files[projectImageKeyName] != undefined) {
-    projectImage = `${process.env.SERVER_URL}/${req.files[projectImageKeyName][0].path}`;
-  }
-
-  if (req.files[locationKeyName] != undefined) {
-    locationImage = `${process.env.SERVER_URL}/${req.files[locationKeyName][0].path}`;
-  }
-
-  if (req.files[orientationKeyName] != undefined) {
-    orientationImage = `${process.env.SERVER_URL}/${req.files[orientationKeyName][0].path}`;
-  }
-
-  if (req.files[microKeyName] != undefined) {
-    microNoiseImage = `${process.env.SERVER_URL}/${req.files[microKeyName][0].path}`;
-  }
-
-  if (req.files[energyKeyName] != undefined) {
-    energyPlaceImage = `${process.env.SERVER_URL}/${req.files[energyKeyName][0].path}`;
+  if(files) {
+    if (files[projectImageKeyName] !== undefined) {
+      projectImage = `${process.env.SERVER_URL}/${files[projectImageKeyName][0].path}`;
+    }
+  
+    if (files[locationKeyName] !== undefined) {
+      locationImage = `${process.env.SERVER_URL}/${files[locationKeyName][0].path}`;
+    }
+  
+    if (files[orientationKeyName] !== undefined) {
+      orientationImage = `${process.env.SERVER_URL}/${files[orientationKeyName][0].path}`;
+    }
+  
+    if (files[microKeyName] !== undefined) {
+      microNoiseImage = `${process.env.SERVER_URL}/${files[microKeyName][0].path}`;
+    }
+  
+    if (files[energyKeyName] !== undefined) {
+      energyPlaceImage = `${process.env.SERVER_URL}/${files[energyKeyName][0].path}`;
+    }
   }
 
   Project.findById(objectId)
