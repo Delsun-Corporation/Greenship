@@ -136,7 +136,7 @@ exports.toggleProjectStatus = (req, res) => {
   }).then((result) => {
     if (result !== undefined) {
       res.status(200).json({
-        message: "Success save page two draft",
+        message: "Success toggling project status",
       });
     }
   }).catch((err) => {
