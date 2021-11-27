@@ -5,7 +5,8 @@ const {
     createProject,
     getProjects,
     deleteProject,
-    getLastPage
+    getLastPage,
+    toggleProjectStatus
 } = require('../controllers/project_controller/product.controller');
 
 const {
@@ -47,6 +48,7 @@ router.put('/updatepagetwo', updatePageTwoDraft);
 router.put('/updatepagethree', updatePageThreeDraft);
 router.put('/updatepagefour',uploadPageFourImages, updatePageFourDraft);
 router.put('/updatepagefive',uploadPageFiveImages, updatePageFiveDraft);
+router.put('/toggle/status', toggleProjectStatus);
 
 router.delete('/deleteproject', deleteProject);
 
