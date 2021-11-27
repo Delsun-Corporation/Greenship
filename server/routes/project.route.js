@@ -26,7 +26,8 @@ const {
 
 const {
     updatePageFourDraft,
-    getPageFourDraft
+    getPageFourDraft,
+    uploadPageFourImages
 } = require('../controllers/project_controller/pageFour.controller')
 
 const {
@@ -43,7 +44,7 @@ router.post('/createproject', createProject);
 router.put('/updatepageone', uploadProjectImage ,updatePageOneDraft);
 router.put('/updatepagetwo', updatePageTwoDraft);
 router.put('/updatepagethree', updatePageThreeDraft);
-router.put('/updatepagefour', updatePageFourDraft);
+router.put('/updatepagefour',uploadPageFourImages, updatePageFourDraft);
 router.put('/updatepagefive', updatePageFiveDraft);
 
 router.delete('/deleteproject', deleteProject);
