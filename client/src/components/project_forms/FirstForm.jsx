@@ -20,7 +20,8 @@ import {
   BlockInput,
   SelectInput,
   InlineLabel,
-  SkeletonSection
+  SkeletonSection,
+  ImageUpload
 } from "../FormLayouts";
 import {
   formChapters,
@@ -40,11 +41,19 @@ import { toast } from "react-toastify";
 
 const FirstForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
   const methods = useForm({});
-  const { control, handleSubmit, setValue } = methods;
+  const { control, formState: { errors }, handleSubmit, setValue } = methods;
   const [isLoading, setLoading] = useState(true);
   const [isFromNextButton, setIsFromNextButton] = useState(false);
 
   const onSubmit = (data) => {
+    console.log(data)
+    if (data.firstForm.a_project_image && typeof(data.firstForm.a_project_image[0]) !== 'undefined') {
+      const project_image = data.firstForm.a_project_image[0]
+      console.log(project_image)
+        data.firstForm.a_project_image = project_image
+        console.log(data)
+    }
+
     if (isFromNextButton) {
       onceSubmitted(data, "2");
     } else {
@@ -88,7 +97,7 @@ const FirstForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
         {isLoading && <SkeletonSection />}
         {!isLoading && (
           <>
-            <FirstSection control={control} />
+            <FirstSection control={control} errors={errors} />
             <SecondSection control={control} />
             <ThirdSection control={control} />
           </>
@@ -103,7 +112,7 @@ export default FirstForm;
 
 /// SECTIONS ///
 
-const FirstSection = ({ control }) => {
+const FirstSection = ({ control, errors }) => {
   const sectionName = "firstForm.";
 
   return (
@@ -117,10 +126,6 @@ const FirstSection = ({ control }) => {
             rows={1}
             maxLength={50}
           />
-        </Stack>
-      }
-      rightComponent={
-        <Stack direction="column" spacing={2}>
           <BlockInput
             name={sectionName + "project_desc"}
             control={control}
@@ -128,6 +133,12 @@ const FirstSection = ({ control }) => {
             rows={3}
             maxLength={400}
           />
+        </Stack>
+      }
+      rightComponent={
+        <Stack direction="column" spacing={2}>
+          <ImageUpload name={sectionName + "a_project_image"} errors={errors} control={control} />
+          
         </Stack>
       }
     />

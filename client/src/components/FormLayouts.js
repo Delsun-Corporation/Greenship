@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useCallback, useState, useEffect, Component } from "react";
 import Select from "react-select";
-import { useController, Controller } from "react-hook-form";
+import { useController, Controller, useFormContext } from "react-hook-form";
 import {
   Box,
   Button,
@@ -14,7 +14,8 @@ import {
   Switch,
   Skeleton,
   ThemeProvider,
-  Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions
+  Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions,
+  Modal
 } from "@mui/material";
 import {
   formChapters,
@@ -98,7 +99,7 @@ export const FormHeader = ({ title, projectId, shouldRedirect }) => {
             <DialogActions>
               <Button onClick={handleClose}>Cancel</Button>
               <Button variant="contained"
-              color="error"
+                color="error"
                 sx={{ backgroundColor: "candyPink" }} onClick={
                   (e) => {
                     deleteProject(projectId)
@@ -520,5 +521,198 @@ export function SideButtonInput({
         </Button>
       </label>
     </Stack>
+  );
+}
+
+// export const DropzoneField = ({
+//   name,
+//   multiple,
+//   ...rest
+// }) => {
+
+//   const { control } = useFormContext()
+
+//   return (
+//     <>
+//     <Controller
+//       render={({ onChange }) => (
+//         <Dropzone
+//           multiple={multiple}
+//           onChange={e =>
+//             onChange(multiple ? e.target.files : e.target.files[0])
+//           }
+//           {...rest}
+//         />
+//       )}
+//       name={name}
+//       control={control}
+//       defaultValue=''
+//     />
+//     </>
+//   )
+// }
+
+// const Dropzone = ({
+//   multiple,
+//   onChange,
+//   ...rest
+// }) => {
+
+//   const {
+//     getRootProps,
+//     getInputProps,
+//   } = useDropzone({
+//     multiple,
+//     ...rest,
+//   })
+
+//   return (
+//     <div {...getRootProps()}>
+//       <input {...getInputProps({ onChange })} />
+//     </div>
+//   )
+// }
+
+// export function FileInput({ control, name, ...props }) {
+//   // : { name, onBlur, onChange, ref, value }
+//   const { field } = useController({
+//     name,
+//     control,
+//     defaultValue: null,
+//   })
+
+//   const { getRootProps, getInputProps, open, rootRef, isDragActive } = useDropzone({
+//     accept: 'image/*',
+//     multiple: false,
+//     noKeyboard: true,
+//     onDrop: ([acceptedFile]) => {
+//       field.onChange(acceptedFile)
+//     }
+//   });
+
+//   field.ref.current = rootRef.current
+//   const file = field.value
+
+//   return (
+//     <Container>
+//     <div {...getRootProps({className: 'dropzone'})}>
+//       <input {...getInputProps({ name: field.name, onBlur: field.onBlur })} />
+
+//       {
+//         isDragActive ?
+//           <p>Drop the files here ...</p> :
+//           <p>Drag 'n' drop some files here, or click to select files</p>
+//       }
+//     </div>
+//     </Container>
+//   );
+// }
+
+export const FileInput = ({ control, name }) => {
+  const { field } = useController({ control, name });
+  const [value, setValue] = React.useState("");
+  return (
+    <input
+      type="file"
+      value={value}
+      onChange={(e) => {
+        setValue(e.target.value);
+        field.onChange(e.target.files);
+      }}
+    />
+  );
+};
+
+
+export function DropzoneAreaExample({ control, name, ...props }) {
+  // const { field } = useController({
+  //   name,
+  //   control,
+  //   defaultValue: null,
+  // })
+  // handleChange(files){
+  //   this.setState({
+  //     files: files
+  //   });
+  // }
+
+  //   return (
+  //     <DropzoneArea
+  //       onChange={this.handleChange.bind(this)}
+  //       />
+  //   )
+}
+
+export function getBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (error) => reject(error);
+  });
+}
+
+export function ImageUpload({ name, errors, control, title = "Upload Image" }) {
+  const { field } = useController({ name, control });
+  const [image, setImage] = useState();
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
+  const onAvatarChange = useCallback(async (event) => {
+    if (event.target.files?.[0]) {
+      const base64 = await getBase64(event.target.files[0]);
+
+      setImage(base64);
+      field.onChange(event.target.files);
+    }
+  }, []);
+
+  const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    height: '90vh',
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
+  };
+
+  return (
+    <Stack
+      direction="column">
+      <label>{title}</label>
+      {image && <><img src={image} width="200px" height="200px" onClick={handleOpen}/>
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <img src={image} style={{ maxWidth: "100%", maxHeight: "80vh" }}/>
+        </Box>
+      </Modal></>
+      }
+
+      {!image && <><img src='https://firebasestorage.googleapis.com/v0/b/ina-website-326209.appspot.com/o/resource%2FNoImageDefault.png?alt=media&token=ac9bfea9-44db-4dca-9293-64da65636021' width="200px" height="200px" onClick={handleOpen}/>
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <img src={image} style={{ maxWidth: "100%", maxHeight: "80vh" }}/>
+        </Box>
+      </Modal></>
+      }
+      
+      <input type="file" onChange={onAvatarChange} />
+      <p>{errors[name]?.message}</p>
+      </Stack>
   );
 }
