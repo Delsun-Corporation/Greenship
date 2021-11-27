@@ -38,7 +38,7 @@ const authRouter = require('./routes/auth.route');
 const projectRouter = require('./routes/project.route');
 
 // User Routes
-app.use('/uploads', express.static('uploads'));
+app.use('/api/uploads', express.static('uploads'));
 app.use('/api/', authRouter);
 app.use('/api/', projectRouter);
 app.use((req, res, next) => {
