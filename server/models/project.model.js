@@ -184,12 +184,15 @@ const projectSchema = new Schema({
         },
         mv_flow_rate: {
           type: Number,
+          default: 0,
         },
         lift_capacity: {
           type: Number,
+          default: 0
         },
         lift_velocity: {
           type: Number,
+          default: 0
         },
       },
     ],
