@@ -40,3 +40,15 @@ exports.resetPasswordValidator = [
         .isLength({ min: 6 })
         .withMessage('Password must be at least  6 characters long')
 ]
+
+exports.mimeTypeValidator = (mimetype) => {
+    if (
+        mimetype === "image/jpeg" ||
+        mimetype === "image/png" ||
+        mimetype === "application/pdf"
+      ) {
+        return true;
+      } else {
+        return false;
+      }
+}
