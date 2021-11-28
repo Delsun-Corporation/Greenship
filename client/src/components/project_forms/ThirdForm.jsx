@@ -66,7 +66,7 @@ const ThirdForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
     const methods = useForm({
         defaultValues: defaultFormValue()
     });
-    const { control, handleSubmit, setValue, reset, getValues, errors } = methods
+    const { control, handleSubmit, setValue, reset, getValues, formState: { errors } } = methods
     const [isLoading, setLoading] = useState(true);
     const [isFromNextButton, setIsFromNextButton] = useState(false);
 
@@ -494,6 +494,13 @@ const LightingSection = ({ control, getValues, setValue, errors }) => {
                                                     title="Daylight area"
                                                     subtitle="1/3 room depth from effective opening"
                                                 />
+                                                <ImageUpload
+                                                    name={sectionName + ".daylight_area_attach"}
+                                                    errors={errors}
+                                                    control={control}
+                                                    imageUrl={getValues(sectionName + ".daylight_area_attach_url")}
+                                                    title="Floor Plan schematics for Daylight Area"
+                                                /> 
                                                 <NonDaylightArea index={index} />
                                                 <SideInput
                                                     name={`${multiInputName}.lpd_operate`}
@@ -501,26 +508,26 @@ const LightingSection = ({ control, getValues, setValue, errors }) => {
                                                     title="LPD during operational hours"
                                                     subtitle="See table for reference"
                                                 />
-                                                {/* <ImageUpload
+                                                <ImageUpload
                                                     name={sectionName + ".lpd_operate_attach"}
                                                     errors={errors}
                                                     control={control}
                                                     imageUrl={getValues(sectionName + ".lpd_operate_attach_url")}
                                                     title="Lighting Plan"
-                                                /> */}
+                                                /> 
                                                 <SideInput
                                                     name={`${multiInputName}.lpd_nonoperate`}
                                                     control={control}
                                                     title="LPD during non-operational hours"
                                                     subtitle="See table for reference"
                                                 />
-                                                {/* <ImageUpload
+                                                <ImageUpload
                                                     name={sectionName + ".lpd_nonoperate_attach"}
                                                     errors={errors}
                                                     control={control}
                                                     imageUrl={getValues(sectionName + ".lpd_nonoperate_attach_url")}
                                                     title="Lighting Plan"
-                                                /> */}
+                                                /> 
                                                 <LeDuringOperationalDay index={index} />
                                                 <LeDuringOperationalNonDay index={index} />
                                                 <LeDuringNonOperational index={index} />
