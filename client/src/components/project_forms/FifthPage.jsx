@@ -8,7 +8,8 @@ import {
   SideInput,
   InlineLabel,
   BasicInputField,
-  SkeletonSection
+  SkeletonSection,
+  ImageUpload
 } from "../FormLayouts";
 import {
   BarChart,
@@ -36,7 +37,7 @@ const FifthForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
   const methods = useForm({
     defaultValues: defaultFormValue(),
   });
-  const { control, handleSubmit, setValue, getValues } = methods;
+  const { control, handleSubmit, setValue, getValues, formState: { errors }} = methods;
   const [isFromNextButton, setIsFromNextButton] = useState(false);
   const [isLoading, setLoading] = useState(true);
 
@@ -88,10 +89,11 @@ const FifthForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
         {!isLoading && (
           <>
             <FirstSection
-          control={control}
-          setValue={setValue}
-          getValues={getValues}
-        />
+              control={control}
+              setValue={setValue}
+              getValues={getValues}
+              errors={errors}
+            />
           </>
         )}
         <FormFooter
@@ -120,7 +122,7 @@ function defaultFormValue() {
   };
 }
 
-const FirstSection = ({ control, setValue, getValues }) => {
+const FirstSection = ({ control, setValue, getValues, errors }) => {
   const sectionName = "fifthForm.";
 
   var resultArr = {
@@ -276,7 +278,7 @@ const FirstSection = ({ control, setValue, getValues }) => {
               tickFormatter={(tick) => `${tick}%`}
             />
             <YAxis type="category" dataKey="label" tick={{ fontSize: 14 }} />
-            <Tooltip formatter={(value) => numberFormat(value)}/>
+            <Tooltip formatter={(value) => numberFormat(value)} />
             <Bar dataKey="value" fill="#8884d8">
               {chartData.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={barColors[index % 20]} />
@@ -299,21 +301,25 @@ const FirstSection = ({ control, setValue, getValues }) => {
             minimalInput={0}
           />
 
-          {/* <SideButtonInput
+          <ImageUpload
             name={sectionName + "e_pv_install_att"}
+            errors={errors}
             control={control}
+            imageUrl={getValues(sectionName + "pv_install_att")}
             title="PV Installation Planning"
-          /> */}
+          />
 
           <Typography variant="subtitle2" fontWeight="bold" paddingTop={4}>
             PV Specification
           </Typography>
 
-          {/* <SideButtonInput
-            name={sectionName + "e_pv_solar_att"}
-            control={control}
-            title="Solar Panels Spesification"
-          /> */}
+          <ImageUpload
+              name={sectionName + "e_pv_solar_att"}
+              errors={errors}
+              control={control}
+              imageUrl={getValues(sectionName + "pv_solar_att")}
+              title="Attach PV Specification"
+            />
 
           <SideInput
             name={sectionName + "e_pv_spec_wpeak"}

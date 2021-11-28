@@ -398,7 +398,7 @@ export function SelectInput({
   );
 }
 
-export function ToggleInput({ control, name, title, subtitle }) {
+export function ToggleInput({ control, name, title, subtitle, handleChange }) {
   const {
     field: { ref, value, ...inputProps },
     fieldState: { invalid, isTouched, isDirty },
@@ -422,7 +422,9 @@ export function ToggleInput({ control, name, title, subtitle }) {
         }
       </Stack>
       <Switch {...inputProps}
-        value={value} />
+        value={value} 
+        onChange={(event) => handleChange(event)}
+        />
     </Stack>
   )
 }

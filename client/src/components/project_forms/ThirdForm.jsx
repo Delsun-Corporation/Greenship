@@ -22,7 +22,8 @@ import {
     SideInput,
     SelectInput,
     InlineLabel,
-    SkeletonSection
+    SkeletonSection,
+    ImageUpload
 } from "../FormLayouts";
 import {
     BarChart,
@@ -65,7 +66,7 @@ const ThirdForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
     const methods = useForm({
         defaultValues: defaultFormValue()
     });
-    const { control, handleSubmit, setValue, reset, getValues } = methods
+    const { control, handleSubmit, setValue, reset, getValues, errors } = methods
     const [isLoading, setLoading] = useState(true);
     const [isFromNextButton, setIsFromNextButton] = useState(false);
 
@@ -125,7 +126,7 @@ const ThirdForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
                 />
                 {isLoading && <SkeletonSection />}
                 {!isLoading && (<>
-                    <LightingSection control={control} getValues={getValues} setValue={setValue} />
+                    <LightingSection control={control} getValues={getValues} setValue={setValue} errors={errors} />
                     <ACSection control={control} getValues={getValues} setValue={setValue} />
                     <AppliancesSection control={control} getValues={getValues} setValue={setValue} />
                     <UtilitySection control={control} getValues={getValues} setValue={setValue} />
@@ -251,7 +252,7 @@ function defaultTotalEnergyConsumption() {
 
 /// SECTIONS ///
 
-const LightingSection = ({ control, getValues, setValue }) => {
+const LightingSection = ({ control, getValues, setValue, errors }) => {
     const sectionName = "thirdForm.c_lighting"
 
     const { fields, append, remove } = useFieldArray({
@@ -426,114 +427,132 @@ const LightingSection = ({ control, getValues, setValue }) => {
 
     return (
         <ThemeProvider theme={theme}>
-        <FormLayout
-            leftComponent={
-                <Stack direction="column" spacing={2}>
-                    <Stack direction="row" justifyContent="space-between" >
-                        <Box sx={{ fontSize: 24, fontWeight: "bold" }}>Lighting</Box>
-                        <Button variant="contained" onClick={() => {
-                            append(defaultLightingValue())
-                        }}
-                        sx={{backgroundColor: "steelTeal",
-                                                    ...({
-                                                        "&:hover": {
-                                                            backgroundColor: ("steelTeal"),
-                                                        }
-                                                    }) }}
-                        >
-                            ADD Room
-                        </Button>
+            <FormLayout
+                leftComponent={
+                    <Stack direction="column" spacing={2}>
+                        <Stack direction="row" justifyContent="space-between" >
+                            <Box sx={{ fontSize: 24, fontWeight: "bold" }}>Lighting</Box>
+                            <Button variant="contained" onClick={() => {
+                                append(defaultLightingValue())
+                            }}
+                                sx={{
+                                    backgroundColor: "steelTeal",
+                                    ...({
+                                        "&:hover": {
+                                            backgroundColor: ("steelTeal"),
+                                        }
+                                    })
+                                }}
+                            >
+                                ADD Room
+                            </Button>
+                        </Stack>
+
+                        <div>
+                            {fields.map((field, index) => {
+                                const multiInputName = `${sectionName}.${index}`
+                                return (
+                                    <Accordion key={field.id}>
+                                        <AccordionSummary
+                                            expandIcon={<ExpandMoreIcon />}
+                                            aria-controls={"panel" + (index + 1) + "bh-content"}
+                                            id={"panel" + (index + 1) + "bh-header"}
+                                        >
+                                            <Stack justifyContent="space-between" alignItems="center"
+                                                spacing={2} direction="row" width='100%'>
+                                                <Controller
+                                                    control={control}
+                                                    name={`${multiInputName}.name`}
+                                                    render={({ field: { onChange, onBlur, value, ref } }) => (
+                                                        <TextField
+                                                            onChange={onChange}
+                                                            value={value} variant="outlined" size="small"
+                                                            label={"Room #" + (index + 1) + " name"}
+                                                            bgcolor="white"
+                                                        />
+                                                    )}
+                                                />
+                                                <Button variant="contained"
+                                                    onClick={() => remove(index)}
+                                                    sx={{
+                                                        backgroundColor: "candyPink",
+                                                        ...({
+                                                            "&:hover": {
+                                                                backgroundColor: ("candyPink"),
+                                                            }
+                                                        })
+                                                    }}>
+                                                    Delete
+                                                </Button>
+                                            </Stack>
+                                        </AccordionSummary>
+                                        <AccordionDetails>
+                                            <Stack spacing={2}>
+                                                <SideInput
+                                                    name={`${multiInputName}.daylight_area`}
+                                                    control={control}
+                                                    title="Daylight area"
+                                                    subtitle="1/3 room depth from effective opening"
+                                                />
+                                                <NonDaylightArea index={index} />
+                                                <SideInput
+                                                    name={`${multiInputName}.lpd_operate`}
+                                                    control={control}
+                                                    title="LPD during operational hours"
+                                                    subtitle="See table for reference"
+                                                />
+                                                {/* <ImageUpload
+                                                    name={sectionName + ".lpd_operate_attach"}
+                                                    errors={errors}
+                                                    control={control}
+                                                    imageUrl={getValues(sectionName + ".lpd_operate_attach_url")}
+                                                    title="Lighting Plan"
+                                                /> */}
+                                                <SideInput
+                                                    name={`${multiInputName}.lpd_nonoperate`}
+                                                    control={control}
+                                                    title="LPD during non-operational hours"
+                                                    subtitle="See table for reference"
+                                                />
+                                                {/* <ImageUpload
+                                                    name={sectionName + ".lpd_nonoperate_attach"}
+                                                    errors={errors}
+                                                    control={control}
+                                                    imageUrl={getValues(sectionName + ".lpd_nonoperate_attach_url")}
+                                                    title="Lighting Plan"
+                                                /> */}
+                                                <LeDuringOperationalDay index={index} />
+                                                <LeDuringOperationalNonDay index={index} />
+                                                <LeDuringNonOperational index={index} />
+                                                <Divider sx={{ maxWidth: "100%" }} />
+                                                <LightingEnergyConsumption index={index} />
+                                            </Stack>
+
+                                        </AccordionDetails>
+                                    </Accordion>
+                                );
+                            })}
+                        </div>
+
                     </Stack>
 
-                    <div>
-                        {fields.map((field, index) => {
-                            const multiInputName = `${sectionName}.${index}`
-                            return (
-                                <Accordion key={field.id}>
-                                    <AccordionSummary
-                                        expandIcon={<ExpandMoreIcon />}
-                                        aria-controls={"panel" + (index + 1) + "bh-content"}
-                                        id={"panel" + (index + 1) + "bh-header"}
-                                    >
-                                        <Stack justifyContent="space-between" alignItems="center"
-                                            spacing={2} direction="row" width='100%'>
-                                            <Controller
-                                                control={control}
-                                                name={`${multiInputName}.name`}
-                                                render={({ field: { onChange, onBlur, value, ref } }) => (
-                                                    <TextField
-                                                        onChange={onChange}
-                                                        value={value} variant="outlined" size="small"
-                                                        label={"Room #" + (index + 1) + " name"}
-                                                        bgcolor="white"
-                                                    />
-                                                )}
-                                            />
-                                            <Button variant="contained" 
-                                            onClick={() => remove(index)} 
-                                            sx={{backgroundColor: "candyPink",
-                                                    ...({
-                                                        "&:hover": {
-                                                            backgroundColor: ("candyPink"),
-                                                        }
-                                                    }) }}>
-                                                Delete
-                                            </Button>
-                                        </Stack>
-                                    </AccordionSummary>
-                                    <AccordionDetails>
-                                        <Stack spacing={2}>
-                                            <SideInput
-                                                name={`${multiInputName}.daylight_area`}
-                                                control={control}
-                                                title="Daylight area"
-                                                subtitle="1/3 room depth from effective opening"
-                                            />
-                                            <NonDaylightArea index={index} />
-                                            <SideInput
-                                                name={`${multiInputName}.lpd_operate`}
-                                                control={control}
-                                                title="LPD during operational hours"
-                                                subtitle="See table for reference"
-                                            />
-                                            <SideInput
-                                                name={`${multiInputName}.lpd_nonoperate`}
-                                                control={control}
-                                                title="LPD during non-operational hours"
-                                                subtitle="See table for reference"
-                                            />
-                                            <LeDuringOperationalDay index={index} />
-                                            <LeDuringOperationalNonDay index={index} />
-                                            <LeDuringNonOperational index={index} />
-                                            <Divider sx={{ maxWidth: "100%" }} />
-                                            <LightingEnergyConsumption index={index} />
-                                        </Stack>
-
-                                    </AccordionDetails>
-                                </Accordion>
-                            );
-                        })}
-                    </div>
-
-                </Stack>
-
-            }
-            rightComponent={
-                <Stack direction="column" spacing={2} justifyContent="space-between">
-                    <Box sx={{ fontWeight: "bold" }}>LPD Reference Table</Box>
-                    <SelectInput
-                        name={"thirdForm.lpd_option"}
-                        control={control}
-                        options={lpdReference}
-                        getOptionLabel="type"
-                        getOptionValue="type"
-                        placeholder="Select building type..."
-                    />
-                    <LpdReferenceTable control={control} />
-                    <TotalLightingEnergyConsumption />
-                </Stack>
-            }
-        />
+                }
+                rightComponent={
+                    <Stack direction="column" spacing={2} justifyContent="space-between">
+                        <Box sx={{ fontWeight: "bold" }}>LPD Reference Table</Box>
+                        <SelectInput
+                            name={"thirdForm.lpd_option"}
+                            control={control}
+                            options={lpdReference}
+                            getOptionLabel="type"
+                            getOptionValue="type"
+                            placeholder="Select building type..."
+                        />
+                        <LpdReferenceTable control={control} />
+                        <TotalLightingEnergyConsumption />
+                    </Stack>
+                }
+            />
         </ThemeProvider>
     );
 };
@@ -828,91 +847,95 @@ const AppliancesSection = ({ control, getValues, setValue }) => {
 
     return (
         <ThemeProvider theme={theme}>
-        <FormLayout
-            leftComponent={
-                <Stack direction="column" spacing={2}>
-                    <Stack direction="row" justifyContent="space-between" >
-                        <Box sx={{ fontSize: 24, fontWeight: "bold" }}>Appliances</Box>
-                        <Button variant="contained" onClick={() => {
-                            append(defaultAppliancesValue())
-                        }}
-                        sx={{backgroundColor: "steelTeal",
-                                                    ...({
-                                                        "&:hover": {
-                                                            backgroundColor: ("steelTeal"),
-                                                        }
-                                                    }) }}
-                        >
-                            ADD ITEM
-                        </Button>
+            <FormLayout
+                leftComponent={
+                    <Stack direction="column" spacing={2}>
+                        <Stack direction="row" justifyContent="space-between" >
+                            <Box sx={{ fontSize: 24, fontWeight: "bold" }}>Appliances</Box>
+                            <Button variant="contained" onClick={() => {
+                                append(defaultAppliancesValue())
+                            }}
+                                sx={{
+                                    backgroundColor: "steelTeal",
+                                    ...({
+                                        "&:hover": {
+                                            backgroundColor: ("steelTeal"),
+                                        }
+                                    })
+                                }}
+                            >
+                                ADD ITEM
+                            </Button>
+                        </Stack>
+
+                        <div>
+                            {fields.map((field, index) => {
+                                const multiInputName = `${sectionName}.${index}`
+                                return (
+                                    <Accordion key={field.id}>
+                                        <AccordionSummary
+                                            expandIcon={<ExpandMoreIcon />}
+                                            aria-controls={"panel" + (index + 1) + "bh-content"}
+                                            id={"panel" + (index + 1) + "bh-header"}
+                                        >
+                                            <Stack justifyContent="space-between" alignItems="center"
+                                                spacing={2} direction="row" width='100%'>
+                                                <Controller
+                                                    control={control}
+                                                    name={`${multiInputName}.name`}
+                                                    render={({ field: { onChange, onBlur, value, ref } }) => (
+                                                        <TextField
+                                                            onChange={onChange}
+                                                            value={value} variant="outlined" size="small"
+                                                            label={"Item #" + (index + 1) + " name"}
+                                                            bgcolor="white"
+                                                        />
+                                                    )}
+                                                />
+                                                <Button variant="contained"
+                                                    onClick={() => remove(index)}
+                                                    sx={{
+                                                        backgroundColor: "candyPink",
+                                                        ...({
+                                                            "&:hover": {
+                                                                backgroundColor: ("candyPink"),
+                                                            }
+                                                        })
+                                                    }}
+                                                >
+                                                    Delete
+                                                </Button>
+                                            </Stack>
+                                        </AccordionSummary>
+                                        <AccordionDetails>
+                                            <Stack spacing={2}>
+                                                <SideInput
+                                                    name={`${multiInputName}.amount`}
+                                                    control={control}
+                                                    title="Number of Appliances"
+                                                />
+                                                <SideInput
+                                                    name={`${multiInputName}.watt`}
+                                                    control={control}
+                                                    title="Watt"
+                                                />
+                                                <ApplianceConsumption index={index} />
+                                            </Stack>
+
+                                        </AccordionDetails>
+                                    </Accordion>
+                                );
+                            })}
+                        </div>
                     </Stack>
 
-                    <div>
-                        {fields.map((field, index) => {
-                            const multiInputName = `${sectionName}.${index}`
-                            return (
-                                <Accordion key={field.id}>
-                                    <AccordionSummary
-                                        expandIcon={<ExpandMoreIcon />}
-                                        aria-controls={"panel" + (index + 1) + "bh-content"}
-                                        id={"panel" + (index + 1) + "bh-header"}
-                                    >
-                                        <Stack justifyContent="space-between" alignItems="center"
-                                            spacing={2} direction="row" width='100%'>
-                                            <Controller
-                                                control={control}
-                                                name={`${multiInputName}.name`}
-                                                render={({ field: { onChange, onBlur, value, ref } }) => (
-                                                    <TextField
-                                                        onChange={onChange}
-                                                        value={value} variant="outlined" size="small"
-                                                        label={"Item #" + (index + 1) + " name"}
-                                                        bgcolor="white"
-                                                    />
-                                                )}
-                                            />
-                                            <Button variant="contained" 
-                                                    onClick={() => remove(index)} 
-                                                    sx={{backgroundColor: "candyPink",
-                                                    ...({
-                                                        "&:hover": {
-                                                            backgroundColor: ("candyPink"),
-                                                        }
-                                                    }) }}
-                                            >
-                                                Delete
-                                            </Button>
-                                        </Stack>
-                                    </AccordionSummary>
-                                    <AccordionDetails>
-                                        <Stack spacing={2}>
-                                            <SideInput
-                                                name={`${multiInputName}.amount`}
-                                                control={control}
-                                                title="Number of Appliances"
-                                            />
-                                            <SideInput
-                                                name={`${multiInputName}.watt`}
-                                                control={control}
-                                                title="Watt"
-                                            />
-                                            <ApplianceConsumption index={index} />
-                                        </Stack>
-
-                                    </AccordionDetails>
-                                </Accordion>
-                            );
-                        })}
-                    </div>
-                </Stack>
-
-            }
-            rightComponent={
-                <Stack direction="column" spacing={2}>
-                    <TotalApplianceConsumption />
-                </Stack>
-            }
-        />
+                }
+                rightComponent={
+                    <Stack direction="column" spacing={2}>
+                        <TotalApplianceConsumption />
+                    </Stack>
+                }
+            />
         </ThemeProvider>
     );
 }
