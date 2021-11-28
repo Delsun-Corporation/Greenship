@@ -5,7 +5,8 @@ const {
     createProject,
     getProjects,
     deleteProject,
-    getLastPage
+    getLastPage,
+    toggleProjectStatus
 } = require('../controllers/project_controller/product.controller');
 
 const {
@@ -32,7 +33,8 @@ const {
 
 const {
     updatePageFiveDraft,
-    getPageFiveDraft
+    getPageFiveDraft,
+    uploadPageFiveImages
 } = require('../controllers/project_controller/pageFive.controller')
 
 const  {
@@ -45,7 +47,8 @@ router.put('/updatepageone', uploadProjectImage ,updatePageOneDraft);
 router.put('/updatepagetwo', updatePageTwoDraft);
 router.put('/updatepagethree', updatePageThreeDraft);
 router.put('/updatepagefour',uploadPageFourImages, updatePageFourDraft);
-router.put('/updatepagefive', updatePageFiveDraft);
+router.put('/updatepagefive',uploadPageFiveImages, updatePageFiveDraft);
+router.put('/toggle/status', toggleProjectStatus);
 
 router.delete('/deleteproject', deleteProject);
 
