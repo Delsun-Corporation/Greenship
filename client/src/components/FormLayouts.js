@@ -23,6 +23,13 @@ import {
 import axios from "axios";
 import { toast } from "react-toastify";
 import { theme } from "../assets/Theme";
+import { Upload, Download } from "@mui/icons-material";
+import Image from 'material-ui-image'
+import { Page, PDFDownloadLink } from 'react-pdf'
+import { Document } from 'react-pdf/dist/esm/entry.webpack';
+import LogoPDF from "../assets/pdf.png";
+import Base64Downloader from 'react-base64-downloader';
+
 
 export const FormLayout = ({ leftComponent, rightComponent }) => (
   <Container maxWidth="xl" disableGutters>
@@ -653,12 +660,62 @@ export function getBase64(file) {
   });
 }
 
-export function ImageUpload({ name, errors, control, title = "Upload Image" }) {
+function base64FileHeaderMapper(fileBase64) {
+
+  let fileHeader = new Map();
+
+  //get the first 3 char of base64
+  fileHeader.set("/9j", "JPG")
+  fileHeader.set("iVB", "PNG")
+  fileHeader.set("Qk0", "BMP")
+  fileHeader.set("SUk", "TIFF")
+  fileHeader.set("JVB", "PDF")
+  fileHeader.set("UEs", "OFD")
+
+  let res = ""
+
+  fileHeader.forEach((v, k) => {
+    if (k == fileBase64.substr(0, 3)) {
+      res = v
+    }
+  })
+
+  //if file is not supported
+  if (res == "") {
+    res = "unknown file"
+  }
+
+  //return map value
+  return res;
+}
+
+const getBase64FromUrl = async (url) => {
+  const data = await fetch(url);
+  const blob = await data.blob();
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(blob);
+    reader.onloadend = () => {
+      const base64data = reader.result;
+      resolve(base64data);
+    }
+  });
+}
+
+export function ImageUpload({ name, errors, control, title = "Upload Image", subtitle = "Click the image to view", imageUrl }) {
   const { field } = useController({ name, control });
   const [image, setImage] = useState();
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const [load, setLoad] = useState(true);
+
+  if (!image && imageUrl) {
+    getBase64FromUrl(imageUrl).then((base) => {
+      setImage(base);
+      setLoad(true)
+    })
+  }
 
   const onAvatarChange = useCallback(async (event) => {
     if (event.target.files?.[0]) {
@@ -674,6 +731,7 @@ export function ImageUpload({ name, errors, control, title = "Upload Image" }) {
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
+    width: '80vw',
     height: '90vh',
     bgcolor: 'background.paper',
     border: '2px solid #000',
@@ -681,38 +739,178 @@ export function ImageUpload({ name, errors, control, title = "Upload Image" }) {
     p: 4,
   };
 
+  const PreviewModal = ({ image }) => {
+    const aspectRatio = image.width / image.height;
+
+    return (
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <Base64Downloader base64={image} >
+            <Button variant="contained" startIcon={<Download />}>Download</Button>
+          </Base64Downloader>
+
+          <Image
+            src={image}
+            imageStyle={{ objectFit: "contain" }}
+            style={{ width: '76vw', height: '80vh' }}
+            aspectRatio={aspectRatio}
+            onClickCapture={handleOpen} />
+        </Box>
+      </Modal>
+    )
+  }
+
+  const PreviewPDF = ({ image }) => {
+    const [numPages, setNumPages] = useState(null);
+    const [pageNumber, setPageNumber] = useState(1);
+
+    function onDocumentLoadSuccess({ numPages }) {
+      setNumPages(numPages);
+      setPageNumber(1);
+    }
+
+    function changePage(offset) {
+      setPageNumber(prevPageNumber => prevPageNumber + offset);
+    }
+
+    function previousPage() {
+      changePage(-1);
+    }
+
+    function nextPage() {
+      changePage(1);
+    }
+
+    return (
+      <>
+        <Document
+          file={image}
+          onLoadSuccess={onDocumentLoadSuccess}
+        >
+          <Page pageNumber={pageNumber} />
+        </Document>
+        <Stack direction= "horizontal" alignItems="center"
+        justifyContent="space-between">
+          <Stack direction= "horizontal"alignItems="center">
+            <Button
+              disabled={pageNumber <= 1}
+              onClick={previousPage}
+              variant="contained"
+            >
+              Previous
+            </Button>
+            <Box paddingX={10}>
+              Page {pageNumber || (numPages ? 1 : '--')} of {numPages || '--'}
+            </Box>
+            <Button
+              variant="contained"
+              disabled={pageNumber >= numPages}
+              onClick={nextPage}
+            >
+              Next
+            </Button>
+          </Stack>
+          <Button variant="contained" startIcon={<Download />}>Download</Button>
+        </Stack>
+        
+      </>
+    );
+  }
+
+  const PreviewPDFModal = ({ image }) => {
+    const aspectRatio = image.width / image.height;
+
+    return (
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+            <PreviewPDF image={image} />
+        </Box>
+      </Modal>
+    )
+  }
+
+  const ImageComponent = ({ image }) => {
+    const type = image.match(/[^:/]\w+(?=;|,)/)[0]
+    const aspectRatio = image.width / image.height;
+
+    if (type === "pdf") {
+      return (
+        <>
+          <Image
+            src={LogoPDF}
+            cover
+            style={{ height: 100 }}
+            imageStyle={{ objectFit: "contain" }}
+            aspectRatio={aspectRatio}
+            onClickCapture={handleOpen}
+          />
+          <PreviewPDFModal image={image} />
+        </>
+      )
+    }
+
+    return (
+      <>
+        <Image
+          src={image}
+          cover
+          style={{ height: 200 }}
+          imageStyle={{ objectFit: "contain" }}
+          aspectRatio={aspectRatio}
+          onClickCapture={handleOpen}
+        />
+        <PreviewModal image={image} />
+      </>
+    )
+  }
+
+  const UploadButton = () => {
+    return (
+      <ThemeProvider theme={theme}>
+        <Button variant="contained" component="label" startIcon={<Upload />} sx={{ backgroundColor: "steelTeal" }}>
+
+          Upload (png, jpeg, pdf)
+          <input type="file" onChange={onAvatarChange} accept="image/jpeg, image/png, image/jpg, application/pdf" hidden />
+        </Button>
+      </ThemeProvider>
+    )
+  }
+
   return (
     <Stack
-      direction="column">
-      <label>{title}</label>
-      {image && <><img src={image} width="200px" height="200px" onClick={handleOpen}/>
-      <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
+      direction="column" spacing={2}>
+      <Stack
+        direction="row"
+        alignItems="center"
+        justifyContent="space-between"
+        spacing={2}
+        minHeight={40}
       >
-        <Box sx={style}>
-          <img src={image} style={{ maxWidth: "100%", maxHeight: "80vh" }}/>
-        </Box>
-      </Modal></>
-      }
+        <Stack direction="column">
+          <Typography variant="body1">{title}</Typography>
+          {subtitle && (
+            <Typography variant="caption" color="text.secondary">
+              {subtitle}
+            </Typography>
+          )}
+        </Stack>
+        <UploadButton />
 
-      {!image && <><img src='https://firebasestorage.googleapis.com/v0/b/ina-website-326209.appspot.com/o/resource%2FNoImageDefault.png?alt=media&token=ac9bfea9-44db-4dca-9293-64da65636021' width="200px" height="200px" onClick={handleOpen}/>
-      <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box sx={style}>
-          <img src={image} style={{ maxWidth: "100%", maxHeight: "80vh" }}/>
-        </Box>
-      </Modal></>
-      }
-      
-      <input type="file" onChange={onAvatarChange} />
-      <p>{errors[name]?.message}</p>
       </Stack>
+
+      {image && load && <ImageComponent image={image} />}
+
+      <p>{errors[name]?.message}</p>
+    </Stack>
   );
 }

@@ -41,18 +41,24 @@ import { toast } from "react-toastify";
 
 const FirstForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
   const methods = useForm({});
-  const { control, formState: { errors }, handleSubmit, setValue } = methods;
+  const { control, formState: { errors }, handleSubmit, setValue, getValues } = methods;
   const [isLoading, setLoading] = useState(true);
   const [isFromNextButton, setIsFromNextButton] = useState(false);
 
   const onSubmit = (data) => {
     console.log(data)
-    if (data.firstForm.a_project_image && typeof(data.firstForm.a_project_image[0]) !== 'undefined') {
-      const project_image = data.firstForm.a_project_image[0]
-      console.log(project_image)
-        data.firstForm.a_project_image = project_image
-        console.log(data)
-    }
+    // const formData = new FormData()
+    // formData.append("image", data.firstForm.a_project_image[0])
+    // console.log(...formData)
+    // console.log("hey", Object.fromEntries(formData))
+    // new Response(formData).text().then(console.log)
+    
+    // if (data.firstForm.a_project_image && typeof(data.firstForm.a_project_image[0]) !== 'undefined') {
+    //   const project_image = data.firstForm.a_project_image[0]
+    //   console.log(project_image)
+    //     data.firstForm.a_project_image = project_image
+    //     console.log(data)
+    // }
 
     if (isFromNextButton) {
       onceSubmitted(data, "2");
@@ -69,6 +75,7 @@ const FirstForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
         },
       })
       .then((res) => {
+        console.log(res.data.page_one)
         setValue("firstForm", {
           ...res.data.page_one,
           a_typology: buildingTypology.find(
@@ -86,7 +93,7 @@ const FirstForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
   const CHAPTER_NUMBER = "1";
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit(onSubmit)} encType="multipart/form-data">
       <Stack direction="column" spacing={4} sx={{ paddingY: 10 }}>
         <FormHeader
           title={formChapters.find((e) => e.chapter === CHAPTER_NUMBER).title}
@@ -97,9 +104,10 @@ const FirstForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
         {isLoading && <SkeletonSection />}
         {!isLoading && (
           <>
-            <FirstSection control={control} errors={errors} />
-            <SecondSection control={control} />
-            <ThirdSection control={control} />
+            <FirstSection control={control} errors={errors} getValues={getValues} />
+            <SecondSection control={control} errors={errors} getValues={getValues} />
+            <ThirdSection control={control} errors={errors} getValues={getValues} />
+            <FourthSection control={control} errors={errors} getValues={getValues} />
           </>
         )}
         <FormFooter chapter={CHAPTER_NUMBER} setFromNextButton={setIsFromNextButton} />
@@ -112,7 +120,7 @@ export default FirstForm;
 
 /// SECTIONS ///
 
-const FirstSection = ({ control, errors }) => {
+const FirstSection = ({ control, errors, getValues }) => {
   const sectionName = "firstForm.";
 
   return (
@@ -137,15 +145,20 @@ const FirstSection = ({ control, errors }) => {
       }
       rightComponent={
         <Stack direction="column" spacing={2}>
-          <ImageUpload name={sectionName + "a_project_image"} errors={errors} control={control} />
-          
+          <ImageUpload
+            name={sectionName + "a_project_image"}
+            errors={errors}
+            control={control}
+            imageUrl={getValues(sectionName + "project_image")}
+            title="Building Image"
+          />
         </Stack>
       }
     />
   );
 };
 
-const SecondSection = ({ control }) => {
+const SecondSection = ({ control, errors, getValues }) => {
   const sectionName = "firstForm.";
 
   function OperatingHoursPerYear() {
@@ -218,6 +231,13 @@ const SecondSection = ({ control }) => {
                 title="City"
                 rows={1}
                 maxLength={50}
+              />
+              <ImageUpload
+                name={sectionName + "a_location_image"}
+                errors={errors}
+                control={control}
+                imageUrl={getValues(sectionName + "location_image")}
+                title="Climate data attachment"
               />
             </Box>
           </Stack>
@@ -402,6 +422,47 @@ const ThirdSection = ({ control }) => {
     />
   );
 };
+
+const FourthSection = ({ control, errors, getValues }) => {
+  const sectionName = "firstForm.";
+  return (
+    <FormLayout
+      leftComponent={
+        <Stack direction="column" spacing={2}>
+          <ImageUpload
+            name={sectionName + "a_orientation_image"}
+            errors={errors}
+            control={control}
+            imageUrl={getValues(sectionName + "orientation_image")}
+            title="Building Plan Orientation (length, width, and orientation)"
+            subtitle="Attach planning image"
+          />
+          <ImageUpload
+            name={sectionName + "a_micro_noise_image"}
+            errors={errors}
+            control={control}
+            imageUrl={getValues(sectionName + "micro_noise_image")}
+            title="Planning of Micro Climate and Noise Control"
+            subtitle="Attach site development: landscape closure, green area percentage"
+          />
+        </Stack>
+      }
+      rightComponent={
+        <Stack direction="column" spacing={2}>
+          <ImageUpload
+            name={sectionName + "a_energy_place_image"}
+            errors={errors}
+            control={control}
+            imageUrl={getValues(sectionName + "energy_place_image")}
+            title="On-site Renewable Energy Planning"
+            subtitle="Attach document: proof of renewable energy potential on site"
+          />
+        </Stack>
+      }
+    />
+  );
+
+}
 
 /// COMPONENTS ///
 
