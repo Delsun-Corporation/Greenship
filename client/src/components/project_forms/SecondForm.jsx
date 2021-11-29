@@ -25,7 +25,7 @@ const SecondForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
   const [isLoading, setLoading] = useState(true);
 
   const onSubmit = (data) => {
-    console.log(data)
+    console.log("Second Form data:", data)
     if (isFromNextButton) {
       onceSubmitted(data, "3");
     } else {
@@ -135,10 +135,12 @@ const FirstSection = ({ control }) => {
     const windowAreaN = useWatch({
       control,
       name: sectionName + "b_window_area_n",
+      defaultValue: 0
     });
     const windowAreaS = useWatch({
       control,
       name: sectionName + "b_window_area_s",
+      defaultValue: 0
     });
     const windowAreaE = useWatch({
       control,
@@ -345,8 +347,8 @@ const FirstSection = ({ control }) => {
     });
 
     const calculated = countedWWR
-    const baseline = 0.6
-    const allowed = 0.7
+    const baseline = 30
+    const allowed = 40
 
     const chartData = [
       { label: "Calculated WWR", value: calculated, min: 0, max: 0 },

@@ -55,7 +55,6 @@ const SixthForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
         },
       })
       .then((res) => {
-          console.log(res);
         setValue("firstForm", {
           ...res.data.firstForm,
         });
@@ -65,7 +64,6 @@ const SixthForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
         const temp = res.data.fourthForm.d_d_illuminance
         var illuminanceArr = []
         temp.map((entry, index) => {
-            console.log("entry", entry)
             const roomActivity = visualComfort.find((element) => {
                 return element.locActivity === entry.room_activity.locActivity
             })
@@ -79,8 +77,6 @@ const SixthForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
             }
             illuminanceArr.push(tempObject)
         })
-
-        console.log(illuminanceArr)
         
         setValue("fourthForm", {
             ...res.data.fourthForm,
@@ -90,7 +86,6 @@ const SixthForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
             ...res.data.fifthForm,
         })
         setLoading(false);
-        console.log("fourt", getValues("fourthForm"))
       })
       .catch((err) => {
         console.log(err);
@@ -515,8 +510,6 @@ const HealthyBuildingSection = ({ getValues }) => {
   const IlluminanceGraph = () => {
     const illuminanceArr = getValues(`fourthForm.d_d_illuminance`);
     const illuminanceRes = getValues(`fourthForm.d_total_bhc.illuminance`);
-
-    console.log(illuminanceArr);
 
     const chartData = [];
 
