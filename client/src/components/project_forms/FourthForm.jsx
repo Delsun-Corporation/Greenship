@@ -27,7 +27,8 @@ import {
   BlockInput,
   InlineLabel,
   ToggleInput,
-  SkeletonSection
+  SkeletonSection,
+  ImageUpload
 } from "../FormLayouts";
 import {
   formChapters,
@@ -62,7 +63,7 @@ const FourthForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
   const methods = useForm({
     defaultValues: defaultFormValue(),
   });
-  const { control, handleSubmit, setValue, reset, getValues } = methods;
+  const { control, handleSubmit, setValue, reset, getValues, formState: { errors } } = methods;
   const [isLoading, setLoading] = useState(true);
   const [isFromNextButton, setIsFromNextButton] = useState(false);
 
@@ -124,12 +125,12 @@ const FourthForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
         {isLoading && <SkeletonSection />}
         {!isLoading && (
           <>
-            <OutdoorAirSection control={control} getValues={getValues} setValue={setValue}/>
-            <AchSection control={control} getValues={getValues} setValue={setValue} />
-            <AccessOutsideSection control={control} getValues={getValues} />
-            <VisualComfortSection control={control} getValues={getValues} setValue={setValue}/>
-            <ThermalComfortSection control={control} getValues={getValues} />
-            <AcousticalComfortSection control={control} getValues={getValues} />
+            <OutdoorAirSection control={control} getValues={getValues} setValue={setValue} errors={errors} />
+            <AchSection control={control} getValues={getValues} setValue={setValue} errors={errors} />
+            <AccessOutsideSection control={control} getValues={getValues} errors={errors} />
+            <VisualComfortSection control={control} getValues={getValues} setValue={setValue} errors={errors} />
+            <ThermalComfortSection control={control} getValues={getValues} errors={errors} />
+            <AcousticalComfortSection control={control} getValues={getValues} errors={errors} />
             <FormFooter
               chapter={CHAPTER_NUMBER}
               setFromNextButton={setIsFromNextButton}
@@ -197,8 +198,10 @@ function defaultTotalBhc() {
 
 /// SECTIONS ///
 
-const OutdoorAirSection = ({ control, getValues, setValue }) => {
+const OutdoorAirSection = ({ control, getValues, setValue, errors }) => {
   const sectionName = "fourthForm";
+
+  const [isPotential, setPotential] = useState();
 
   const resultArr = {
     pz: 0,
@@ -298,7 +301,7 @@ const OutdoorAirSection = ({ control, getValues, setValue }) => {
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis type="number" dataKey="value" />
             <YAxis type="category" dataKey="label" tick={{ fontSize: 14 }} />
-            <Tooltip formatter={(value) => numberFormat(value)}/>
+            <Tooltip formatter={(value) => numberFormat(value)} />
             <Bar dataKey="value" fill="#8884d8">
               {chartData.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={barColors[index % 20]} />
@@ -309,6 +312,11 @@ const OutdoorAirSection = ({ control, getValues, setValue }) => {
       </Box>
     );
   };
+
+  const HandleToggle = (event) => {
+    setPotential(event.target.checked)
+    setValue(`${sectionName}.d_a_is_potential`, event.target.checked)
+  }
 
   return (
     <FormLayout
@@ -321,7 +329,15 @@ const OutdoorAirSection = ({ control, getValues, setValue }) => {
             control={control}
             name={`${sectionName}.d_a_is_potential`}
             title="Is there any outdoor air introduction potentials?"
+            handleChange={(event) => HandleToggle(event)}
           />
+          {isPotential && <ImageUpload
+            name={sectionName + ".d_a_attachment"}
+            errors={errors}
+            control={control}
+            imageUrl={getValues(sectionName + ".a_attachment")}
+            title="Attach proof of Outdoor Air Introduction Potential"
+          />}
           <Divider style={{ width: "100%" }} />
           <SideInput
             name={`${sectionName}.d_a_rp`}
@@ -460,7 +476,7 @@ const AchSection = ({ control, getValues, setValue }) => {
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis type="number" dataKey="value" />
             <YAxis type="category" dataKey="label" tick={{ fontSize: 14 }} />
-            <Tooltip formatter={(value) => numberFormat(value)}/>
+            <Tooltip formatter={(value) => numberFormat(value)} />
             <Bar dataKey="value" fill="#8884d8">
               {chartData.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={barColors[index % 20]} />
@@ -506,7 +522,7 @@ const AchSection = ({ control, getValues, setValue }) => {
   );
 };
 
-const AccessOutsideSection = ({ control, getValues, setValue }) => {
+const AccessOutsideSection = ({ control, getValues, setValue, errors }) => {
   const sectionName = "fourthForm";
 
   const resultArr = {
@@ -583,7 +599,7 @@ const AccessOutsideSection = ({ control, getValues, setValue }) => {
               tickFormatter={(tick) => `${tick}%`}
             />
             <YAxis type="category" dataKey="label" tick={{ fontSize: 14 }} />
-            <Tooltip formatter={(value) => numberFormat(value)}/>
+            <Tooltip formatter={(value) => numberFormat(value)} />
             <Bar dataKey="value" fill="#8884d8">
               {chartData.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={barColors[index % 20]} />
@@ -597,37 +613,44 @@ const AccessOutsideSection = ({ control, getValues, setValue }) => {
 
   return (
     <ThemeProvider theme={theme}>
-    <FormLayout
-      leftComponent={
-        <Stack direction="column" spacing={2}>
-          <Box sx={{ fontSize: 24, fontWeight: "bold" }}>
-            Access to Outside View
-          </Box>
+      <FormLayout
+        leftComponent={
+          <Stack direction="column" spacing={2}>
+            <Box sx={{ fontSize: 24, fontWeight: "bold" }}>
+              Access to Outside View
+            </Box>
+            <ImageUpload
+              name={sectionName + ".d_c_access_att"}
+              errors={errors}
+              control={control}
+              imageUrl={getValues(sectionName + ".c_access_att")}
+              title="Attach Planning for access to outside view"
+            />
 
-          <SideInput
-            name={`${sectionName}.d_c_access_area`}
-            control={control}
-            title="Area with access to outside view (m2)"
-          />
-          <Divider style={{ width: "100%" }} />
-          <AccessPercentage />
-        </Stack>
-      }
-      rightComponent={
-        <Stack direction="column" spacing={2}>
-          <Box sx={{ fontWeight: "bold" }}>
-            Graph: Calculated Area with access to outside view vs. Greenship
-            standard
-          </Box>
-          <AccessOutsideGraph />
-        </Stack>
-      }
-    />
+            <SideInput
+              name={`${sectionName}.d_c_access_area`}
+              control={control}
+              title="Area with access to outside view (m2)"
+            />
+            <Divider style={{ width: "100%" }} />
+            <AccessPercentage />
+          </Stack>
+        }
+        rightComponent={
+          <Stack direction="column" spacing={2}>
+            <Box sx={{ fontWeight: "bold" }}>
+              Graph: Calculated Area with access to outside view vs. Greenship
+              standard
+            </Box>
+            <AccessOutsideGraph />
+          </Stack>
+        }
+      />
     </ThemeProvider>
   );
 };
 
-const VisualComfortSection = ({ control, getValues, setValue }) => {
+const VisualComfortSection = ({ control, getValues, setValue, errors }) => {
   const sectionName = "fourthForm.d_d_illuminance";
 
   const { fields, append, remove } = useFieldArray({
@@ -732,7 +755,7 @@ const VisualComfortSection = ({ control, getValues, setValue }) => {
             <CartesianGrid strokeDasharray="3 3" />
             <YAxis type="category" dataKey="label" tick={{ fontSize: 14 }} />
             <XAxis type="number" dataKey="value" />
-            <Tooltip formatter={(value) => numberFormat(value)}/>
+            <Tooltip formatter={(value) => numberFormat(value)} />
             <Legend
               height={10}
               wrapperStyle={{ position: "relative", marginTop: "0px" }}
@@ -754,131 +777,141 @@ const VisualComfortSection = ({ control, getValues, setValue }) => {
 
   return (
     <ThemeProvider theme={theme}>
-    <FormLayout
-      leftComponent={
-        <Stack direction="column" spacing={2}>
-          <Stack direction="row" justifyContent="space-between">
-            <Box sx={{ fontSize: 24, fontWeight: "bold" }}>Visual Comfort</Box>
-            <Button
-              variant="contained"
-              onClick={() => {
-                append(defaultIlluminances());
-              }}
-              sx={{backgroundColor: "steelTeal",
-                                                    ...({
-                                                        "&:hover": {
-                                                            backgroundColor: ("steelTeal"),
-                                                        }
-                                                    }) }}
-            >
-              ADD ITEM
-            </Button>
-          </Stack>
-
-          <div>
-            {fields.map((field, index) => {
-              const multiInputName = `${sectionName}.${index}`;
-              return (
-                <Accordion key={field.id}>
-                  <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    aria-controls={"panel" + (index + 1) + "bh-content"}
-                    id={"panel" + (index + 1) + "bh-header"}
-                  >
-                    <Stack
-                      justifyContent="space-between"
-                      alignItems="center"
-                      spacing={2}
-                      direction="row"
-                      width="100%"
+      <FormLayout
+        leftComponent={
+          <Stack direction="column" spacing={2}>
+            <Stack direction="row" justifyContent="space-between">
+              <Box sx={{ fontSize: 24, fontWeight: "bold" }}>Visual Comfort</Box>
+              <Button
+                variant="contained"
+                onClick={() => {
+                  append(defaultIlluminances());
+                }}
+                sx={{
+                  backgroundColor: "steelTeal",
+                  ...({
+                    "&:hover": {
+                      backgroundColor: ("steelTeal"),
+                    }
+                  })
+                }}
+              >
+                ADD ITEM
+              </Button>
+            </Stack>
+            <ImageUpload
+                          name={sectionName + ".d_d_lighting_plan_att"}
+                          errors={errors}
+                          control={control}
+                          imageUrl={getValues(sectionName + ".d_lighting_plan_att")}
+                          title="Lighting Plan"
+                        />
+            <div>
+              {fields.map((field, index) => {
+                const multiInputName = `${sectionName}.${index}`;
+                return (
+                  <Accordion key={field.id}>
+                    <AccordionSummary
+                      expandIcon={<ExpandMoreIcon />}
+                      aria-controls={"panel" + (index + 1) + "bh-content"}
+                      id={"panel" + (index + 1) + "bh-header"}
                     >
-                      <Box sx={{ fontSize: 16, fontWeight: "bold" }}>
-                        {"Illuminance #" + (index + 1)}
-                      </Box>
-
-                      <Button
-                        variant="contained"
-                        onClick={() => remove(index)}
-                        sx={{backgroundColor: "candyPink",
-                                                    ...({
-                                                        "&:hover": {
-                                                            backgroundColor: ("candyPink"),
-                                                        }
-                                                    }) }}
+                      <Stack
+                        justifyContent="space-between"
+                        alignItems="center"
+                        spacing={2}
+                        direction="row"
+                        width="100%"
                       >
-                        Delete
-                      </Button>
-                    </Stack>
-                  </AccordionSummary>
-                  <AccordionDetails>
-                    <Stack spacing={2}>
-                      <SelectInput
-                        name={`${multiInputName}.room_activity`}
-                        control={control}
-                        options={visualComfort}
-                        getOptionLabel="locActivity"
-                        getOptionValue="locActivity"
-                        placeholder="Select location/activity type..."
-                      />
-                      <SideInput
-                        name={`${multiInputName}.area`}
-                        control={control}
-                        title="Area (m2)"
-                      />
+                        <Box sx={{ fontSize: 16, fontWeight: "bold" }}>
+                          {"Illuminance #" + (index + 1)}
+                        </Box>
 
-                      <Divider style={{ width: "100%" }} />
-                      <Box
-                        sx={{
-                          fontSize: 14,
-                          fontWeight: "bold",
-                          color: "text.secondary",
-                        }}
-                      >
-                        LIGHTING PLAN
-                      </Box>
-                      <BlockInput
-                        name={`${multiInputName}.lamp_type`}
-                        control={control}
-                        title="Lamp's type"
-                        placeholder="Input lamp's brand description and type"
-                        rows={1}
-                        maxLength={50}
-                      />
-                      <SideInput
-                        name={`${multiInputName}.lamp_count`}
-                        control={control}
-                        title="Lamp's numbers"
-                      />
-                      <SideInput
-                        name={`${multiInputName}.lamp_power`}
-                        control={control}
-                        title="Lamp's power (Watt)"
-                      />
-                      <SideInput
-                        name={`${multiInputName}.lamp_lumen`}
-                        control={control}
-                        title="Lamp's lumen"
-                      />
-                      <Divider style={{ width: "100%" }} />
-                      <Illuminance index={index} />
-                    </Stack>
-                  </AccordionDetails>
-                </Accordion>
-              );
-            })}
-          </div>
-        </Stack>
-      }
-      rightComponent={
-        <Stack direction="column" spacing={2} maxWidth="sm">
-          <Box sx={{ fontWeight: "bold" }}>
-            Graph: Calculated Area with access to outside view vs. Greenship
-            standard
-          </Box>
-          <IlluminanceGraph />
-        </Stack>
-      }
-    />
+                        <Button
+                          variant="contained"
+                          onClick={() => remove(index)}
+                          sx={{
+                            backgroundColor: "candyPink",
+                            ...({
+                              "&:hover": {
+                                backgroundColor: ("candyPink"),
+                              }
+                            })
+                          }}
+                        >
+                          Delete
+                        </Button>
+                      </Stack>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                      <Stack spacing={2}>
+                        <SelectInput
+                          name={`${multiInputName}.room_activity`}
+                          control={control}
+                          options={visualComfort}
+                          getOptionLabel="locActivity"
+                          getOptionValue="locActivity"
+                          placeholder="Select location/activity type..."
+                        />
+                        <SideInput
+                          name={`${multiInputName}.area`}
+                          control={control}
+                          title="Area (m2)"
+                        />
+
+                        <Divider style={{ width: "100%" }} />
+                        <Box
+                          sx={{
+                            fontSize: 14,
+                            fontWeight: "bold",
+                            color: "text.secondary",
+                          }}
+                        >
+                          LIGHTING PLAN
+                        </Box>
+                        <BlockInput
+                          name={`${multiInputName}.lamp_type`}
+                          control={control}
+                          title="Lamp's type"
+                          placeholder="Input lamp's brand description and type"
+                          rows={1}
+                          maxLength={50}
+                        />
+                        <SideInput
+                          name={`${multiInputName}.lamp_count`}
+                          control={control}
+                          title="Lamp's numbers"
+                        />
+                        <SideInput
+                          name={`${multiInputName}.lamp_power`}
+                          control={control}
+                          title="Lamp's power (Watt)"
+                        />
+                        <SideInput
+                          name={`${multiInputName}.lamp_lumen`}
+                          control={control}
+                          title="Lamp's lumen"
+                        />
+                        <Divider style={{ width: "100%" }} />
+                        <Illuminance index={index} />
+                      </Stack>
+                    </AccordionDetails>
+                  </Accordion>
+                );
+              })}
+            </div>
+          </Stack>
+        }
+        rightComponent={
+          <Stack direction="column" spacing={2} maxWidth="sm">
+            <Box sx={{ fontWeight: "bold" }}>
+              Graph: Calculated Area with access to outside view vs. Greenship
+              standard
+            </Box>
+            <IlluminanceGraph />
+          </Stack>
+        }
+      />
     </ThemeProvider>
   );
 };
@@ -925,7 +958,7 @@ const ThermalComfortSection = ({ control, getValues, setValue }) => {
               tickFormatter={(tick) => `${tick}°C`}
             />
             <YAxis type="category" dataKey="label" tick={{ fontSize: 14 }} />
-            <Tooltip formatter={(value) => numberFormat(value)}/>
+            <Tooltip formatter={(value) => numberFormat(value)} />
             <Bar dataKey="value" fill="#8884d8">
               {chartData.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={barColors[index % 20]} />
@@ -962,7 +995,7 @@ const ThermalComfortSection = ({ control, getValues, setValue }) => {
   );
 };
 
-const AcousticalComfortSection = ({ control, getValues, setValue }) => {
+const AcousticalComfortSection = ({ control, getValues, setValue, errors }) => {
   const sectionName = "fourthForm";
 
   var StandardNoiseArr = [];
@@ -1021,7 +1054,7 @@ const AcousticalComfortSection = ({ control, getValues, setValue }) => {
               tickFormatter={(tick) => `${tick} dBA`}
             />
             <YAxis type="category" dataKey="label" tick={{ fontSize: 14 }} />
-            <Tooltip formatter={(value) => numberFormat(value)}/>
+            <Tooltip formatter={(value) => numberFormat(value)} />
             <Legend />
             <Bar
               name="Calculated"
@@ -1059,6 +1092,13 @@ const AcousticalComfortSection = ({ control, getValues, setValue }) => {
             control={control}
             title="Noise level in existing condition (dBA)"
           />
+          <ImageUpload
+              name={sectionName + ".d_f_noise_control_att"}
+              errors={errors}
+              control={control}
+              imageUrl={getValues(sectionName + ".f_noise_control_att")}
+              title="Treatment for noise control"
+            />
         </Stack>
       }
       rightComponent={
