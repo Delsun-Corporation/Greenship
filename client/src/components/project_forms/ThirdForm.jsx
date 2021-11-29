@@ -740,10 +740,9 @@ const ACSection = ({ control, getValues, setValue }) => {
         const workingDays = getValues("firstForm.a_working_days")
         const operationalHours = getValues("firstForm.a_operational_hours")
         var result = components.BSL + components.CFM1 + components.CFM2 + components.LSL + components.PLL + components.PSL
-        if (result && operationalHours && workingDays && gfa) {
-            result = convertCoolingLoad(result, operationalHours, workingDays, gfa)
-            setValue("thirdForm.total_dec.ac", result)
-        }
+            
+        result = convertCoolingLoad(result, operationalHours, workingDays, gfa)
+        setValue("thirdForm.total_dec.ac", result)
 
         return (
             <Paper sx={{ paddingX: 2, paddingY: 1, backgroundColor: "green", color: "white" }}>
