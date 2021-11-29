@@ -10,7 +10,7 @@ export function calcNonOperatingHoursPerYear(operationalHours, workingDays, holi
 
 /// 1a6
 export function calcOccupancy(gfa, occupancyDensity) {
-    return (gfa * occupancyDensity)
+    return (gfa * occupancyDensity / 100)
 }
 
 /// 1b1
@@ -22,21 +22,24 @@ export function calcRoomVolumePerPerson(floorNumber, avgFloorHeight, occupancyDe
 export function calcWWR(collectionWindowArea, collectionWallArea) {
     const totalWindowArea = sumValue(collectionWindowArea);
     const totalWallArea = sumValue(collectionWallArea);
-    const applySeparator = numberFormat(totalWindowArea / totalWallArea);
+    const applySeparator = numberFormat(totalWindowArea / totalWallArea * 100);
     return applySeparator;
 }
 
 function sumValue(array) {
     let sum = 0;
     for (let i = 0; i < array.length; i++) {
-        sum += parseInt(array[i]);
+        
+        if (!isNaN(array[i]), array[i] !== "") {
+            sum += parseInt(array[i]);
+        }
     }
     return sum
 }
 
 /// 3a
 export function calcLightingEnergyConsumption(leOperationalDay, leOperationalNonDay, leNonOperational, gfa) {
-    return (leOperationalDay + leOperationalNonDay + leNonOperational) / gfa
+    return (leOperationalDay + leOperationalNonDay + leNonOperational) / gfa / 1000
 }
 
 /// 3a2
@@ -98,8 +101,8 @@ export function convertCoolingLoad(coolingLoad, operationalHours, workingDays, g
 }
 
 /// 3c
-export function calcApplianceConsumption(amount, watt, operationalHours) {
-    return (amount * watt * operationalHours)
+export function calcApplianceConsumption(amount, watt, operationalHours, gfa) {
+    return (amount * watt * operationalHours / 1000 / gfa)
 }
 
 /// 3d
@@ -108,16 +111,16 @@ export function calcLiftConsumption(gfa, operationalHours, watt, amount, capacit
 }
 
 export function calcUtilityConsumption(gfa, operationalHours, watt, amount) {
-    return (watt * amount * operationalHours / gfa)
+    return (watt * amount * operationalHours / 1000 / gfa)
 }
 
 /// 3e
 export function calcPlugEnergyAC(gfa, operationalHours, operatingPower) {
-    return (operatingPower * operationalHours * gfa)
+    return (operatingPower * operationalHours * gfa / 1000)
 }
 
 export function calcPlugEnergyNonAC(gfa, operationalHours, nonOperatingPower) {
-    return (nonOperatingPower * (24 - operationalHours) * gfa)
+    return (nonOperatingPower * (24 - operationalHours) * gfa / 1000)
 }
 
 export function calcPlugConsumption(gfa, plugEnergyAC, plugEnergyNonAC) {
@@ -129,8 +132,8 @@ export function calcZonePopulation(gfa, occupancyDensity) {
     return ((gfa * occupancyDensity))
 }
 
-export function calcVbz(rp, pz, ra, az) {
-    return ((rp * pz) + (ra * az))
+export function calcVbz(rp, pz, ra, az, mvAmount) {
+    return ((rp * pz) + (ra * az)) / mvAmount
 }
 
 /// 4b
@@ -153,8 +156,8 @@ export function calcPotentialPV(pca, l, w) {
     return (pca / ((l * w) / 1000000)).toFixed(2);
  }
  
- export function calcPredictionElectical(potentialPv, wpeak) {
-     return (potentialPv * wpeak * 4 * 365).toFixed(2);
+ export function calcPredictionElectical(potentialPv, wpeak, gfa) {
+     return (potentialPv * wpeak * 4 * 365 / gfa / 1000).toFixed(2);
  }
  
  export function calcPercentageElectrical(predictialElectrical, total_dec) {
@@ -162,5 +165,15 @@ export function calcPotentialPV(pca, l, w) {
  }
 
 export function numberFormat(value, numberOfDigits = 2) {
-    return new Intl.NumberFormat('en', { minimumFractionDigits: 0, maximumFractionDigits: numberOfDigits }).format(value)
+    if (isNaN(value)) {
+        return 0
+    }
+
+    var result = new Intl.NumberFormat('en', { minimumFractionDigits: 0, maximumFractionDigits: numberOfDigits }).format(value)
+
+    if (result) {
+        return result
+    }
+    return 0
+    
 }

@@ -74,7 +74,6 @@ const ThirdForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
         const newData = {
             thirdForm: data.thirdForm
         }
-        console.log("DATA", data)
         if (isFromNextButton) {
             onceSubmitted(newData, '4');
         } else {
@@ -807,13 +806,14 @@ const AppliancesSection = ({ control, getValues, setValue }) => {
             defaultValue: fields
         })
 
+        const gfa = getValues("firstForm.a_gfa")
         const amount = watchValues[index].amount
         const watt = watchValues[index].watt
         const operationalHours = getValues("firstForm.a_operational_hours")
 
         var result = 0
-        if (amount && watt && operationalHours) {
-            result = calcApplianceConsumption(amount, watt, operationalHours)
+        if (amount && watt && operationalHours && gfa) {
+            result = calcApplianceConsumption(amount, watt, operationalHours, gfa)
         }
 
         if (totalAppliances.length < index) {
@@ -1117,7 +1117,7 @@ const UtilitySection = ({ control, getValues, setValue }) => {
                                     <SideInput
                                         name={`${sectionName}.2.watt`}
                                         control={control}
-                                        title="Power Density"
+                                        title="Power Density (watt)"
                                     />
                                 </Box>
                             </Stack>
@@ -1127,7 +1127,7 @@ const UtilitySection = ({ control, getValues, setValue }) => {
                     </Paper>
                     <Paper variant="outlined" sx={{ padding: 2 }}>
                         <Stack spacing={1} direction="column">
-                            <Box sx={{ fontSize: 14, fontWeight: "bold", color: "text.secondary" }}>STP</Box>
+                            <Box sx={{ fontSize: 14, fontWeight: "bold", color: "text.secondary" }}>Sewage Treatment Plant (STP)</Box>
                             <Stack spacing={2} direction="row">
                                 <Box width="50%">
                                     <SideInput
@@ -1140,7 +1140,7 @@ const UtilitySection = ({ control, getValues, setValue }) => {
                                     <SideInput
                                         name={`${sectionName}.3.watt`}
                                         control={control}
-                                        title="Power Density"
+                                        title="Power Density (watt)"
                                     />
                                 </Box>
                             </Stack>
@@ -1174,7 +1174,7 @@ const UtilitySection = ({ control, getValues, setValue }) => {
                                     <SideInput
                                         name={`${sectionName}.4.mv_flow_rate`}
                                         control={control}
-                                        title="MV flow rate"
+                                        title="MV flow rate (l/s)"
                                     />
                                 </Box>
                             </Stack>
@@ -1183,6 +1183,7 @@ const UtilitySection = ({ control, getValues, setValue }) => {
                         </Stack>
                     </Paper>
                     <TotalUtilityEnergyConsumption />
+
                 </Stack>
             }
         />
@@ -1244,10 +1245,25 @@ const PlugSection = ({ control, getValues, setValue }) => {
         const gfa = getValues("firstForm.a_gfa")
         const plugEnergyAC = totalPlugEnergy.acHours
         const plugEnergyNonAC = totalPlugEnergy.nonAcHours
+        const operationalHours = getValues("firstForm.a_operational_hours")
+        const operatingPower = watchValues.operating_power
+        const nonOperatingPower = watchValues.nonoperating_power
+
+        var resultAC = 0
+        if (gfa && operationalHours && operatingPower) {
+            resultAC = calcPlugEnergyAC(gfa, operationalHours, operatingPower)
+            totalPlugEnergy.acHours = result
+        }
+
+        var resultNonAC = 0
+        if (gfa && operationalHours && nonOperatingPower) {
+            resultNonAC = calcPlugEnergyNonAC(gfa, operationalHours, nonOperatingPower)
+            totalPlugEnergy.nonAcHours = result
+        }
 
         var result = 0
-        if (gfa && plugEnergyAC && plugEnergyNonAC) {
-            result = calcPlugConsumption(gfa, plugEnergyAC, plugEnergyNonAC)
+        if (gfa && resultAC && resultNonAC) {
+            result = calcPlugConsumption(gfa, resultAC, resultNonAC)
         }
 
         setValue("thirdForm.total_dec.plug", result)
@@ -1268,12 +1284,14 @@ const PlugSection = ({ control, getValues, setValue }) => {
                     <SideInput
                         name={`${sectionName}.operating_power`}
                         control={control}
-                        title="Plug power density during operating hours"
+                        title="Plug power density during operating hours (W/m2)"
+                        subtitle="Baseline 10 W/m2"
                     />
                     <SideInput
                         name={`${sectionName}.nonoperating_power`}
                         control={control}
-                        title="Plug power density during non-operating hours"
+                        title="Plug power density during non-operating hours (W/m2)"
+                        subtitle="Baseline 1 W/m2"
                     />
                     <PlugEnergyAC />
                     <PlugEnergyNonAC />
@@ -1295,11 +1313,7 @@ const TotalSection = ({ control }) => {
         name: `thirdForm.total_dec`
     })
 
-    console.log(watchValues)
-
     var result = watchValues.lighting + watchValues.ac + watchValues.appliances + watchValues.utility + watchValues.plug
-
-    console.log(result)
 
     const DesignEnergyConsumption = () => {
         return (<Paper sx={{ paddingX: 2, paddingY: 1, backgroundColor: "green", color: "white" }}>

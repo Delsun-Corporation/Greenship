@@ -90,6 +90,7 @@ const FourthForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
         const pageThreeData = res.data.page_three;
         const pageFourData = res.data.page_four;
         const pageOneData = res.data.page_one;
+        console.log(pageThreeData);
         setValue("firstForm", {
           ...pageOneData
         });
@@ -159,6 +160,7 @@ function defaultFormValue() {
     },
     thirdForm: {
       mv_flow_rate: 0,
+      mv_amount: 0,
     },
     fourthForm: {
       d_a_is_potential: true,
@@ -220,7 +222,7 @@ const OutdoorAirSection = ({ control, getValues, setValue, errors }) => {
       resultArr.pz = result;
     }
 
-    return <InlineLabel title="Zone Population (person)" value={result} />;
+    return <InlineLabel title="Zone Population (person)" value={numberFormat(result)} />;
   };
 
   const Vbz = () => {
@@ -237,10 +239,11 @@ const OutdoorAirSection = ({ control, getValues, setValue, errors }) => {
       name: `${sectionName}.d_a_az`,
     });
     const pz = resultArr.pz;
+    const mvAmount = getValues("thirdForm.mv_amount")
 
     var result = "-";
-    if (rp && pz && ra && az) {
-      result = calcVbz(rp, pz, ra, az);
+    if (rp && pz && ra && az && mvAmount) {
+      result = calcVbz(rp, pz, ra, az, mvAmount);
       resultArr.vbz = result;
       setValue("fourthForm.d_total_bhc.vbz", result)
     }
@@ -274,7 +277,7 @@ const OutdoorAirSection = ({ control, getValues, setValue, errors }) => {
 
     const chartData = [
       { label: "Vbz", value: vbz },
-      { label: "MV flow rate", value: mvFlowRate },
+      { label: "MV flow rate", value: mvFlowRate / 1000 },
     ];
 
     const barColors = ["#47919b", "#7e84a3"];
@@ -339,7 +342,7 @@ const OutdoorAirSection = ({ control, getValues, setValue, errors }) => {
           <SideInput
             name={`${sectionName}.d_a_rp`}
             control={control}
-            title="Outdoor airflow rate required per person (L/s*person or cfm/person)"
+            title="Outdoor airflow rate required per person (L/s*person)"
             subtitle="See right table for reference"
           />
           <ZonePopulation />
@@ -347,7 +350,7 @@ const OutdoorAirSection = ({ control, getValues, setValue, errors }) => {
           <SideInput
             name={`${sectionName}.d_a_ra`}
             control={control}
-            title="Outdoor airflow rate required per unit area (L/s*m2 or cfm/ft2)"
+            title="Outdoor airflow rate required per unit area (L/s*m2)"
             subtitle="See right table for reference"
           />
           <SideInput
@@ -402,7 +405,7 @@ const AchSection = ({ control, getValues, setValue }) => {
       resultArr.volume = result;
     }
 
-    return <InlineLabel title="Volume" value={result + " m3"} />;
+    return <InlineLabel title="Volume" value={numberFormat(result) + " m3"} />;
   };
 
   const ACHCalculate = () => {
@@ -500,7 +503,7 @@ const AchSection = ({ control, getValues, setValue }) => {
           />
           <InlineLabel
             title="Area of ventilation"
-            value={getValues(`firstForm.a_ventilation_area`) + " m2"}
+            value={numberFormat(getValues(`firstForm.a_ventilation_area`)) + " m2"}
           />
           <Volume />
           <Divider style={{ width: "100%" }} />
