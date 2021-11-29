@@ -40,7 +40,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 
 const FirstForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
-  const methods = useForm({});
+  const methods = useForm({defaultValues: defaultFormValue()});
   const { control, formState: { errors }, handleSubmit, setValue, getValues } = methods;
   const [isLoading, setLoading] = useState(true);
   const [isFromNextButton, setIsFromNextButton] = useState(false);
@@ -117,6 +117,29 @@ const FirstForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
 };
 
 export default FirstForm;
+
+function defaultFormValue() {
+  return (
+      {
+          firstForm: {
+              a_gfa: 0,
+              a_operational_hours: 0,
+              a_working_days: 0,
+              a_holidays: 0,
+              a_occupancy_density: 0,
+              a_ach: 0,
+              a_floor_count: 0,
+              a_floor_height_avg: 0,
+              a_typology: {
+                type: "Homes",
+                eci: "240 kWh/m2 per year", 
+                visual: "200-300 lux", 
+                acoustic: "30-35 dBA"
+            }
+          }
+      }
+  )
+}
 
 /// SECTIONS ///
 
@@ -232,15 +255,15 @@ const SecondSection = ({ control, errors, getValues }) => {
                 rows={1}
                 maxLength={50}
               />
-              <ImageUpload
+            </Box>
+          </Stack>
+          <ImageUpload
                 name={sectionName + "a_location_image"}
                 errors={errors}
                 control={control}
                 imageUrl={getValues(sectionName + "location_image")}
                 title="Climate data attachment"
               />
-            </Box>
-          </Stack>
           <Divider style={{ width: "100%" }} />
 
           <SideInput

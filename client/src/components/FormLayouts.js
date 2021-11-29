@@ -261,7 +261,7 @@ export function SideInput({
   name,
   title,
   subtitle,
-  defaultValue = 0,
+  defaultValue,
   isString,
   minimalInput,
 }) {
@@ -472,7 +472,7 @@ export function BasicInputField({ control, name, adornment }) {
   return (
     <TextField
       {...inputProps}
-      value={parseInt(value) || 0}
+      value={parseInt(value)}
       inputProps={{ min: 0, style: { textAlign: "right" } }}
       variant="outlined"
       size="small"
@@ -719,6 +719,7 @@ export function ImageUpload({ name, errors, control, title = "Upload Image", sub
   const [load, setLoad] = useState(true);
 
   if (!image && imageUrl) {
+    console.log("image url", imageUrl)
     getBase64FromUrl(imageUrl).then((base) => {
       setImage(base);
       setLoad(true)
