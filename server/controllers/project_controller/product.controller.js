@@ -102,3 +102,47 @@ exports.getLastPage = (req, res) => {
       });
     });
 };
+
+exports.toggleProjectStatus = (req, res) => {
+  const {projectId, status} = req.body;
+  const objectId = ObjectId.ObjectId(projectId);
+
+  if (projectId === undefined || projectId === null) {
+    return res.status(400).json({
+      message: "Bad request!",
+    });
+  }
+
+  if (typeof status !== 'number') {
+    return res.status(400).json({
+      message: "Bad request!",
+    });
+  }
+
+  Project.findById(objectId).then((project) => {
+    if (!project) {
+      return res.status(400).json({
+        message: "Bad Request",
+      });
+    }
+
+    if (status === 1) {
+      project.project_status = 'PUBLISH'
+    } else {
+      project.project_status = 'DRAFT'
+    }
+
+    return project.save();
+  }).then((result) => {
+    if (result !== undefined) {
+      res.status(200).json({
+        message: "Success toggling project status",
+      });
+    }
+  }).catch((err) => {
+    console.log(err);
+    res.status(500).json({
+      message: "Internal server error",
+    });
+  })
+}
