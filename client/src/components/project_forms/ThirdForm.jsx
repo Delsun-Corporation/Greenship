@@ -74,6 +74,7 @@ const ThirdForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
         const newData = {
             thirdForm: data.thirdForm
         }
+        console.log(newData)
         if (isFromNextButton) {
             onceSubmitted(newData, '4');
         } else {
@@ -92,6 +93,7 @@ const ThirdForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
                 const pageThreeData = res.data.page_three;
                 const pageTwoData = res.data.page_two;
                 const pageOneData = res.data.page_one;
+                console.log("thirdform", pageThreeData, pageTwoData, pageOneData)
                 setValue("firstForm", {
                     ...pageOneData
                 })
@@ -293,10 +295,11 @@ const LightingSection = ({ control, getValues, setValue, errors }) => {
         })
         const daylightArea = watchValues[index].daylight_area
         const lpdOperational = watchValues[index].lpd_operate
+        const workingDays = getValues("firstForm.a_working_days")
         const operationalHours = getValues("firstForm.a_operational_hours")
         var result = 0
         if (daylightArea && lpdOperational && operationalHours) {
-            result = calcLeDuringOperationalDay(daylightArea, lpdOperational, operationalHours)
+            result = calcLeDuringOperationalDay(daylightArea, lpdOperational, operationalHours, workingDays)
         }
 
         if (totalLeArr.leOperationalDay.length < index) {
@@ -321,9 +324,10 @@ const LightingSection = ({ control, getValues, setValue, errors }) => {
         const daylightArea = watchValues[index].daylight_area
         const lpdOperational = watchValues[index].lpd_operate
         const operationalHours = getValues("firstForm.a_operational_hours")
+        const workingDays = getValues("firstForm.a_working_days")
         var result = 0
         if (gfa && daylightArea && lpdOperational && operationalHours) {
-            result = calcLeDuringOperationalNonDay(gfa, daylightArea, lpdOperational, operationalHours)
+            result = calcLeDuringOperationalNonDay(gfa, daylightArea, lpdOperational, operationalHours, workingDays)
         }
 
         if (totalLeArr.leOperationalNonDay.length < index) {
