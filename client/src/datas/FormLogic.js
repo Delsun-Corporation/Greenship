@@ -22,7 +22,7 @@ export function calcRoomVolumePerPerson(floorNumber, avgFloorHeight, occupancyDe
 export function calcWWR(collectionWindowArea, collectionWallArea) {
     const totalWindowArea = sumValue(collectionWindowArea);
     const totalWallArea = sumValue(collectionWallArea);
-    const applySeparator = numberFormat((totalWindowArea / totalWallArea) * 100);
+    const applySeparator = numberFormat((totalWindowArea / (totalWallArea + totalWindowArea)) * 100);
     console.log("WWR", totalWindowArea, totalWallArea)
     return applySeparator;
 }

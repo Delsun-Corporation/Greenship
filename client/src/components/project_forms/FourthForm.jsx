@@ -90,7 +90,7 @@ const FourthForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
         const pageThreeData = res.data.page_three;
         const pageFourData = res.data.page_four;
         const pageOneData = res.data.page_one;
-        console.log(pageThreeData);
+        console.log(res.data);
         setValue("firstForm", {
           ...pageOneData
         });
