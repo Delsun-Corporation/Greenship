@@ -22,7 +22,7 @@ export function calcRoomVolumePerPerson(floorNumber, avgFloorHeight, occupancyDe
 export function calcWWR(collectionWindowArea, collectionWallArea) {
     const totalWindowArea = sumValue(collectionWindowArea);
     const totalWallArea = sumValue(collectionWallArea);
-    const applySeparator = numberFormat((totalWindowArea / (totalWallArea + totalWindowArea)) * 100);
+    const applySeparator = numberFormat((totalWindowArea / totalWallArea) * 100);
     console.log("WWR", totalWindowArea, totalWallArea)
     return applySeparator;
 }
@@ -49,13 +49,13 @@ export function calcNonDaylightArea(gfa, daylightArea) {
 }
 
 /// 3a5
-export function calcLeDuringOperationalDay(daylightArea, lpdOperational, operationalHours) {
-    return (daylightArea * operationalHours * lpdOperational)
+export function calcLeDuringOperationalDay(daylightArea, lpdOperational, operationalHours, workingDays) {
+    return (daylightArea * calcOperatingHoursPerYear(operationalHours, workingDays) * lpdOperational)
 }
 
 /// 3a6
-export function calcLeDuringOperationalNonDay(gfa, daylightArea, lpdOperational, operationalHours) {
-    return (gfa - daylightArea) * operationalHours * lpdOperational
+export function calcLeDuringOperationalNonDay(gfa, daylightArea, lpdOperational, operationalHours, workingDays) {
+    return (gfa - daylightArea) * calcOperatingHoursPerYear(operationalHours, workingDays) * lpdOperational
 }
 
 /// 3a7
@@ -85,6 +85,7 @@ export function calcPLL(gfa, occupancyDensity) {
 }
 
 export function calcLSL(gfa, totalLpdOperational, totalLpdNonOperational) {
+    console.log(gfa, totalLpdOperational, totalLpdNonOperational, totalLpdNonOperational + totalLpdOperational, 1.25 * 3.4)
     return ((totalLpdOperational + totalLpdNonOperational) * gfa * 1.25 * 3.4)
 }
 
