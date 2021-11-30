@@ -22,7 +22,8 @@ export function calcRoomVolumePerPerson(floorNumber, avgFloorHeight, occupancyDe
 export function calcWWR(collectionWindowArea, collectionWallArea) {
     const totalWindowArea = sumValue(collectionWindowArea);
     const totalWallArea = sumValue(collectionWallArea);
-    const applySeparator = numberFormat(totalWindowArea / totalWallArea * 100);
+    const applySeparator = numberFormat((totalWindowArea / totalWallArea) * 100);
+    console.log("WWR", totalWindowArea, totalWallArea)
     return applySeparator;
 }
 
@@ -30,9 +31,9 @@ function sumValue(array) {
     let sum = 0;
     for (let i = 0; i < array.length; i++) {
         
-        if (!isNaN(array[i]), array[i] !== "") {
+        if (!isNaN(array[i])) {
             sum += parseInt(array[i]);
-        }
+        } 
     }
     return sum
 }

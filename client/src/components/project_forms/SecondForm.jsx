@@ -33,6 +33,17 @@ const SecondForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
     }
   };
 
+  function isNull(object) {
+    for (const [key, value] of Object.entries(object)) {
+        if (typeof(value) === "object" && value !== null) {
+            isNull(value)
+        }else if(!value){
+            object[key] = 0
+        }
+    }
+    return object
+}
+
   useEffect(() => {
     axios
       .get(`${process.env.REACT_APP_API_URL}/getpagetwo`, {
@@ -41,25 +52,11 @@ const SecondForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
         },
       })
       .then((res) => {
+        console.log("Second Form data get:", res.data.page_two)
         const pageTwoData = res.data.page_two;
         setValue("secondForm", {
-          b_window_area_n: pageTwoData.b_window_area[0],
-          b_window_area_s: pageTwoData.b_window_area[1],
-          b_window_area_e: pageTwoData.b_window_area[2],
-          b_window_area_w: pageTwoData.b_window_area[3],
-          b_window_area_ne: pageTwoData.b_window_area[4],
-          b_window_area_se: pageTwoData.b_window_area[5],
-          b_window_area_nw: pageTwoData.b_window_area[6],
-          b_window_area_sw: pageTwoData.b_window_area[7],
-          b_wall_area_n: pageTwoData.b_wall_area[0],
-          b_wall_area_s: pageTwoData.b_wall_area[1],
-          b_wall_area_e: pageTwoData.b_wall_area[2],
-          b_wall_area_w: pageTwoData.b_wall_area[3],
-          b_wall_area_ne: pageTwoData.b_wall_area[4],
-          b_wall_area_se: pageTwoData.b_wall_area[5],
-          b_wall_area_nw: pageTwoData.b_wall_area[6],
-          b_wall_area_sw: pageTwoData.b_wall_area[7],
-          b_wall_area_r: pageTwoData.b_wall_area[8],
+          b_wall_area: isNull(res.data.page_two.b_wall_area),
+          b_window_area: isNull(res.data.page_two.b_window_area),
           ...res.data.page_two,
         });
         setLoading(false);
@@ -104,23 +101,8 @@ function defaultFormValue() {
     secondForm: {
       b_ottv: 0,
       b_shgc: 0,
-      b_window_area_n: 0,
-      b_window_area_s: 0,
-      b_window_area_e: 0,
-      b_window_area_w: 0,
-      b_window_area_ne: 0,
-      b_window_area_se: 0,
-      b_window_area_nw: 0,
-      b_window_area_sw: 0,
-      b_wall_area_n: 0,
-      b_wall_area_s: 0,
-      b_wall_area_e: 0,
-      b_wall_area_w: 0,
-      b_wall_area_ne: 0,
-      b_wall_area_se: 0,
-      b_wall_area_nw: 0,
-      b_wall_area_sw: 0,
-      b_wall_area_r: 0,
+      b_window_area: [0,0,0,0,0,0,0,0],
+      b_wall_area: [0,0,0,0,0,0,0,0,0]
     },
   };
 }
@@ -131,95 +113,31 @@ const FirstSection = ({ control }) => {
   var countedWWR = 0
 
   function CountWWR() {
-    /// Window Area Watch
-    const windowAreaN = useWatch({
-      control,
-      name: sectionName + "b_window_area_n",
-      defaultValue: 0
-    });
-    const windowAreaS = useWatch({
-      control,
-      name: sectionName + "b_window_area_s",
-      defaultValue: 0
-    });
-    const windowAreaE = useWatch({
-      control,
-      name: sectionName + "b_window_area_e",
-    });
-    const windowAreaW = useWatch({
-      control,
-      name: sectionName + "b_window_area_w",
-    });
-    const windowAreaNE = useWatch({
-      control,
-      name: sectionName + "b_window_area_ne",
-    });
-    const windowAreaSE = useWatch({
-      control,
-      name: sectionName + "b_window_area_se",
-    });
-    const windowAreaNW = useWatch({
-      control,
-      name: sectionName + "b_window_area_nw",
-    });
-    const windowAreaSW = useWatch({
-      control,
-      name: sectionName + "b_window_area_sw",
-    });
-
-    /// Wall Area Watch
-    const wallAreaN = useWatch({
-      control,
-      name: sectionName + "b_wall_area_n",
-    });
-    const wallAreaS = useWatch({
-      control,
-      name: sectionName + "b_wall_area_s",
-    });
-    const wallAreaE = useWatch({
-      control,
-      name: sectionName + "b_wall_area_e",
-    });
-    const wallAreaW = useWatch({
-      control,
-      name: sectionName + "b_wall_area_w",
-    });
-    const wallAreaNE = useWatch({
-      control,
-      name: sectionName + "b_wall_area_ne",
-    });
-    const wallAreaSE = useWatch({
-      control,
-      name: sectionName + "b_wall_area_se",
-    });
-    const wallAreaNW = useWatch({
-      control,
-      name: sectionName + "b_wall_area_nw",
-    });
-    const wallAreaSW = useWatch({
-      control,
-      name: sectionName + "b_wall_area_sw",
-    });
+    const watchValues = useWatch({
+        control,
+        name: sectionName,
+      });
     const collectionWindowArea = [
-      windowAreaE,
-      windowAreaN,
-      windowAreaNE,
-      windowAreaNW,
-      windowAreaS,
-      windowAreaSE,
-      windowAreaSW,
-      windowAreaW,
+      watchValues.b_window_area[0],
+      watchValues.b_window_area[1],
+      watchValues.b_window_area[2],
+      watchValues.b_window_area[3],
+      watchValues.b_window_area[4],
+      watchValues.b_window_area[5],
+      watchValues.b_window_area[6],
+      watchValues.b_window_area[7],
     ];
     const collectionWallArea = [
-      wallAreaE,
-      wallAreaN,
-      wallAreaS,
-      wallAreaW,
-      wallAreaSW,
-      wallAreaNW,
-      wallAreaSE,
-      wallAreaNE,
+      watchValues.b_wall_area[0],
+      watchValues.b_wall_area[1],
+      watchValues.b_wall_area[2],
+      watchValues.b_wall_area[3],
+      watchValues.b_wall_area[4],
+      watchValues.b_wall_area[5],
+      watchValues.b_wall_area[6],
+      watchValues.b_wall_area[7],
     ];
+
     countedWWR = calcWWR(collectionWindowArea, collectionWallArea)
     return countedWWR + "%";
   }
@@ -227,7 +145,7 @@ const FirstSection = ({ control }) => {
   const OttvGraph = () => {
     const watchValues = useWatch({
       control,
-      name: `${sectionName}.b_ottv`,
+      name: `${sectionName}b_ottv`,
     });
 
     const calculated = watchValues
@@ -449,12 +367,12 @@ const FirstSection = ({ control }) => {
                 justifyContent="space-between"
               >
                 <BasicInputField
-                  name={`${sectionName}b_window_area_n`}
+                  name={`${sectionName}b_window_area[0]`}
                   control={control}
                   adornment={"N"}
                 />
                 <BasicInputField
-                  name={`${sectionName}b_window_area_s`}
+                  name={`${sectionName}b_window_area[1]`}
                   control={control}
                   adornment={"S"}
                 />
@@ -466,12 +384,12 @@ const FirstSection = ({ control }) => {
                 justifyContent="space-between"
               >
                 <BasicInputField
-                  name={`${sectionName}b_window_area_e`}
+                  name={`${sectionName}b_window_area[2]`}
                   control={control}
                   adornment={"E"}
                 />
                 <BasicInputField
-                  name={`${sectionName}b_window_area_w`}
+                  name={`${sectionName}b_window_area[3]`}
                   control={control}
                   adornment={"W"}
                 />
@@ -483,12 +401,12 @@ const FirstSection = ({ control }) => {
                 justifyContent="space-between"
               >
                 <BasicInputField
-                  name={`${sectionName}b_window_area_ne`}
+                  name={`${sectionName}b_window_area[4]`}
                   control={control}
                   adornment={"NE"}
                 />
                 <BasicInputField
-                  name={`${sectionName}b_window_area_se`}
+                  name={`${sectionName}b_window_area[5]`}
                   control={control}
                   adornment={"SE"}
                 />
@@ -500,12 +418,12 @@ const FirstSection = ({ control }) => {
                 justifyContent="space-between"
               >
                 <BasicInputField
-                  name={`${sectionName}b_window_area_nw`}
+                  name={`${sectionName}b_window_area[6]`}
                   control={control}
                   adornment={"NW"}
                 />
                 <BasicInputField
-                  name={`${sectionName}b_window_area_sw`}
+                  name={`${sectionName}b_window_area[7]`}
                   control={control}
                   adornment={"SW"}
                 />
@@ -532,12 +450,12 @@ const FirstSection = ({ control }) => {
                 justifyContent="space-between"
               >
                 <BasicInputField
-                  name={`${sectionName}b_wall_area_n`}
+                  name={`${sectionName}b_wall_area[0]`}
                   control={control}
                   adornment={"N"}
                 />
                 <BasicInputField
-                  name={`${sectionName}b_wall_area_s`}
+                  name={`${sectionName}b_wall_area[1]`}
                   control={control}
                   adornment={"S"}
                 />
@@ -549,12 +467,12 @@ const FirstSection = ({ control }) => {
                 justifyContent="space-between"
               >
                 <BasicInputField
-                  name={sectionName + "b_wall_area_e"}
+                  name={sectionName + "b_wall_area[2]"}
                   control={control}
                   adornment={"E"}
                 />
                 <BasicInputField
-                  name={sectionName + "b_wall_area_w"}
+                  name={sectionName + "b_wall_area[3]"}
                   control={control}
                   adornment={"W"}
                 />
@@ -566,12 +484,12 @@ const FirstSection = ({ control }) => {
                 justifyContent="space-between"
               >
                 <BasicInputField
-                  name={sectionName + "b_wall_area_ne"}
+                  name={sectionName + "b_wall_area[4]"}
                   control={control}
                   adornment={"NE"}
                 />
                 <BasicInputField
-                  name={sectionName + "b_wall_area_se"}
+                  name={sectionName + "b_wall_area[5]"}
                   control={control}
                   adornment={"SE"}
                 />
@@ -583,12 +501,12 @@ const FirstSection = ({ control }) => {
                 justifyContent="space-between"
               >
                 <BasicInputField
-                  name={sectionName + "b_wall_area_nw"}
+                  name={sectionName + "b_wall_area[6]"}
                   control={control}
                   adornment={"NW"}
                 />
                 <BasicInputField
-                  name={sectionName + "b_wall_area_sw"}
+                  name={sectionName + "b_wall_area[7]"}
                   control={control}
                   adornment={"SW"}
                 />
@@ -600,7 +518,7 @@ const FirstSection = ({ control }) => {
                 justifyContent="space-between"
               >
                 <BasicInputField
-                  name={sectionName + "b_wall_area_r"}
+                  name={sectionName + "b_wall_area[8]"}
                   control={control}
                   adornment={"R"}
                 />

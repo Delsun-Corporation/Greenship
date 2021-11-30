@@ -298,7 +298,7 @@ export function SideInput({
       <TextField
         {...inputProps}
         value={value || defaultValue}
-        inputProps={{ min: minimalInput, style: { textAlign: "right" } }}
+        inputProps={{ min: minimalInput, lang:"en-US", style: { textAlign: "right" } }}
         variant="outlined"
         size="small"
         inputMode="numeric"
@@ -460,7 +460,7 @@ export function InlineLabel({ title, subtitle, value, bold }) {
   );
 }
 
-export function BasicInputField({ control, name, adornment }) {
+export function BasicInputField({ control, name, adornment, minimalInput }) {
   const {
     field: { ref, value, ...inputProps },
     fieldState: { invalid, isTouched, isDirty },
@@ -472,14 +472,13 @@ export function BasicInputField({ control, name, adornment }) {
   return (
     <TextField
       {...inputProps}
-      value={parseInt(value)}
-      inputProps={{ min: 0, style: { textAlign: "right" } }}
+      value={value}
+      inputProps={{ min: minimalInput, lang:"en-US", style: { textAlign: "right" } }}
       variant="outlined"
       size="small"
+      inputMode="numeric"
       type="number"
       className="w-24"
-      type="number"
-      defaultValue={0}
       InputProps={{
         startAdornment: (
           <InputAdornment position="start">{adornment}</InputAdornment>
