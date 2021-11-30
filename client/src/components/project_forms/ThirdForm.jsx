@@ -1165,7 +1165,7 @@ const UtilitySection = ({ control, getValues, setValue }) => {
                                     <SideInput
                                         name={`${sectionName}.4.watt`}
                                         control={control}
-                                        title="MV power"
+                                        title="MV power (W/m2)"
                                         subtitle="MV power baseline is 5 W/m2"
                                     />
                                 </Box>

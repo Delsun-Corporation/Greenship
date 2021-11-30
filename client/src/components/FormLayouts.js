@@ -29,6 +29,9 @@ import { Page, PDFDownloadLink } from 'react-pdf'
 import { Document } from 'react-pdf/dist/esm/entry.webpack';
 import LogoPDF from "../assets/pdf.png";
 import Base64Downloader from 'react-base64-downloader';
+import NumericInput from 'react-numeric-input';
+import NumberFormat from 'react-number-format';
+import PropTypes from 'prop-types';
 
 
 export const FormLayout = ({ leftComponent, rightComponent }) => (
@@ -295,21 +298,56 @@ export function SideInput({
           </Typography>
         )}
       </Stack>
-      <TextField
+      <NumericInput
         {...inputProps}
         value={value || defaultValue}
         inputProps={{ min: minimalInput, lang:"en-US", style: { textAlign: "right" } }}
         variant="outlined"
-        size="small"
         inputMode="numeric"
         type={isString ? "text" : "number"}
-        sx={{
-          maxWidth: "40%",
-        }}
+        size={10}
       />
+      {/* <TextField
+        {...ref}
+        value={value.numberformat}
+        name="numberformat"
+        variant="outlined"
+        size= "small"
+        id="formatted-numberformat-input"
+        InputProps={{
+          inputComponent: NumberFormatCustom,
+        }}
+      /> */}
     </Stack>
   );
 }
+
+const NumberFormatCustom = React.forwardRef(function NumberFormatCustom(props, ref) {
+  const { onChange, ...other } = props;
+
+  return (
+    <NumberFormat
+      {...other}
+      getInputRef={ref}
+      onValueChange={(values) => {
+        onChange({
+          target: {
+            name: props.name,
+            value: values.value,
+          },
+        });
+      }}
+      allowLeadingZeros = {false}
+      thousandSeparator
+      isNumericString
+    />
+  );
+});
+
+NumberFormatCustom.propTypes = {
+  name: PropTypes.string.isRequired,
+  onChange: PropTypes.func.isRequired,
+};
 
 export function BlockInput({
   control,
@@ -470,21 +508,39 @@ export function BasicInputField({ control, name, adornment, minimalInput }) {
     control,
   });
   return (
-    <TextField
-      {...inputProps}
-      value={value}
-      inputProps={{ min: minimalInput, lang:"en-US", style: { textAlign: "right" } }}
-      variant="outlined"
-      size="small"
-      inputMode="numeric"
-      type="number"
-      className="w-24"
-      InputProps={{
+    // <TextField
+    //   {...inputProps}
+    //   value={value}
+    //   inputProps={{ min: minimalInput, lang:"en-US", style: { textAlign: "right" } }}
+    //   variant="outlined"
+    //   size="small"
+    //   inputMode="numeric"
+    //   type="number"
+    //   className="w-24"
+    //   InputProps={{
+    //     startAdornment: (
+    //       <InputAdornment position="start">{adornment}</InputAdornment>
+    //     ),
+    //   }}
+    // />
+    <Stack direction="row">
+      <Box minWidth={50} textAlign="right" paddingRight={1}>{adornment}</Box>
+      <NumericInput
+        {...inputProps}
+        value={value || 0}
+        inputProps={{ min: minimalInput, lang:"en-US", style: { textAlign: "right" } }}
+        variant="outlined"
+        inputMode="numeric"
+        type="number"
+        size={5}
+        InputProps={{
         startAdornment: (
           <InputAdornment position="start">{adornment}</InputAdornment>
         ),
       }}
-    />
+      />
+    </Stack>
+    
   );
 }
 

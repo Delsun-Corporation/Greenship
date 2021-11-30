@@ -242,6 +242,7 @@ const OutdoorAirSection = ({ control, getValues, setValue, errors }) => {
     const mvAmount = getValues("thirdForm.mv_amount")
 
     var result = "-";
+    console.log(rp, pz, ra, az, mvAmount)
     if (rp && pz && ra && az && mvAmount) {
       result = calcVbz(rp, pz, ra, az, mvAmount);
       resultArr.vbz = result;
