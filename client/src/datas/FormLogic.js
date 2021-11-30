@@ -31,7 +31,7 @@ function sumValue(array) {
     let sum = 0;
     for (let i = 0; i < array.length; i++) {
         
-        if (!isNaN(array[i]), array[i] !== "") {
+        if (!isNaN(array[i])) {
             sum += parseInt(array[i]);
         } 
     }

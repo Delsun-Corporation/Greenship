@@ -53,7 +53,6 @@ const SecondForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
       })
       .then((res) => {
         console.log("Second Form data get:", res.data.page_two)
-        console.log("hey", isNull(res.data.page_two.b_wall_area))
         const pageTwoData = res.data.page_two;
         setValue("secondForm", {
           b_wall_area: isNull(res.data.page_two.b_wall_area),
@@ -114,101 +113,32 @@ const FirstSection = ({ control }) => {
   var countedWWR = 0
 
   function CountWWR() {
-    // /// Window Area Watch
-    // const windowAreaN = useWatch({
-    //   control,
-    //   name: sectionName + "b_window_area_n",
-    //   defaultValue: 0
-    // });
-    // const windowAreaS = useWatch({
-    //   control,
-    //   name: sectionName + "b_window_area_s",
-    //   defaultValue: 0
-    // });
-    // const windowAreaE = useWatch({
-    //   control,
-    //   name: sectionName + "b_window_area_e",
-    // });
-    // const windowAreaW = useWatch({
-    //   control,
-    //   name: sectionName + "b_window_area_w",
-    // });
-    // const windowAreaNE = useWatch({
-    //   control,
-    //   name: sectionName + "b_window_area_ne",
-    // });
-    // const windowAreaSE = useWatch({
-    //   control,
-    //   name: sectionName + "b_window_area_se",
-    // });
-    // const windowAreaNW = useWatch({
-    //   control,
-    //   name: sectionName + "b_window_area_nw",
-    // });
-    // const windowAreaSW = useWatch({
-    //   control,
-    //   name: sectionName + "b_window_area_sw",
-    // });
-
-    // /// Wall Area Watch
-    // const wallAreaN = useWatch({
-    //   control,
-    //   name: sectionName + "b_wall_area_n",
-    // });
-    // const wallAreaS = useWatch({
-    //   control,
-    //   name: sectionName + "b_wall_area_s",
-    // });
-    // const wallAreaE = useWatch({
-    //   control,
-    //   name: sectionName + "b_wall_area_e",
-    // });
-    // const wallAreaW = useWatch({
-    //   control,
-    //   name: sectionName + "b_wall_area_w",
-    // });
-    // const wallAreaNE = useWatch({
-    //   control,
-    //   name: sectionName + "b_wall_area_ne",
-    // });
-    // const wallAreaSE = useWatch({
-    //   control,
-    //   name: sectionName + "b_wall_area_se",
-    // });
-    // const wallAreaNW = useWatch({
-    //   control,
-    //   name: sectionName + "b_wall_area_nw",
-    // });
-    // const wallAreaSW = useWatch({
-    //   control,
-    //   name: sectionName + "b_wall_area_sw",
-    // });
     const watchValues = useWatch({
         control,
         name: sectionName,
       });
-    // const collectionWindowArea = [
-    //   windowAreaE,
-    //   windowAreaN,
-    //   windowAreaS,
-    //   windowAreaW,
-    //   windowAreaSW,
-    //   windowAreaNW,
-    //   windowAreaSE,
-    //   windowAreaNE,
-    // ];
-    // const collectionWallArea = [
-    //   wallAreaE,
-    //   wallAreaN,
-    //   wallAreaS,
-    //   wallAreaW,
-    //   wallAreaSW,
-    //   wallAreaNW,
-    //   wallAreaSE,
-    //   wallAreaNE,
-    // ];
-    // console.log(windowAreaN,windowAreaS,windowAreaE, windowAreaW,windowAreaNE,windowAreaSE,windowAreaNW,windowAreaSW)
-    countedWWR = calcWWR(watchValues.b_window_area, watchValues.b_wall_area)
+    const collectionWindowArea = [
+      watchValues.b_window_area[0],
+      watchValues.b_window_area[1],
+      watchValues.b_window_area[2],
+      watchValues.b_window_area[3],
+      watchValues.b_window_area[4],
+      watchValues.b_window_area[5],
+      watchValues.b_window_area[6],
+      watchValues.b_window_area[7],
+    ];
+    const collectionWallArea = [
+      watchValues.b_wall_area[0],
+      watchValues.b_wall_area[1],
+      watchValues.b_wall_area[2],
+      watchValues.b_wall_area[3],
+      watchValues.b_wall_area[4],
+      watchValues.b_wall_area[5],
+      watchValues.b_wall_area[6],
+      watchValues.b_wall_area[7],
+    ];
+
+    countedWWR = calcWWR(collectionWindowArea, collectionWallArea)
     return countedWWR + "%";
   }
 
