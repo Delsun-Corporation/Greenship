@@ -62,7 +62,7 @@ const FifthForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
         console.log("res", res)
         const pageOneData = res.data.page_one
         const pageFiveData = res.data.page_five;
-        setValue("firstForm", {
+        setValue("fifthForm", {
           ...pageOneData,
         });
         setValue("fifthForm", {
@@ -160,9 +160,7 @@ const FirstSection = ({ control, setValue, getValues, errors }) => {
     if (facadeArea && dimensionL && dimensionW) {
       result = calcPotentialPV(facadeArea, dimensionL, dimensionW);
     }
-    useEffect(() => {
       resultArr.potentialPV = result;
-    },[result])
 
     console.log(resultArr)
 
@@ -188,15 +186,14 @@ const FirstSection = ({ control, setValue, getValues, errors }) => {
 
     const pv = resultArr.potentialPV;
     const wpeakValue = watchValue.e_pv_spec_wpeak;
-    const gfa = watchValue.a_gfa;
+    const gfa = getValues("fifthForm.a_gfa");
 
     var result = 0;
+    console.log(pv, wpeakValue, gfa)
     if (wpeakValue) {
       result = calcPredictionElectical(pv, wpeakValue, gfa);
     }
-    useEffect(() => {
       resultArr.predictionElectrical = result;
-    },[result])
     
 
     if (isNaN(result)) {
@@ -233,9 +230,9 @@ const FirstSection = ({ control, setValue, getValues, errors }) => {
       );
     }
 
-    
+    resultArr.percentageEnergyMix = result;
     useEffect(() => {
-      resultArr.percentageEnergyMix = result;
+      
       setValue("fifthForm.e_result.energy_percentage", result)
     }, [result, setValue])
 
