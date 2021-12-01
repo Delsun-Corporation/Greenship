@@ -64,7 +64,7 @@ import { ThemeProvider } from '@mui/material';
 
 const ThirdForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
     const methods = useForm({
-        defaultValues: defaultFormValue()
+        defaultValues: defaultFormValue(),
     });
     const { control, handleSubmit, setValue, reset, getValues, formState: { errors } } = methods
     const [isLoading, setLoading] = useState(true);
@@ -74,7 +74,7 @@ const ThirdForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
         const newData = {
             thirdForm: data.thirdForm
         }
-        console.log(newData)
+        console.log("new data", newData)
         if (isFromNextButton) {
             onceSubmitted(newData, '4');
         } else {
@@ -83,6 +83,7 @@ const ThirdForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
     };
 
     useEffect(() => {
+        console.log("GOT CALLED")
         axios
             .get(`${process.env.REACT_APP_API_URL}/getpagethree`, {
                 params: {
@@ -116,6 +117,10 @@ const ThirdForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
 
     const CHAPTER_NUMBER = "3";
 
+    function refreshPage(){ 
+        window.location.reload(false); 
+      }
+
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
             <Stack direction="column" spacing={4} sx={{ paddingY: 10 }}>
@@ -147,6 +152,7 @@ export default ThirdForm;
 /// DEFAULT VALUES ///
 
 function defaultFormValue() {
+    console.log("DEFAULT FORM GOT CALLED")
     return (
         {
             firstForm: {
@@ -272,8 +278,7 @@ const LightingSection = ({ control, getValues, setValue, errors }) => {
     const NonDaylightArea = ({ index }) => {
         const watchValues = useWatch({
             control,
-            name: `${sectionName}`,
-            defaultValue: fields
+            name: `${sectionName}`
         })
         const gfa = getValues(`firstForm.a_gfa`)
         const daylightArea = watchValues[index].daylight_area
@@ -281,6 +286,7 @@ const LightingSection = ({ control, getValues, setValue, errors }) => {
         if (gfa && daylightArea) {
             result = calcNonDaylightArea(gfa, daylightArea)
         }
+        console.log("Nondaylight", gfa, daylightArea, result)
         return <InlineLabel
             title="Non-daylight area"
             value={numberFormat(result)}
@@ -291,7 +297,6 @@ const LightingSection = ({ control, getValues, setValue, errors }) => {
         const watchValues = useWatch({
             control,
             name: `${sectionName}`,
-            defaultValue: fields
         })
         const daylightArea = watchValues[index].daylight_area
         const lpdOperational = watchValues[index].lpd_operate
@@ -318,7 +323,6 @@ const LightingSection = ({ control, getValues, setValue, errors }) => {
         const watchValues = useWatch({
             control,
             name: `${sectionName}`,
-            defaultValue: fields
         })
         const gfa = getValues("firstForm.a_gfa")
         const daylightArea = watchValues[index].daylight_area
@@ -346,7 +350,6 @@ const LightingSection = ({ control, getValues, setValue, errors }) => {
         const watchValues = useWatch({
             control,
             name: `${sectionName}`,
-            defaultValue: fields
         })
         const gfa = getValues("firstForm.a_gfa")
         const operationalHours = getValues("firstForm.a_operational_hours")
@@ -374,8 +377,7 @@ const LightingSection = ({ control, getValues, setValue, errors }) => {
     const LightingEnergyConsumption = ({ index }) => {
         const watchValues = useWatch({
             control,
-            name: `${sectionName}`,
-            defaultValue: fields
+            name: `${sectionName}`
         })
         const name = watchValues[index].name
         const gfa = getValues("firstForm.a_gfa")
@@ -390,7 +392,8 @@ const LightingSection = ({ control, getValues, setValue, errors }) => {
         } else {
             totalLeArr.energyConsumption[index] = result
         }
-
+        console.log( watchValues)
+        console.log("Lightingg", result, gfa, leOperationalDay, leOperationalNonDay, leNonOperational)
 
         return (
             <InlineLabel
@@ -405,18 +408,17 @@ const LightingSection = ({ control, getValues, setValue, errors }) => {
         const watchValues = useWatch({
             control,
             name: `${sectionName}`,
-            defaultValue: fields
         })
-
-        const gfa = getValues("firstForm.a_gfa")
 
         var result =
             totalLeArr.energyConsumption.reduce(function (sum, item) {
                 return sum + item;
             }, 0)
 
-
-        setValue("thirdForm.total_dec.lighting", result)
+        useEffect(() => {
+            setValue("thirdForm.total_dec.lighting", result)
+        }, [setValue])
+        
 
         return (<Paper sx={{ paddingX: 2, paddingY: 1, backgroundColor: "green", color: "white" }}>
             <InlineLabel
@@ -746,7 +748,10 @@ const ACSection = ({ control, getValues, setValue }) => {
         var result = components.BSL + components.CFM1 + components.CFM2 + components.LSL + components.PLL + components.PSL
             
         result = convertCoolingLoad(result, operationalHours, workingDays, gfa)
+
+        useEffect(() => {
         setValue("thirdForm.total_dec.ac", result)
+        }, [setValue])
 
         return (
             <Paper sx={{ paddingX: 2, paddingY: 1, backgroundColor: "green", color: "white" }}>
@@ -806,7 +811,7 @@ const AppliancesSection = ({ control, getValues, setValue }) => {
         const watchValues = useWatch({
             control,
             name: `${sectionName}`,
-            defaultValue: fields
+            
         })
 
         const gfa = getValues("firstForm.a_gfa")
@@ -835,7 +840,6 @@ const AppliancesSection = ({ control, getValues, setValue }) => {
         const watchValues = useWatch({
             control,
             name: `${sectionName}`,
-            defaultValue: fields
         })
 
         var result =
@@ -843,7 +847,10 @@ const AppliancesSection = ({ control, getValues, setValue }) => {
                 return sum + item;
             }, 0)
 
-        setValue("thirdForm.total_dec.appliances", result)
+        useEffect(() => {
+            setValue("thirdForm.total_dec.appliances", result)
+        }, [setValue]);
+        
 
         return (
             <Paper sx={{ paddingX: 2, paddingY: 1, backgroundColor: "green", color: "white" }}>
@@ -1011,7 +1018,9 @@ const UtilitySection = ({ control, getValues, setValue }) => {
 
         var result = "-"
         result = (totalUtilityConsumptionArr.reduce((a, v) => a + v));
-        setValue("thirdForm.total_dec.utility", result)
+        useEffect(() => {
+            setValue("thirdForm.total_dec.utility", result)
+        }, [setValue])
 
         return (<Paper sx={{ paddingX: 2, paddingY: 1, backgroundColor: "green", color: "white" }}>
             <InlineLabel
@@ -1268,8 +1277,9 @@ const PlugSection = ({ control, getValues, setValue }) => {
         if (gfa && resultAC && resultNonAC) {
             result = calcPlugConsumption(gfa, resultAC, resultNonAC)
         }
-
-        setValue("thirdForm.total_dec.plug", result)
+        useEffect(() => {
+            setValue("thirdForm.total_dec.plug", result)
+        }, [setValue])
 
         return (<Paper sx={{ paddingX: 2, paddingY: 1, backgroundColor: "green", color: "white" }}>
             <InlineLabel
@@ -1640,7 +1650,7 @@ const PowerFactorTable = () => {
                     </TableHead>
                     <TableBody>
                         {[...Array(5)].map((element, i) => (
-                            <TableRow
+                            <TableRow key={i}
                                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                             >
                                 <TableCell component="th" scope="row">
@@ -1663,7 +1673,7 @@ const PowerFactorTable = () => {
                     </TableHead>
                     <TableBody>
                         {[...Array(5)].map((element, i) => (
-                            <TableRow
+                            <TableRow key={i}
                                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                             >
                                 <TableCell component="th" scope="row">
