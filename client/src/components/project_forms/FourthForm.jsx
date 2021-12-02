@@ -216,7 +216,7 @@ const OutdoorAirSection = ({ control, getValues, setValue, errors }) => {
     const gfa = getValues("firstForm.a_gfa");
     const occupancyDensity = getValues("firstForm.a_occupancy_density");
 
-    var result = "-";
+    var result = 0;
     if (gfa && occupancyDensity) {
       result = calcZonePopulation(gfa, occupancyDensity);
       resultArr.pz = result;
@@ -241,13 +241,15 @@ const OutdoorAirSection = ({ control, getValues, setValue, errors }) => {
     const pz = resultArr.pz;
     const mvAmount = getValues("thirdForm.mv_amount")
 
-    var result = "-";
+    var result = 0;
     console.log(rp, pz, ra, az, mvAmount)
     if (rp && pz && ra && az && mvAmount) {
       result = calcVbz(rp, pz, ra, az, mvAmount);
       resultArr.vbz = result;
-      setValue("fourthForm.d_total_bhc.vbz", result)
     }
+    useEffect(() => {
+      setValue("fourthForm.d_total_bhc.vbz", result)
+    })
 
     return (
       <Paper
@@ -278,7 +280,7 @@ const OutdoorAirSection = ({ control, getValues, setValue, errors }) => {
 
     const chartData = [
       { label: "Vbz", value: vbz },
-      { label: "MV flow rate", value: mvFlowRate / 1000 },
+      { label: "MV flow rate", value: mvFlowRate },
     ];
 
     const barColors = ["#47919b", "#7e84a3"];
@@ -316,7 +318,9 @@ const OutdoorAirSection = ({ control, getValues, setValue, errors }) => {
 
   const HandleToggle = (event) => {
     setPotential(event.target.checked)
-    setValue(`${sectionName}.d_a_is_potential`, event.target.checked)
+    useEffect(() => {
+      setValue(`${sectionName}.d_a_is_potential`, event.target.checked)
+    })
   }
 
   return (
@@ -399,7 +403,7 @@ const AchSection = ({ control, getValues, setValue }) => {
     const floorCount = getValues("firstForm.a_floor_count");
     const floorHeightAvg = getValues("firstForm.a_floor_height_avg");
 
-    var result = "-";
+    var result = 0;
 
     if (gfa && floorCount && floorHeightAvg) {
       result = gfa * floorCount * floorHeightAvg;
@@ -418,12 +422,14 @@ const AchSection = ({ control, getValues, setValue }) => {
     const ventilationArea = getValues("firstForm.a_ventilation_area");
     const volume = resultArr.volume;
 
-    var result = "-";
+    var result = 0;
     if (velocity && ventilationArea && volume) {
       result = calcACH(velocity, ventilationArea, volume);
       resultArr.ach = result;
-      setValue(`fourthForm.d_total_bhc.ach`, result)
     }
+    useEffect(() => {
+      setValue(`fourthForm.d_total_bhc.ach`, result)
+    })
 
     return (
       <Paper
@@ -538,7 +544,7 @@ const AccessOutsideSection = ({ control, getValues, setValue, errors }) => {
     const accessArea = watchValues.d_c_access_area;
     const gfa = getValues("firstForm.a_gfa");
 
-    var result = "-";
+    var result = 0;
     if (accessArea && gfa) {
       result = calcAccessPercentage(accessArea, gfa);
       resultArr.accessPercentage = result;
@@ -678,7 +684,7 @@ const VisualComfortSection = ({ control, getValues, setValue, errors }) => {
     var parsedStandard = standard.split(/[-]+/).map((number) => parseInt(number))
 
 
-    var result = "-";
+    var result = 0;
     if (area && count && lumen) {
       result = calcIlluminance(area, count, lumen);
 
@@ -692,8 +698,10 @@ const VisualComfortSection = ({ control, getValues, setValue, errors }) => {
         parsedStandard.length === 2 ?
           resultArr.standardMax[index] = parsedStandard[1] : resultArr.standardMax[index] = 0
       }
-      setValue(`fourthForm.d_total_bhc.illuminance`, resultArr.calculatedE)
     }
+    useEffect(() => {
+      setValue(`fourthForm.d_total_bhc.illuminance`, resultArr.calculatedE)
+    })
 
     return (
       <Paper

@@ -85,7 +85,6 @@ export function calcPLL(gfa, occupancyDensity) {
 }
 
 export function calcLSL(gfa, totalLpdOperational, totalLpdNonOperational) {
-    console.log(gfa, totalLpdOperational, totalLpdNonOperational, totalLpdNonOperational + totalLpdOperational, 1.25 * 3.4)
     return ((totalLpdOperational + totalLpdNonOperational) * gfa * 1.25 * 3.4)
 }
 

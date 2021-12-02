@@ -61,6 +61,7 @@ const SixthForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
         setValue("thirdForm", {
             ...res.data.thirdForm,
         })
+        
         const temp = res.data.fourthForm.d_d_illuminance
         var illuminanceArr = []
         temp.map((entry, index) => {
@@ -85,6 +86,7 @@ const SixthForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
         setValue("fifthForm", {
             ...res.data.fifthForm,
         })
+        console.log("Sixth Form get", res.data.firstForm, res.data.thirdForm, res.data.fourthForm, res.data.fifthForm)
         setLoading(false);
       })
       .catch((err) => {

@@ -259,6 +259,83 @@ export const SkeletonSection = () => {
   );
 }
 
+// export function SideInput({
+//   control,
+//   name,
+//   title,
+//   subtitle,
+//   defaultValue,
+//   isString,
+//   minimalInput,
+// }) {
+//   const {
+//     field: { ref, value, ...inputProps },
+//     fieldState: { invalid, isTouched, isDirty },
+//     formState: { touchedFields, dirtyFields },
+//   } = useController({
+//     name,
+//     control,
+//   });
+
+//   const handleKey = (e) => {
+//     //... rest of your code
+//     e.preventDefault()
+//    }
+
+//   return (
+//     <Stack
+//       direction="row"
+//       alignItems="center"
+//       justifyContent="space-between"
+//       spacing={2}
+//       minHeight={40}
+//     >
+//       <Stack direction="column">
+//         <Typography variant="body1">{title}</Typography>
+//         {subtitle && (
+//           <Typography variant="caption" color="text.secondary">
+//             {subtitle}
+//           </Typography>
+//         )}
+//       </Stack>
+      
+//       <NumericInput
+//         {...inputProps}
+//         value={value || defaultValue}
+//         inputProps={{ min: minimalInput, lang:"en-US", style: { textAlign: "right" } }}
+//         variant="outlined"
+//         inputMode="numeric"
+//         type="number"
+//         size={10}
+//       />
+//       {/* <TextField
+//         {...ref}
+//         value={value.numberformat}
+//         name="numberformat"
+//         variant="outlined"
+//         size= "small"
+//         id="formatted-numberformat-input"
+//         InputProps={{
+//           inputComponent: NumberFormatCustom,
+//         }}
+//       /> */}
+
+//       {/* <TextField
+//         {...inputProps}
+//         value={value || defaultValue}
+//         inputProps={{ min: minimalInput, style: { textAlign: "right" } }}
+//         variant="outlined"
+//         size="small"
+//         inputMode="numeric"
+//         type={isString ? "text" : "number"}
+//         sx={{
+//           maxWidth: "40%",
+//         }}
+//       /> */}
+//     </Stack>
+//   );
+// }
+
 export function SideInput({
   control,
   name,
@@ -268,20 +345,6 @@ export function SideInput({
   isString,
   minimalInput,
 }) {
-  const {
-    field: { ref, value, ...inputProps },
-    fieldState: { invalid, isTouched, isDirty },
-    formState: { touchedFields, dirtyFields },
-  } = useController({
-    name,
-    control,
-  });
-
-  const handleKey = (e) => {
-    //... rest of your code
-    e.preventDefault()
-   }
-
   return (
     <Stack
       direction="row"
@@ -298,56 +361,28 @@ export function SideInput({
           </Typography>
         )}
       </Stack>
-      <NumericInput
-        {...inputProps}
+      <Controller
+      name={name}
+      control={control}
+      defaultValue={defaultValue}
+      render={({ field: { onChange, value } }) => (
+      <TextField
         value={value || defaultValue}
-        inputProps={{ min: minimalInput, lang:"en-US", style: { textAlign: "right" } }}
+        inputProps={{ min: minimalInput, style: { textAlign: "right" } }}
         variant="outlined"
+        size="small"
         inputMode="numeric"
         type={isString ? "text" : "number"}
-        size={10}
-      />
-      {/* <TextField
-        {...ref}
-        value={value.numberformat}
-        name="numberformat"
-        variant="outlined"
-        size= "small"
-        id="formatted-numberformat-input"
-        InputProps={{
-          inputComponent: NumberFormatCustom,
+        onChange={(e) => onChange(parseFloat(e.target.value))}
+        sx={{
+          maxWidth: "40%",
         }}
-      /> */}
+      />
+      )}
+    />
     </Stack>
   );
 }
-
-const NumberFormatCustom = React.forwardRef(function NumberFormatCustom(props, ref) {
-  const { onChange, ...other } = props;
-
-  return (
-    <NumberFormat
-      {...other}
-      getInputRef={ref}
-      onValueChange={(values) => {
-        onChange({
-          target: {
-            name: props.name,
-            value: values.value,
-          },
-        });
-      }}
-      allowLeadingZeros = {false}
-      thousandSeparator
-      isNumericString
-    />
-  );
-});
-
-NumberFormatCustom.propTypes = {
-  name: PropTypes.string.isRequired,
-  onChange: PropTypes.func.isRequired,
-};
 
 export function BlockInput({
   control,
@@ -498,49 +533,70 @@ export function InlineLabel({ title, subtitle, value, bold }) {
   );
 }
 
-export function BasicInputField({ control, name, adornment, minimalInput }) {
-  const {
-    field: { ref, value, ...inputProps },
-    fieldState: { invalid, isTouched, isDirty },
-    formState: { touchedFields, dirtyFields },
-  } = useController({
-    name,
-    control,
-  });
+// export function BasicInputField({ control, name, adornment, minimalInput }) {
+//   const {
+//     field: { ref, value, ...inputProps },
+//     fieldState: { invalid, isTouched, isDirty },
+//     formState: { touchedFields, dirtyFields },
+//   } = useController({
+//     name,
+//     control,
+//   });
+//   return (
+//     <TextField
+//       {...inputProps}
+//       value={value}
+//       inputProps={{ min: minimalInput, lang:"en-US", style: { textAlign: "right" } }}
+//       variant="outlined"
+//       size="small"
+//       inputMode="numeric"
+//       type="number"
+//       className="w-24"
+//       InputProps={{
+//         startAdornment: (
+//           <InputAdornment position="start">{adornment}</InputAdornment>
+//         ),
+//       }}
+//     />
+//     // <Stack direction="row">
+//     //   <Box minWidth={50} textAlign="right" paddingRight={1}>{adornment}</Box>
+//     //   <NumericInput
+//     //     value={value}
+        
+//     //     variant="outlined"
+//     //     inputMode="numeric"
+//     //     type="number"
+//     //     size={5}
+//     //   />
+//     // </Stack>
+    
+//   );
+// }
+
+export function BasicInputField({ control, name, defaultValue, adornment, minimalInput }) {
   return (
-    // <TextField
-    //   {...inputProps}
-    //   value={value}
-    //   inputProps={{ min: minimalInput, lang:"en-US", style: { textAlign: "right" } }}
-    //   variant="outlined"
-    //   size="small"
-    //   inputMode="numeric"
-    //   type="number"
-    //   className="w-24"
-    //   InputProps={{
-    //     startAdornment: (
-    //       <InputAdornment position="start">{adornment}</InputAdornment>
-    //     ),
-    //   }}
-    // />
-    <Stack direction="row">
-      <Box minWidth={50} textAlign="right" paddingRight={1}>{adornment}</Box>
-      <NumericInput
-        {...inputProps}
-        value={value || 0}
-        inputProps={{ min: minimalInput, lang:"en-US", style: { textAlign: "right" } }}
+      <Controller
+      name={name}
+      control={control}
+      defaultValue={defaultValue}
+      render={({ field: { onChange, value } }) => (
+      <TextField
+        value={value || defaultValue}
+        inputProps={{ min: minimalInput, style: { textAlign: "right" } }}
         variant="outlined"
+        size="small"
         inputMode="numeric"
         type="number"
-        size={5}
+        onChange={(e) => onChange(parseInt(e.target.value))}
+        className="w-24"
         InputProps={{
-        startAdornment: (
-          <InputAdornment position="start">{adornment}</InputAdornment>
-        ),
-      }}
+          startAdornment: (
+            <InputAdornment position="start">{adornment}</InputAdornment>
+          ),
+        }}
       />
-    </Stack>
-    
+      )}
+    />
   );
 }
 

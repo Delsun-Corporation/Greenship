@@ -31,13 +31,11 @@ import {
 import axios from "axios";
 import { toast } from "react-toastify";
 
-var e_result;
-
 const FifthForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
   const methods = useForm({
     defaultValues: defaultFormValue(),
   });
-  const { control, handleSubmit, setValue, getValues, formState: { errors }} = methods;
+  const { control, handleSubmit, setValue, getValues, reset, formState: { errors }} = methods;
   const [isFromNextButton, setIsFromNextButton] = useState(false);
   const [isLoading, setLoading] = useState(true);
 
@@ -45,7 +43,7 @@ const FifthForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
     const newData = {
       fifthForm: data.fifthForm,
     };
-    console.log(newData);
+    console.log("Fifth Form submit", newData);
     if (isFromNextButton) {
       onceSubmitted(newData, "6");
     } else {
@@ -61,14 +59,15 @@ const FifthForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
         },
       })
       .then((res) => {
+        console.log("res", res)
         const pageOneData = res.data.page_one
         const pageFiveData = res.data.page_five;
         setValue("fifthForm", {
-          ...pageOneData
+          ...pageOneData,
         });
         setValue("fifthForm", {
           ...pageFiveData,
-          e_result: e_result
+          e_result: 0
         });
         setLoading(false);
       })
@@ -121,7 +120,9 @@ function defaultFormValue() {
       total_dec: 0,
       e_facade_area: 0,
       e_pv_spec_wpeak: 0,
-      e_pv_spec_dimension: [0, 0, 0],
+      e_pv_spec_l: 0,
+      e_pv_spec_w: 0,
+      e_pv_spec_h: 0,
       e_result: {
         energy_percentage: 0,
       },
@@ -154,13 +155,14 @@ const FirstSection = ({ control, setValue, getValues, errors }) => {
       name: sectionName + "e_pv_spec_w",
     });
 
-    var result = 0;
+    var result = "0";
 
     if (facadeArea && dimensionL && dimensionW) {
       result = calcPotentialPV(facadeArea, dimensionL, dimensionW);
     }
+      resultArr.potentialPV = result;
 
-    resultArr.potentialPV = result;
+    console.log(resultArr)
 
     if (isNaN(result)) {
       return (
@@ -170,7 +172,7 @@ const FirstSection = ({ control, setValue, getValues, errors }) => {
       return (
         <InlineLabel
           title="Potential PV numbers to be installed"
-          value={result}
+          value={numberFormat(result)}
         />
       );
     }
@@ -184,14 +186,15 @@ const FirstSection = ({ control, setValue, getValues, errors }) => {
 
     const pv = resultArr.potentialPV;
     const wpeakValue = watchValue.e_pv_spec_wpeak;
-    const gfa = watchValue.a_gfa;
+    const gfa = getValues("fifthForm.a_gfa");
 
     var result = 0;
+    console.log(pv, wpeakValue, gfa)
     if (wpeakValue) {
       result = calcPredictionElectical(pv, wpeakValue, gfa);
     }
-
-    resultArr.predictionElectrical = result;
+      resultArr.predictionElectrical = result;
+    
 
     if (isNaN(result)) {
       return (
@@ -204,7 +207,7 @@ const FirstSection = ({ control, setValue, getValues, errors }) => {
       return (
         <InlineLabel
           title="Prediction of Electrical energy"
-          value={result + " kWh/m2 per year"}
+          value={numberFormat(result) + " kWh/m2 per year"}
         />
       );
     }
@@ -228,10 +231,10 @@ const FirstSection = ({ control, setValue, getValues, errors }) => {
     }
 
     resultArr.percentageEnergyMix = result;
-    setValue("fifthValue.e_result.energy_percentage", result);
-    e_result = {
-      energy_percentage: result
-    }
+    useEffect(() => {
+      
+      setValue("fifthForm.e_result.energy_percentage", result)
+    }, [result, setValue])
 
     if (isNaN(result)) {
       return (
@@ -241,7 +244,7 @@ const FirstSection = ({ control, setValue, getValues, errors }) => {
       return (
         <InlineLabel
           title="Percentage of electrical energy mix"
-          value={result + "%"}
+          value={numberFormat(result) + "%"}
         />
       );
     }
