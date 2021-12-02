@@ -1015,7 +1015,7 @@ const UtilitySection = ({ control, getValues, setValue }) => {
             name: `${sectionName}`
         })
 
-        var result = "-"
+        var result = 0
         result = (totalUtilityConsumptionArr.reduce((a, v) => a + v));
         useEffect(() => {
             setValue("thirdForm.total_dec.utility", result)

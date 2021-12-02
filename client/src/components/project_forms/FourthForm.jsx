@@ -216,7 +216,7 @@ const OutdoorAirSection = ({ control, getValues, setValue, errors }) => {
     const gfa = getValues("firstForm.a_gfa");
     const occupancyDensity = getValues("firstForm.a_occupancy_density");
 
-    var result = "-";
+    var result = 0;
     if (gfa && occupancyDensity) {
       result = calcZonePopulation(gfa, occupancyDensity);
       resultArr.pz = result;
@@ -241,7 +241,7 @@ const OutdoorAirSection = ({ control, getValues, setValue, errors }) => {
     const pz = resultArr.pz;
     const mvAmount = getValues("thirdForm.mv_amount")
 
-    var result = "-";
+    var result = 0;
     console.log(rp, pz, ra, az, mvAmount)
     if (rp && pz && ra && az && mvAmount) {
       result = calcVbz(rp, pz, ra, az, mvAmount);
@@ -403,7 +403,7 @@ const AchSection = ({ control, getValues, setValue }) => {
     const floorCount = getValues("firstForm.a_floor_count");
     const floorHeightAvg = getValues("firstForm.a_floor_height_avg");
 
-    var result = "-";
+    var result = 0;
 
     if (gfa && floorCount && floorHeightAvg) {
       result = gfa * floorCount * floorHeightAvg;
@@ -422,7 +422,7 @@ const AchSection = ({ control, getValues, setValue }) => {
     const ventilationArea = getValues("firstForm.a_ventilation_area");
     const volume = resultArr.volume;
 
-    var result = "-";
+    var result = 0;
     if (velocity && ventilationArea && volume) {
       result = calcACH(velocity, ventilationArea, volume);
       resultArr.ach = result;
@@ -544,7 +544,7 @@ const AccessOutsideSection = ({ control, getValues, setValue, errors }) => {
     const accessArea = watchValues.d_c_access_area;
     const gfa = getValues("firstForm.a_gfa");
 
-    var result = "-";
+    var result = 0;
     if (accessArea && gfa) {
       result = calcAccessPercentage(accessArea, gfa);
       resultArr.accessPercentage = result;
@@ -684,7 +684,7 @@ const VisualComfortSection = ({ control, getValues, setValue, errors }) => {
     var parsedStandard = standard.split(/[-]+/).map((number) => parseInt(number))
 
 
-    var result = "-";
+    var result = 0;
     if (area && count && lumen) {
       result = calcIlluminance(area, count, lumen);
 
