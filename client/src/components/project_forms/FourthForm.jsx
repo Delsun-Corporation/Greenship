@@ -280,7 +280,7 @@ const OutdoorAirSection = ({ control, getValues, setValue, errors }) => {
 
     const chartData = [
       { label: "Vbz", value: vbz },
-      { label: "MV flow rate", value: mvFlowRate / 1000 },
+      { label: "MV flow rate", value: mvFlowRate },
     ];
 
     const barColors = ["#47919b", "#7e84a3"];
