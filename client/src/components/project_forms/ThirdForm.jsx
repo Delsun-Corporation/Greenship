@@ -152,7 +152,6 @@ export default ThirdForm;
 /// DEFAULT VALUES ///
 
 function defaultFormValue() {
-    console.log("DEFAULT FORM GOT CALLED")
     return (
         {
             firstForm: {
@@ -417,7 +416,7 @@ const LightingSection = ({ control, getValues, setValue, errors }) => {
 
         useEffect(() => {
             setValue("thirdForm.total_dec.lighting", result)
-        }, [setValue])
+        })
         
 
         return (<Paper sx={{ paddingX: 2, paddingY: 1, backgroundColor: "green", color: "white" }}>
@@ -751,7 +750,7 @@ const ACSection = ({ control, getValues, setValue }) => {
 
         useEffect(() => {
         setValue("thirdForm.total_dec.ac", result)
-        }, [setValue])
+        })
 
         return (
             <Paper sx={{ paddingX: 2, paddingY: 1, backgroundColor: "green", color: "white" }}>
@@ -849,7 +848,7 @@ const AppliancesSection = ({ control, getValues, setValue }) => {
 
         useEffect(() => {
             setValue("thirdForm.total_dec.appliances", result)
-        }, [setValue]);
+        });
         
 
         return (
@@ -1020,7 +1019,7 @@ const UtilitySection = ({ control, getValues, setValue }) => {
         result = (totalUtilityConsumptionArr.reduce((a, v) => a + v));
         useEffect(() => {
             setValue("thirdForm.total_dec.utility", result)
-        }, [setValue])
+        })
 
         return (<Paper sx={{ paddingX: 2, paddingY: 1, backgroundColor: "green", color: "white" }}>
             <InlineLabel
@@ -1279,7 +1278,7 @@ const PlugSection = ({ control, getValues, setValue }) => {
         }
         useEffect(() => {
             setValue("thirdForm.total_dec.plug", result)
-        }, [setValue])
+        })
 
         return (<Paper sx={{ paddingX: 2, paddingY: 1, backgroundColor: "green", color: "white" }}>
             <InlineLabel

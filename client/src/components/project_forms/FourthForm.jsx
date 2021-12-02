@@ -246,10 +246,10 @@ const OutdoorAirSection = ({ control, getValues, setValue, errors }) => {
     if (rp && pz && ra && az && mvAmount) {
       result = calcVbz(rp, pz, ra, az, mvAmount);
       resultArr.vbz = result;
-      useEffect(() => {
-        setValue("fourthForm.d_total_bhc.vbz", result)
-      }, [setValue])
     }
+    useEffect(() => {
+      setValue("fourthForm.d_total_bhc.vbz", result)
+    })
 
     return (
       <Paper
@@ -320,7 +320,7 @@ const OutdoorAirSection = ({ control, getValues, setValue, errors }) => {
     setPotential(event.target.checked)
     useEffect(() => {
       setValue(`${sectionName}.d_a_is_potential`, event.target.checked)
-    }, [setValue])
+    })
   }
 
   return (
@@ -426,10 +426,10 @@ const AchSection = ({ control, getValues, setValue }) => {
     if (velocity && ventilationArea && volume) {
       result = calcACH(velocity, ventilationArea, volume);
       resultArr.ach = result;
-      useEffect(() => {
-        setValue(`fourthForm.d_total_bhc.ach`, result)
-      }, [setValue])
     }
+    useEffect(() => {
+      setValue(`fourthForm.d_total_bhc.ach`, result)
+    })
 
     return (
       <Paper
@@ -698,10 +698,10 @@ const VisualComfortSection = ({ control, getValues, setValue, errors }) => {
         parsedStandard.length === 2 ?
           resultArr.standardMax[index] = parsedStandard[1] : resultArr.standardMax[index] = 0
       }
-      useEffect(() => {
-        setValue(`fourthForm.d_total_bhc.illuminance`, resultArr.calculatedE)
-      }, [setValue])
     }
+    useEffect(() => {
+      setValue(`fourthForm.d_total_bhc.illuminance`, resultArr.calculatedE)
+    })
 
     return (
       <Paper
