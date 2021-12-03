@@ -47,18 +47,6 @@ const FirstForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
 
   const onSubmit = (data) => {
     console.log(data)
-    // const formData = new FormData()
-    // formData.append("image", data.firstForm.a_project_image[0])
-    // console.log(...formData)
-    // console.log("hey", Object.fromEntries(formData))
-    // new Response(formData).text().then(console.log)
-    
-    // if (data.firstForm.a_project_image && typeof(data.firstForm.a_project_image[0]) !== 'undefined') {
-    //   const project_image = data.firstForm.a_project_image[0]
-    //   console.log(project_image)
-    //     data.firstForm.a_project_image = project_image
-    //     console.log(data)
-    // }
 
     if (isFromNextButton) {
       onceSubmitted(data, "2");
@@ -261,7 +249,7 @@ const SecondSection = ({ control, errors, getValues }) => {
                 name={sectionName + "a_location_image"}
                 errors={errors}
                 control={control}
-                imageUrl={getValues(sectionName + "location_image")}
+                imageUrl={getValues(sectionName + "a_location_image")}
                 title="Climate data attachment"
               />
           <Divider style={{ width: "100%" }} />
@@ -456,7 +444,7 @@ const FourthSection = ({ control, errors, getValues }) => {
             name={sectionName + "a_orientation_image"}
             errors={errors}
             control={control}
-            imageUrl={getValues(sectionName + "orientation_image")}
+            imageUrl={getValues(sectionName + "a_orientation_image")}
             title="Building Plan Orientation (length, width, and orientation)"
             subtitle="Attach planning image"
           />
@@ -464,7 +452,7 @@ const FourthSection = ({ control, errors, getValues }) => {
             name={sectionName + "a_micro_noise_image"}
             errors={errors}
             control={control}
-            imageUrl={getValues(sectionName + "micro_noise_image")}
+            imageUrl={getValues(sectionName + "a_micro_noise_image")}
             title="Planning of Micro Climate and Noise Control"
             subtitle="Attach site development: landscape closure, green area percentage"
           />
@@ -476,7 +464,7 @@ const FourthSection = ({ control, errors, getValues }) => {
             name={sectionName + "a_energy_place_image"}
             errors={errors}
             control={control}
-            imageUrl={getValues(sectionName + "energy_place_image")}
+            imageUrl={getValues(sectionName + "a_energy_place_image")}
             title="On-site Renewable Energy Planning"
             subtitle="Attach document: proof of renewable energy potential on site"
           />

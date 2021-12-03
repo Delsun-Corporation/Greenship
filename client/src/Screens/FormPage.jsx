@@ -20,6 +20,7 @@ import SixthForm from "../components/project_forms/SixthForm";
 import FormDrawer from "../components/FormDrawer"
 import Footer from "../components/Footer.jsx";
 import { isAuth } from "../helpers/auth";
+import { PageOne } from "../model/pageOne.model";
 
 function FormPage() {
   const { projectid, page } = useParams();
@@ -28,12 +29,14 @@ function FormPage() {
 
   const onFormSubmit = (data, nextPage) => {
     if (data.firstForm) {
-      axios
-        .put(`${process.env.REACT_APP_API_URL}/updatepageone`, {
-          projectId: projectid,
-          ...data.firstForm,
-          a_typology: data.firstForm.a_typology.type,
-        })
+      const model = new PageOne(data.firstForm, projectid)
+      const entries = model.convertToFromData();
+      axios({
+        method: "put",
+        url: `${process.env.REACT_APP_API_URL}/updatepageone`,
+        data: entries,
+        headers: { "Content-Type": "multipart/form-data" },
+      })
         .then((res) => {
           if (nextPage) {
             redirectPage(nextPage);
