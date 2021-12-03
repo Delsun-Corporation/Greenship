@@ -21,6 +21,7 @@ import FormDrawer from "../components/FormDrawer"
 import Footer from "../components/Footer.jsx";
 import { isAuth } from "../helpers/auth";
 import { PageOne } from "../model/pageOne.model";
+import { PageFive } from "../model/pageFive.model";
 
 function FormPage() {
   const { projectid, page } = useParams();
@@ -127,9 +128,14 @@ function FormPage() {
           );
         });
     } else if (data.fifthForm) {
-      const pageFiveData = data.fifthForm;
-
-      updatePage("updatepagefive", pageFiveData, projectid)
+      const model = new PageFive(data.fifthForm, projectid);
+      const entries = model.convertToFromData();
+      axios({
+        method: "put",
+        url: `${process.env.REACT_APP_API_URL}/updatepagefive`,
+        data: entries,
+        headers: { "Content-Type": "multipart/form-data" },
+      })
         .then((res) => {
           if (nextPage) {
             redirectPage(nextPage);

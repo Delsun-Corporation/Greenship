@@ -316,7 +316,7 @@ const FirstSection = ({ control, setValue, getValues, errors }) => {
             name={sectionName + "e_pv_install_att"}
             errors={errors}
             control={control}
-            imageUrl={getValues(sectionName + "pv_install_att")}
+            imageUrl={getValues(sectionName + "e_pv_install_att")}
             title="PV Installation Planning"
           />
 
@@ -328,7 +328,7 @@ const FirstSection = ({ control, setValue, getValues, errors }) => {
               name={sectionName + "e_pv_solar_att"}
               errors={errors}
               control={control}
-              imageUrl={getValues(sectionName + "pv_solar_att")}
+              imageUrl={getValues(sectionName + "e_pv_solar_att")}
               title="Attach PV Specification"
             />
 
