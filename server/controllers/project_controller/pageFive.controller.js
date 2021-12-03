@@ -34,9 +34,7 @@ const upload = multer({
 exports.updatePageFiveDraft = (req, res) => {
   const {
     e_facade_area,
-    e_pv_spec_h,
-    e_pv_spec_l,
-    e_pv_spec_w,
+    e_pv_spec_dimension,
     e_pv_spec_wpeak,
     e_result,
     projectId,
@@ -45,8 +43,6 @@ exports.updatePageFiveDraft = (req, res) => {
   const objectId = ObjectId.ObjectId(projectId);
 
   const files = req.files;
-  var e_pv_install_att = ""
-  var e_pv_solar_att = "";
 
   if (
     req.body === {} ||
@@ -60,28 +56,27 @@ exports.updatePageFiveDraft = (req, res) => {
     });
   }
 
-  if(files) {
-    if (files[pvSolarAttachmentKey] !== undefined) {
-      e_pv_solar_att = `${process.env.SERVER_URL}/${files[pvSolarAttachmentKey][0].path}`;
-    }
-  
-    if (files[pvInstallAttachmentKey] !== undefined) {
-      e_pv_install_att = `${process.env.SERVER_URL}/${files[pvInstallAttachmentKey][0].path}`;
-    }
-  }
-
   Project.findById(objectId)
     .then((project) => {
+      var e_pv_install_att = project.e_pv_install_att;
+      var e_pv_solar_att = project.e_pv_solar_att;
+
+      if(files) {
+        if (files[pvSolarAttachmentKey] !== undefined) {
+          e_pv_solar_att = `${process.env.SERVER_URL}/${files[pvSolarAttachmentKey][0].path}`;
+        }
+      
+        if (files[pvInstallAttachmentKey] !== undefined) {
+          e_pv_install_att = `${process.env.SERVER_URL}/${files[pvInstallAttachmentKey][0].path}`;
+        }
+      }
+
       project.e_facade_area = e_facade_area;
       project.e_pv_spec_wpeak = e_pv_spec_wpeak;
       project.e_result = e_result;
       project.e_pv_install_att = e_pv_install_att;
       project.e_pv_solar_att = e_pv_solar_att;
-      project.e_pv_spec_dimension = {
-        h: e_pv_spec_h,
-        l: e_pv_spec_l,
-        w: e_pv_spec_w,
-      };
+      project.e_pv_spec_dimension = e_pv_spec_dimension;
       project.project_date = new Date();
       if (project.last_page < 5) {
         project.last_page = 5;
