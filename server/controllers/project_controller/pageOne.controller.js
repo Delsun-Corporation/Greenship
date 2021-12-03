@@ -73,40 +73,12 @@ exports.updatePageOneDraft = (req, res) => {
   const updatedAch = req.body.a_ach;
   const updatedProvince = req.body.a_location_province;
   const files = req.files;
-  var projectImage =
-    "https://firebasestorage.googleapis.com/v0/b/ina-website-326209.appspot.com/o/resource%2FNoImageDefault.png?alt=media&token=ac9bfea9-44db-4dca-9293-64da65636021";
-  var locationImage = "";
-  var microNoiseImage = "";
-  var energyPlaceImage = "";
-  var orientationImage = "";
 
   const energyKeyName = "a_energy_place_image";
   const projectImageKeyName = "a_project_image";
   const locationKeyName = "a_location_image";
   const orientationKeyName = "a_orientation_image";
   const microKeyName = "a_micro_noise_image";
-
-  if(files) {
-    if (files[projectImageKeyName] !== undefined) {
-      projectImage = `${process.env.SERVER_URL}/${files[projectImageKeyName][0].path}`;
-    }
-  
-    if (files[locationKeyName] !== undefined) {
-      locationImage = `${process.env.SERVER_URL}/${files[locationKeyName][0].path}`;
-    }
-  
-    if (files[orientationKeyName] !== undefined) {
-      orientationImage = `${process.env.SERVER_URL}/${files[orientationKeyName][0].path}`;
-    }
-  
-    if (files[microKeyName] !== undefined) {
-      microNoiseImage = `${process.env.SERVER_URL}/${files[microKeyName][0].path}`;
-    }
-  
-    if (files[energyKeyName] !== undefined) {
-      energyPlaceImage = `${process.env.SERVER_URL}/${files[energyKeyName][0].path}`;
-    }
-  }
 
   Project.findById(objectId)
     .then((project) => {
@@ -115,6 +87,34 @@ exports.updatePageOneDraft = (req, res) => {
           message: "Request Parameter is wrong",
         });
       }
+      var projectImage = project.project_image
+      var locationImage = project.a_location_image;
+      var microNoiseImage = project.a_micro_noise_image;
+      var energyPlaceImage = project.a_energy_place_image;
+      var orientationImage = project.a_orientation_image;
+
+      if(files) {
+        if (files[projectImageKeyName] !== undefined) {
+          projectImage = `${process.env.SERVER_URL}/${files[projectImageKeyName][0].path}`;
+        }
+      
+        if (files[locationKeyName] !== undefined) {
+          locationImage = `${process.env.SERVER_URL}/${files[locationKeyName][0].path}`;
+        }
+      
+        if (files[orientationKeyName] !== undefined) {
+          orientationImage = `${process.env.SERVER_URL}/${files[orientationKeyName][0].path}`;
+        }
+      
+        if (files[microKeyName] !== undefined) {
+          microNoiseImage = `${process.env.SERVER_URL}/${files[microKeyName][0].path}`;
+        }
+      
+        if (files[energyKeyName] !== undefined) {
+          energyPlaceImage = `${process.env.SERVER_URL}/${files[energyKeyName][0].path}`;
+        }
+      }
+
       project.project_name = updatedTitle;
       project.project_desc = updatedDesc;
       project.a_working_days = updatedWorkDay;
