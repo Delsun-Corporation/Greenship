@@ -812,7 +812,7 @@ const VisualComfortSection = ({ control, getValues, setValue, errors }) => {
                           name={sectionName + ".d_d_lighting_plan_att"}
                           errors={errors}
                           control={control}
-                          imageUrl={getValues(sectionName + ".d_d_lighting_plan_att")}
+                          imageUrl={getValues("fourthForm.d_d_lighting_plan_att")}
                           title="Lighting Plan"
                         />
             <div>
