@@ -51,11 +51,6 @@ exports.updatePageFourDraft = (req, res) => {
   } = req.body;
 
   const files = req.files;
-  var d_a_attachment = ""
-  var d_c_access_att = "";
-  var d_d_lighting_plan_att = "";
-  var d_f_noise_att = "";
-  var d_f_noise_control_att = "";
 
   const objectId = ObjectId.ObjectId(projectId);
   if (
@@ -70,30 +65,36 @@ exports.updatePageFourDraft = (req, res) => {
     });
   }
 
-  if(files) {
-    if (files[aAttachmentKey] !== undefined) {
-      d_a_attachment = `${process.env.SERVER_URL}/${files[aAttachmentKey][0].path}`;
-    }
-  
-    if (files[accessKey] !== undefined) {
-      d_c_access_att = `${process.env.SERVER_URL}/${files[accessKey][0].path}`;
-    }
-  
-    if (files[lightingPlanKey] !== undefined) {
-      d_d_lighting_plan_att = `${process.env.SERVER_URL}/${files[lightingPlanKey][0].path}`;
-    }
-  
-    if (files[noiseControlKey] !== undefined) {
-      d_f_noise_control_att = `${process.env.SERVER_URL}/${files[noiseControlKey][0].path}`;
-    }
-  
-    if (files[fNoiseKey] !== undefined) {
-      d_f_noise_att = `${process.env.SERVER_URL}/${files[fNoiseKey][0].path}`;
-    }
-  }
-
   Project.findById(objectId)
     .then((project) => {
+      var d_a_attachment = project.d_a_attachment;
+      var d_c_access_att = project.d_c_access_att;
+      var d_d_lighting_plan_att = project.d_d_lighting_plan_att;
+      var d_f_noise_att = project.d_f_noise_att;
+      var d_f_noise_control_att = project.d_f_noise_control_att;
+
+      if(files) {
+        if (files[aAttachmentKey] !== undefined) {
+          d_a_attachment = `${process.env.SERVER_URL}/${files[aAttachmentKey][0].path}`;
+        }
+      
+        if (files[accessKey] !== undefined) {
+          d_c_access_att = `${process.env.SERVER_URL}/${files[accessKey][0].path}`;
+        }
+      
+        if (files[lightingPlanKey] !== undefined) {
+          d_d_lighting_plan_att = `${process.env.SERVER_URL}/${files[lightingPlanKey][0].path}`;
+        }
+      
+        if (files[noiseControlKey] !== undefined) {
+          d_f_noise_control_att = `${process.env.SERVER_URL}/${files[noiseControlKey][0].path}`;
+        }
+      
+        if (files[fNoiseKey] !== undefined) {
+          d_f_noise_att = `${process.env.SERVER_URL}/${files[fNoiseKey][0].path}`;
+        }
+      }
+      
       project.d_a_az = d_a_az;
       project.d_a_is_potential = Boolean(d_a_is_potential);
       project.d_a_ra = d_a_ra;
