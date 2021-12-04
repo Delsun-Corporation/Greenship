@@ -340,7 +340,7 @@ const OutdoorAirSection = ({ control, getValues, setValue, errors }) => {
             name={sectionName + ".d_a_attachment"}
             errors={errors}
             control={control}
-            imageUrl={getValues(sectionName + ".a_attachment")}
+            imageUrl={getValues(sectionName + ".d_a_attachment")}
             title="Attach proof of Outdoor Air Introduction Potential"
           />}
           <Divider style={{ width: "100%" }} />
@@ -630,7 +630,7 @@ const AccessOutsideSection = ({ control, getValues, setValue, errors }) => {
               name={sectionName + ".d_c_access_att"}
               errors={errors}
               control={control}
-              imageUrl={getValues(sectionName + ".c_access_att")}
+              imageUrl={getValues(sectionName + ".d_c_access_att")}
               title="Attach Planning for access to outside view"
             />
 
@@ -812,7 +812,7 @@ const VisualComfortSection = ({ control, getValues, setValue, errors }) => {
                           name={sectionName + ".d_d_lighting_plan_att"}
                           errors={errors}
                           control={control}
-                          imageUrl={getValues(sectionName + ".d_lighting_plan_att")}
+                          imageUrl={getValues(sectionName + ".d_d_lighting_plan_att")}
                           title="Lighting Plan"
                         />
             <div>
@@ -1105,7 +1105,7 @@ const AcousticalComfortSection = ({ control, getValues, setValue, errors }) => {
               name={sectionName + ".d_f_noise_control_att"}
               errors={errors}
               control={control}
-              imageUrl={getValues(sectionName + ".f_noise_control_att")}
+              imageUrl={getValues(sectionName + ".d_f_noise_control_att")}
               title="Treatment for noise control"
             />
         </Stack>

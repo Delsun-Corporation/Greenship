@@ -22,6 +22,7 @@ import Footer from "../components/Footer.jsx";
 import { isAuth } from "../helpers/auth";
 import { PageOne } from "../model/pageOne.model";
 import { PageFive } from "../model/pageFive.model";
+import { PageFour } from "../model/PageFour.model";
 
 function FormPage() {
   const { projectid, page } = useParams();
@@ -107,8 +108,14 @@ function FormPage() {
         });
     } else if (data.fourthForm) {
       const fourthFormData = data.fourthForm;
-
-      updatePage("updatepagefour", fourthFormData, projectid)
+      const model = new PageFour(fourthFormData, projectid)
+      const entries = model.convertToFromData();
+      axios({
+        method: "put",
+        url: `${process.env.REACT_APP_API_URL}/updatepagefour`,
+        data: entries,
+        headers: { "Content-Type": "multipart/form-data" },
+      })
         .then((res) => {
           if (nextPage) {
             redirectPage(nextPage);
