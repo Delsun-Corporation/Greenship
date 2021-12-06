@@ -47,17 +47,27 @@ export class PageThree {
         const lighting = this.thirdFormData.c_lighting;
         for (var i = 0; i < lighting.length; i++) {
             formData.append(`c_lighting[${i}][daylight_area]`, lighting[i].daylight_area);
-            formData.append(`daylight_area_attach`, lighting[i].daylight_area_attach[0]);
+            if (lighting[i].daylight_area_attach) {
+              formData.append(`daylight_area_attach`, lighting[i].daylight_area_attach[0]);
+            }
             if (typeof lighting[i].daylight_area_attach !== 'string') {
                 formData.append('daylightImageIndex[]', i);
             }
+
+
             formData.append(`c_lighting[${i}][lpd_nonoperate]`, lighting[i].lpd_nonoperate);
-            formData.append(`lpd_nonoperate_attach`, lighting[i].lpd_nonoperate_attach[0]);
+            if (lighting[i].lpd_nonoperate_attach) {
+              formData.append(`lpd_nonoperate_attach`, lighting[i].lpd_nonoperate_attach[0]);
+            }
             if (typeof lighting[i].lpd_nonoperate_attach !== 'string') {
                 formData.append('nonoperationalImageIndex[]', i);
             }
+
+
             formData.append(`c_lighting[${i}][lpd_operate]`, lighting[i].lpd_operate);
-            formData.append(`lpd_operate_attach`, lighting[i].lpd_operate_attach[0]);
+            if (lighting[i].lpd_operate_attach) {
+              formData.append(`lpd_operate_attach`, lighting[i].lpd_operate_attach[0]);
+            }
             if (typeof lighting[i].lpd_operate_attach !== 'string') {
                 formData.append(`operationalImageIndex[]`, i);
             }
@@ -74,13 +84,33 @@ export class PageThree {
       compileUtility(formData) {
         const utility = this.thirdFormData.c_utility;
         for (var i = 0; i < utility.length; i++) {
+          if (utility[i].amount) {
             formData.append(`c_utility[${i}][amount]`, utility[i].amount);
+          }
+
+          if (utility[i].lift_capacity) {
             formData.append(`c_utility[${i}][lift_capacity]`, utility[i].lift_capacity);
+          }
+
+          if (utility[i].lift_velocity) {
             formData.append(`c_utility[${i}][lift_velocity]`, utility[i].lift_velocity);
+          }
+
+          if (utility[i].mv_flow_rate) {
             formData.append(`c_utility[${i}][mv_flow_rate]`, utility[i].mv_flow_rate);
+          }
+
+          if (utility[i].name) {
             formData.append(`c_utility[${i}][name]`, utility[i].name);
+          }
+
+          if (utility[i].util_type) {
             formData.append(`c_utility[${i}][util_type]`, utility[i].util_type);
+          }
+
+          if (utility[i].watt) {
             formData.append(`c_utility[${i}][watt]`, utility[i].watt);
+          }
         }
       }
 }

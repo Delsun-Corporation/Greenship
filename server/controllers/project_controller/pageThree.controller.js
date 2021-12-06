@@ -96,9 +96,6 @@ exports.updatePageThreeDraft = (req, res) => {
 
 const compileLighting = (c_lighting, files, defaultValues, daylightImageIndex, nonoperationalImageIndex, operationalImageIndex) => {
   var tempArray = [];
-  console.log(daylightImageIndex);
-  console.log(nonoperationalImageIndex);
-  console.log(operationalImageIndex);
 
   // merge incoming with existing value
   for (let index = 0; index < c_lighting.length; index++) {
