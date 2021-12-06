@@ -136,6 +136,10 @@ const projectSchema = new Schema({
           type: String,
           default: "",
         },
+        daylight_area_attach: {
+          type: String,
+          default: ""
+        }
       },
     ],
   },
