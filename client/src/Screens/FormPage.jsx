@@ -23,6 +23,7 @@ import { isAuth } from "../helpers/auth";
 import { PageOne } from "../model/pageOne.model";
 import { PageFive } from "../model/pageFive.model";
 import { PageFour } from "../model/PageFour.model";
+import { PageThree } from "../model/pageThree.model";
 
 function FormPage() {
   const { projectid, page } = useParams();
@@ -86,8 +87,16 @@ function FormPage() {
         });
     } else if (data.thirdForm) {
       const thirdFormData = data.thirdForm;
+      console.log("submit page three: ", thirdFormData);
 
-      updatePage("updatepagethree", thirdFormData, projectid)
+      const model = new PageThree(thirdFormData, projectid);
+      const entries = model.convertToFormData();
+      axios({
+        method: "put",
+        url: `${process.env.REACT_APP_API_URL}/updatepagethree`,
+        data: entries,
+        headers: { "Content-Type": "multipart/form-data" },
+      })
         .then((res) => {
           if (nextPage) {
             redirectPage(nextPage);

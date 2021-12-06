@@ -3,6 +3,36 @@ const mongoose = require("mongoose");
 
 const ObjectId = mongoose.Types;
 
+const daylightAreaKey = "daylight_area_attach";
+const nonoperateKey = "lpd_nonoperate_attach";
+const operateKey = "lpd_operate_attach";
+
+const multer = require("multer");
+const { mimeTypeValidator } = require("../../helpers/valid");
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "./uploads/");
+  },
+  filename: function (req, file, cb) {
+    cb(null, new Date().toISOString() + file.originalname);
+  },
+});
+
+const fileFilter = (req, file, cb) => {
+  if (mimeTypeValidator(file.mimetype)) {
+    cb(null, true);
+  } else {
+    cb(null, false);
+  }
+};
+
+// add limits: fileSize in here to limit image size
+const upload = multer({
+  storage: storage,
+  fileFilter: fileFilter,
+});
+
 exports.updatePageThreeDraft = (req, res) => {
   const {
     c_ac,
@@ -12,9 +42,13 @@ exports.updatePageThreeDraft = (req, res) => {
     c_utility,
     total_dec,
     projectId,
+    operationalImageIndex,
+    nonoperationalImageIndex,
+    daylightImageIndex
   } = req.body;
 
   const objectId = ObjectId.ObjectId(projectId);
+  const files = req.files;
 
   if (
     req.body === {} ||
@@ -30,9 +64,12 @@ exports.updatePageThreeDraft = (req, res) => {
 
   Project.findById(objectId)
     .then((project) => {
+
+      var c_lighting_items = compileLighting(c_lighting, files, project.c_lighting.items, daylightImageIndex, nonoperationalImageIndex, operationalImageIndex);
+      
       project.c_ac = c_ac;
       project.c_appliances.items = c_appliances;
-      project.c_lighting.items = c_lighting;
+      project.c_lighting.items = c_lighting_items;
       project.c_plug = c_plug;
       project.c_utility.items = c_utility;
       project.total_dec = total_dec;
@@ -50,11 +87,82 @@ exports.updatePageThreeDraft = (req, res) => {
       }
     })
     .catch((err) => {
+      console.log(err);
       res.status(500).json({
         message: "Internal server error",
       });
     });
 };
+
+const compileLighting = (c_lighting, files, defaultValues, daylightImageIndex, nonoperationalImageIndex, operationalImageIndex) => {
+  var tempArray = [];
+  console.log(daylightImageIndex);
+  console.log(nonoperationalImageIndex);
+  console.log(operationalImageIndex);
+
+  // merge incoming with existing value
+  for (let index = 0; index < c_lighting.length; index++) {
+    const element = c_lighting[index];
+    const defaultValue = defaultValues[index];
+
+    if (defaultValue) {
+      if (defaultValue.daylight_area_attach) {
+        element.daylight_area_attach = defaultValue.daylight_area_attach;
+      }
+  
+      if (defaultValue.lpd_nonoperate_attach) {
+        element.lpd_nonoperate_attach = defaultValue.lpd_nonoperate_attach;
+      }
+  
+      if (defaultValue.lpd_operate_attach) {
+        element.lpd_operate_attach = defaultValue.lpd_operate_attach;
+      }
+    }
+    
+    tempArray.push(element);
+  }
+  
+  if (daylightImageIndex) {
+    for (let i = 0; i < daylightImageIndex.length; i++) {
+      const index = daylightImageIndex[i];
+      if(files) {
+        if (files[daylightAreaKey] !== undefined) {
+          if (files[daylightAreaKey][i] !== undefined) { 
+            tempArray[index].daylight_area_attach = `${process.env.SERVER_URL}/${files[daylightAreaKey][i].path}`;
+          } 
+        }
+      }
+    }
+  }
+
+  if (nonoperationalImageIndex) {
+    for (let i = 0; i < nonoperationalImageIndex.length; i++) {
+      const index = nonoperationalImageIndex[i];
+      if(files) {
+        if (files[nonoperateKey] !== undefined) {
+          if (files[nonoperateKey][i] !== undefined) { 
+            tempArray[index].lpd_nonoperate_attach = `${process.env.SERVER_URL}/${files[nonoperateKey][i].path}`;
+          } 
+        }
+      }
+    }
+  }
+
+  if (operationalImageIndex) {
+    for (let i = 0; i < operationalImageIndex.length; i++) {
+      const index = operationalImageIndex[i];
+      if(files) {
+        if (files[operateKey] !== undefined) {
+          if (files[operateKey][i] !== undefined) { 
+            tempArray[index].lpd_operate_attach = `${process.env.SERVER_URL}/${files[operateKey][i].path}`;
+          } 
+        }
+      }
+    }
+  }
+
+  return tempArray;
+}
 
 exports.getPageThreeDraft = (req, res) => {
   const { projectId } = req.query;
@@ -109,3 +217,9 @@ exports.getPageThreeDraft = (req, res) => {
       });
     });
 };
+
+exports.uploadPageThreeImages = upload.fields([
+  { name: daylightAreaKey },
+  { name: nonoperateKey },
+  { name: operateKey },
+]);

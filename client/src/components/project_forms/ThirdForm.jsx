@@ -499,10 +499,10 @@ const LightingSection = ({ control, getValues, setValue, errors }) => {
                                                     subtitle="1/3 room depth from effective opening"
                                                 />
                                                 <ImageUpload
-                                                    name={sectionName + ".daylight_area_attach"}
+                                                    name={`${multiInputName}.daylight_area_attach`}
                                                     errors={errors}
                                                     control={control}
-                                                    imageUrl={getValues(sectionName + ".daylight_area_attach_url")}
+                                                    imageUrl={getValues(`${multiInputName}.daylight_area_attach`)}
                                                     title="Floor Plan schematics for Daylight Area"
                                                 /> 
                                                 <NonDaylightArea index={index} />
@@ -513,10 +513,10 @@ const LightingSection = ({ control, getValues, setValue, errors }) => {
                                                     subtitle="See table for reference"
                                                 />
                                                 <ImageUpload
-                                                    name={sectionName + ".lpd_operate_attach"}
+                                                    name={`${multiInputName}.lpd_operate_attach`}
                                                     errors={errors}
                                                     control={control}
-                                                    imageUrl={getValues(sectionName + ".lpd_operate_attach_url")}
+                                                    imageUrl={getValues(`${multiInputName}.lpd_operate_attach`)}
                                                     title="Lighting Plan"
                                                 /> 
                                                 <SideInput
@@ -526,10 +526,10 @@ const LightingSection = ({ control, getValues, setValue, errors }) => {
                                                     subtitle="See table for reference"
                                                 />
                                                 <ImageUpload
-                                                    name={sectionName + ".lpd_nonoperate_attach"}
+                                                    name={`${multiInputName}.lpd_nonoperate_attach`}
                                                     errors={errors}
                                                     control={control}
-                                                    imageUrl={getValues(sectionName + ".lpd_nonoperate_attach_url")}
+                                                    imageUrl={getValues(`${multiInputName}.lpd_nonoperate_attach`)}
                                                     title="Lighting Plan"
                                                 /> 
                                                 <LeDuringOperationalDay index={index} />
@@ -544,7 +544,7 @@ const LightingSection = ({ control, getValues, setValue, errors }) => {
                                 );
                             })}
                         </div>
-
+ 
                     </Stack>
 
                 }

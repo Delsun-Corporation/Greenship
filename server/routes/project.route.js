@@ -22,7 +22,8 @@ const {
 
 const {
     updatePageThreeDraft,
-    getPageThreeDraft
+    getPageThreeDraft,
+    uploadPageThreeImages
 } = require('../controllers/project_controller/pageThree.controller')
 
 const {
@@ -45,7 +46,7 @@ router.post('/createproject', createProject);
 
 router.put('/updatepageone', uploadProjectImage ,updatePageOneDraft);
 router.put('/updatepagetwo', updatePageTwoDraft);
-router.put('/updatepagethree', updatePageThreeDraft);
+router.put('/updatepagethree', uploadPageThreeImages, updatePageThreeDraft);
 router.put('/updatepagefour',uploadPageFourImages, updatePageFourDraft);
 router.put('/updatepagefive',uploadPageFiveImages, updatePageFiveDraft);
 router.put('/toggle/status', toggleProjectStatus);
