@@ -42,7 +42,6 @@ import {
 } from "../../datas/Datas";
 import {
     calcLightingEnergyConsumption,
-    calcNonDaylightArea,
     calcLeDuringOperationalDay,
     calcLeDuringOperationalNonDay,
     calcLeDuringNonOperational,
@@ -184,6 +183,7 @@ function defaultLightingValue() {
     return ({
         name: "",
         daylight_area: 0,
+        nondaylight_area: 0,
         lpd_operate: 0,
         lpd_nonoperate: 0
     })
@@ -274,24 +274,6 @@ const LightingSection = ({ control, getValues, setValue, errors }) => {
 
     // CALCULATED COMPONENTS
 
-    const NonDaylightArea = ({ index }) => {
-        const watchValues = useWatch({
-            control,
-            name: `${sectionName}`
-        })
-        const gfa = getValues(`firstForm.a_gfa`)
-        const daylightArea = watchValues[index].daylight_area
-        var result = 0
-        if (gfa && daylightArea) {
-            result = calcNonDaylightArea(gfa, daylightArea)
-        }
-        console.log("Nondaylight", gfa, daylightArea, result)
-        return <InlineLabel
-            title="Non-daylight area"
-            value={numberFormat(result)}
-        />
-    }
-
     const LeDuringOperationalDay = ({ index }) => {
         const watchValues = useWatch({
             control,
@@ -324,13 +306,13 @@ const LightingSection = ({ control, getValues, setValue, errors }) => {
             name: `${sectionName}`,
         })
         const gfa = getValues("firstForm.a_gfa")
-        const daylightArea = watchValues[index].daylight_area
+        const nondaylightArea = watchValues[index].nondaylight_area
         const lpdOperational = watchValues[index].lpd_operate
         const operationalHours = getValues("firstForm.a_operational_hours")
         const workingDays = getValues("firstForm.a_working_days")
         var result = 0
-        if (gfa && daylightArea && lpdOperational && operationalHours) {
-            result = calcLeDuringOperationalNonDay(gfa, daylightArea, lpdOperational, operationalHours, workingDays)
+        if (gfa && nondaylightArea && lpdOperational && operationalHours) {
+            result = calcLeDuringOperationalNonDay(gfa, nondaylightArea, lpdOperational, operationalHours, workingDays)
         }
 
         if (totalLeArr.leOperationalNonDay.length < index) {
@@ -505,7 +487,11 @@ const LightingSection = ({ control, getValues, setValue, errors }) => {
                                                     imageUrl={getValues(`${multiInputName}.daylight_area_attach`)}
                                                     title="Floor Plan schematics for Daylight Area"
                                                 /> 
-                                                <NonDaylightArea index={index} />
+                                                <SideInput
+                                                    name={`${multiInputName}.nondaylight_area`}
+                                                    control={control}
+                                                    title="Non-Daylight area"
+                                                />
                                                 <SideInput
                                                     name={`${multiInputName}.lpd_operate`}
                                                     control={control}

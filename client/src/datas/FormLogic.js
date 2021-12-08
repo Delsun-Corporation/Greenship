@@ -43,19 +43,14 @@ export function calcLightingEnergyConsumption(leOperationalDay, leOperationalNon
     return (leOperationalDay + leOperationalNonDay + leNonOperational) / gfa / 1000
 }
 
-/// 3a2
-export function calcNonDaylightArea(gfa, daylightArea) {
-    return (gfa - daylightArea)
-}
-
 /// 3a5
 export function calcLeDuringOperationalDay(daylightArea, lpdOperational, operationalHours, workingDays) {
     return (daylightArea * calcOperatingHoursPerYear(operationalHours, workingDays) * lpdOperational)
 }
 
 /// 3a6
-export function calcLeDuringOperationalNonDay(gfa, daylightArea, lpdOperational, operationalHours, workingDays) {
-    return (gfa - daylightArea) * calcOperatingHoursPerYear(operationalHours, workingDays) * lpdOperational
+export function calcLeDuringOperationalNonDay(gfa, nondaylightArea, lpdOperational, operationalHours, workingDays) {
+    return nondaylightArea * calcOperatingHoursPerYear(operationalHours, workingDays) * lpdOperational
 }
 
 /// 3a7
