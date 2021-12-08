@@ -374,6 +374,7 @@ export function SideInput({
         inputMode="numeric"
         type={isString ? "text" : "number"}
         onChange={(e) => onChange(parseFloat(e.target.value))}
+        onWheel={(e) => e.target.blur()}
         sx={{
           maxWidth: "40%",
         }}
@@ -588,6 +589,7 @@ export function BasicInputField({ control, name, defaultValue, adornment, minima
         inputMode="numeric"
         type="number"
         onChange={(e) => onChange(parseInt(e.target.value))}
+        onWheel={(e) => e.target.blur()}
         className="w-24"
         InputProps={{
           startAdornment: (
