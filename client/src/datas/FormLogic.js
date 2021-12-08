@@ -14,8 +14,8 @@ export function calcOccupancy(gfa, occupancyDensity) {
 }
 
 /// 1b1
-export function calcRoomVolumePerPerson(floorNumber, avgFloorHeight, occupancyDensity) {
-    return (floorNumber * avgFloorHeight / occupancyDensity)
+export function calcRoomVolumePerPerson(gfa, floorNumber, avgFloorHeight, occupancyDensity) {
+    return (gfa * floorNumber * avgFloorHeight / occupancyDensity)
 }
 
 /// 2

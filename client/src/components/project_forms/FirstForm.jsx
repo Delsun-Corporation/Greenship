@@ -364,6 +364,10 @@ const ThirdSection = ({ control }) => {
   }
 
   function RoomVolumePerPerson() {
+    const gfa = useWatch({
+      control,
+      name: sectionName + "a_gfa",
+    });
     const floorNumber = useWatch({
       control,
       name: sectionName + "a_floor_count",
@@ -376,9 +380,9 @@ const ThirdSection = ({ control }) => {
       control,
       name: sectionName + "a_occupancy_density",
     });
-    if (floorNumber && avgFloorHeight && occupancyDensity) {
+    if (gfa && floorNumber && avgFloorHeight && occupancyDensity) {
       return (
-        numberFormat(calcRoomVolumePerPerson(floorNumber, avgFloorHeight, occupancyDensity)) +
+        numberFormat(calcRoomVolumePerPerson(gfa, floorNumber, avgFloorHeight, occupancyDensity)) +
         " m3"
       );
     }
