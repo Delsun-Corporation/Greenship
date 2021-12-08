@@ -305,14 +305,13 @@ const LightingSection = ({ control, getValues, setValue, errors }) => {
             control,
             name: `${sectionName}`,
         })
-        const gfa = getValues("firstForm.a_gfa")
         const nondaylightArea = watchValues[index].nondaylight_area
         const lpdOperational = watchValues[index].lpd_operate
         const operationalHours = getValues("firstForm.a_operational_hours")
         const workingDays = getValues("firstForm.a_working_days")
         var result = 0
         if (gfa && nondaylightArea && lpdOperational && operationalHours) {
-            result = calcLeDuringOperationalNonDay(gfa, nondaylightArea, lpdOperational, operationalHours, workingDays)
+            result = calcLeDuringOperationalNonDay(nondaylightArea, lpdOperational, operationalHours, workingDays)
         }
 
         if (totalLeArr.leOperationalNonDay.length < index) {

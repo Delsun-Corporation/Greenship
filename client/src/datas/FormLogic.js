@@ -49,7 +49,7 @@ export function calcLeDuringOperationalDay(daylightArea, lpdOperational, operati
 }
 
 /// 3a6
-export function calcLeDuringOperationalNonDay(gfa, nondaylightArea, lpdOperational, operationalHours, workingDays) {
+export function calcLeDuringOperationalNonDay(nondaylightArea, lpdOperational, operationalHours, workingDays) {
     return nondaylightArea * calcOperatingHoursPerYear(operationalHours, workingDays) * lpdOperational
 }
 
