@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 
-import { Container, Typography, Stack, Box } from "@mui/material";
+import { Container, Typography, Stack, Box, Backdrop, CircularProgress } from "@mui/material";
 import { Redirect, useParams } from "react-router";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
@@ -28,9 +28,10 @@ import { PageThree } from "../model/pageThree.model";
 function FormPage() {
   const { projectid, page } = useParams();
   const history = useHistory();
-  const [isLoading, setLoading] = useState(true);
+  const [isLoading, setLoading] = useState(false);
 
   const onFormSubmit = (data, nextPage) => {
+    setLoading(true);
     if (data.firstForm) {
       const model = new PageOne(data.firstForm, projectid)
       const entries = model.convertToFromData();
@@ -41,9 +42,9 @@ function FormPage() {
         headers: { "Content-Type": "multipart/form-data" },
       })
         .then((res) => {
+          setLoading(false);
           if (nextPage) {
             redirectPage(nextPage);
-            setLoading(false)
           } else {
             statusResponse(
               res.status,
@@ -68,9 +69,9 @@ function FormPage() {
 
       updatePage("updatepagetwo", body, projectid)
         .then((res) => {
+          setLoading(false)
           if (nextPage) {
             redirectPage(nextPage);
-            setLoading(false)
           } else {
             statusResponse(
               res.status,
@@ -98,9 +99,9 @@ function FormPage() {
         headers: { "Content-Type": "multipart/form-data" },
       })
         .then((res) => {
+          setLoading(false)
           if (nextPage) {
             redirectPage(nextPage);
-            setLoading(false)
           } else {
             statusResponse(
               res.status,
@@ -126,9 +127,10 @@ function FormPage() {
         headers: { "Content-Type": "multipart/form-data" },
       })
         .then((res) => {
+          setLoading(false)
           if (nextPage) {
             redirectPage(nextPage);
-            setLoading(false)
+            
           } else {
             statusResponse(
               res.status,
@@ -153,9 +155,9 @@ function FormPage() {
         headers: { "Content-Type": "multipart/form-data" },
       })
         .then((res) => {
+          setLoading(false)
           if (nextPage) {
             redirectPage(nextPage);
-            setLoading(false)
           } else {
             statusResponse(
               res.status,
@@ -242,6 +244,12 @@ function FormPage() {
         <FormDrawer activeChapter={parseInt(page)} redirect={(path) => redirectPage(path)}/>
         <Box component="main" sx={{ flexGrow: 1 }}>
           <Container maxWidth="xl" sx={{marginTop: 4, minHeight: "100vh"}}>
+          <Backdrop
+            sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+            open={isLoading}
+          >
+            <CircularProgress color="inherit" />
+          </Backdrop>
             {render()}
           </Container>
           <Footer />
