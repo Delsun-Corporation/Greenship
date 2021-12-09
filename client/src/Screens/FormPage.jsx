@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
-import Navbar from "../components/Navbar";
 
-import { Container, Typography, Stack, Box, Backdrop, CircularProgress } from "@mui/material";
+import { Container, Box, Backdrop, CircularProgress } from "@mui/material";
 import { Redirect, useParams } from "react-router";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";

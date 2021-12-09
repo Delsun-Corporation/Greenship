@@ -841,10 +841,15 @@ export function ImageUpload({ name, errors, control, title = "Upload Image", sub
 
   const onAvatarChange = useCallback(async (event) => {
     if (event.target.files?.[0]) {
-      const base64 = await getBase64(event.target.files[0]);
+      if (event.target.files[0].size < 200000) {
+        const base64 = await getBase64(event.target.files[0]);
 
-      setImage(base64);
-      field.onChange(event.target.files);
+        setImage(base64);
+        field.onChange(event.target.files);
+      }
+      else {
+        toast.error("The file is too big to upload. Maximum upload size is 20MB.");
+      }
     }
   }, []);
 

@@ -47,6 +47,7 @@ export class PageThree {
         const lighting = this.thirdFormData.c_lighting;
         for (var i = 0; i < lighting.length; i++) {
             formData.append(`c_lighting[${i}][daylight_area]`, lighting[i].daylight_area);
+            formData.append(`c_lighting[${i}][nondaylight_area]`, lighting[i].nondaylight_area);
             if (lighting[i].daylight_area_attach) {
               formData.append(`daylight_area_attach`, lighting[i].daylight_area_attach[0]);
             }

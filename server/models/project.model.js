@@ -120,6 +120,10 @@ const projectSchema = new Schema({
           type: Number,
           default: 0,
         },
+        nondaylight_area: {
+          type: Number,
+          default: 0,
+        },
         lpd_operate: {
           type: Number,
           default: 0,
