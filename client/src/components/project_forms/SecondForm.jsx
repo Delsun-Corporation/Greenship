@@ -35,14 +35,14 @@ const SecondForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
 
   function isNull(object) {
     for (const [key, value] of Object.entries(object)) {
-        if (typeof(value) === "object" && value !== null) {
-            isNull(value)
-        }else if(!value){
-            object[key] = 0
-        }
+      if (typeof (value) === "object" && value !== null) {
+        isNull(value)
+      } else if (!value) {
+        object[key] = 0
+      }
     }
     return object
-}
+  }
 
   useEffect(() => {
     axios
@@ -101,8 +101,8 @@ function defaultFormValue() {
     secondForm: {
       b_ottv: 0,
       b_shgc: 0,
-      b_window_area: [0,0,0,0,0,0,0,0],
-      b_wall_area: [0,0,0,0,0,0,0,0,0]
+      b_window_area: [0, 0, 0, 0, 0, 0, 0, 0],
+      b_wall_area: [0, 0, 0, 0, 0, 0, 0, 0, 0]
     },
   };
 }
@@ -114,9 +114,9 @@ const FirstSection = ({ control }) => {
 
   function CountWWR() {
     const watchValues = useWatch({
-        control,
-        name: sectionName,
-      });
+      control,
+      name: sectionName,
+    });
     const collectionWindowArea = [
       watchValues.b_window_area[0],
       watchValues.b_window_area[1],
@@ -367,11 +367,13 @@ const FirstSection = ({ control }) => {
                 justifyContent="space-between"
               >
                 <BasicInputField
+                  required={false}
                   name={`${sectionName}b_window_area[0]`}
                   control={control}
                   adornment={"N"}
                 />
                 <BasicInputField
+                  required={false}
                   name={`${sectionName}b_window_area[1]`}
                   control={control}
                   adornment={"S"}
@@ -384,11 +386,13 @@ const FirstSection = ({ control }) => {
                 justifyContent="space-between"
               >
                 <BasicInputField
+                  required={false}
                   name={`${sectionName}b_window_area[2]`}
                   control={control}
                   adornment={"E"}
                 />
                 <BasicInputField
+                  required={false}
                   name={`${sectionName}b_window_area[3]`}
                   control={control}
                   adornment={"W"}
@@ -401,11 +405,13 @@ const FirstSection = ({ control }) => {
                 justifyContent="space-between"
               >
                 <BasicInputField
+                  required={false}
                   name={`${sectionName}b_window_area[4]`}
                   control={control}
                   adornment={"NE"}
                 />
                 <BasicInputField
+                  required={false}
                   name={`${sectionName}b_window_area[5]`}
                   control={control}
                   adornment={"SE"}
@@ -418,11 +424,13 @@ const FirstSection = ({ control }) => {
                 justifyContent="space-between"
               >
                 <BasicInputField
+                  required={false}
                   name={`${sectionName}b_window_area[6]`}
                   control={control}
                   adornment={"NW"}
                 />
                 <BasicInputField
+                  required={false}
                   name={`${sectionName}b_window_area[7]`}
                   control={control}
                   adornment={"SW"}
@@ -450,11 +458,13 @@ const FirstSection = ({ control }) => {
                 justifyContent="space-between"
               >
                 <BasicInputField
+                  required={false}
                   name={`${sectionName}b_wall_area[0]`}
                   control={control}
                   adornment={"N"}
                 />
                 <BasicInputField
+                  required={false}
                   name={`${sectionName}b_wall_area[1]`}
                   control={control}
                   adornment={"S"}
@@ -467,11 +477,13 @@ const FirstSection = ({ control }) => {
                 justifyContent="space-between"
               >
                 <BasicInputField
+                  required={false}
                   name={sectionName + "b_wall_area[2]"}
                   control={control}
                   adornment={"E"}
                 />
                 <BasicInputField
+                  required={false}
                   name={sectionName + "b_wall_area[3]"}
                   control={control}
                   adornment={"W"}
@@ -484,11 +496,13 @@ const FirstSection = ({ control }) => {
                 justifyContent="space-between"
               >
                 <BasicInputField
+                  required={false}
                   name={sectionName + "b_wall_area[4]"}
                   control={control}
                   adornment={"NE"}
                 />
                 <BasicInputField
+                  required={false}
                   name={sectionName + "b_wall_area[5]"}
                   control={control}
                   adornment={"SE"}
@@ -501,11 +515,13 @@ const FirstSection = ({ control }) => {
                 justifyContent="space-between"
               >
                 <BasicInputField
+                  required={false}
                   name={sectionName + "b_wall_area[6]"}
                   control={control}
                   adornment={"NW"}
                 />
                 <BasicInputField
+                  required={false}
                   name={sectionName + "b_wall_area[7]"}
                   control={control}
                   adornment={"SW"}
@@ -518,6 +534,7 @@ const FirstSection = ({ control }) => {
                 justifyContent="space-between"
               >
                 <BasicInputField
+                  required={false}
                   name={sectionName + "b_wall_area[8]"}
                   control={control}
                   adornment={"R"}

@@ -344,6 +344,7 @@ export function SideInput({
   defaultValue,
   isString,
   minimalInput,
+  required = true
 }) {
   return (
     <Stack
@@ -375,6 +376,7 @@ export function SideInput({
         type={isString ? "text" : "number"}
         onChange={(e) => onChange(parseFloat(e.target.value))}
         onWheel={(e) => e.target.blur()}
+        required={required}
         sx={{
           maxWidth: "40%",
         }}
@@ -574,7 +576,7 @@ export function InlineLabel({ title, subtitle, value, bold }) {
 //   );
 // }
 
-export function BasicInputField({ control, name, defaultValue, adornment, minimalInput }) {
+export function BasicInputField({ control, name, defaultValue, adornment, minimalInput, required = true}) {
   return (
       <Controller
       name={name}
@@ -591,6 +593,7 @@ export function BasicInputField({ control, name, defaultValue, adornment, minima
         onChange={(e) => onChange(parseInt(e.target.value))}
         onWheel={(e) => e.target.blur()}
         className="w-24"
+        required = {required}
         InputProps={{
           startAdornment: (
             <InputAdornment position="start">{adornment}</InputAdornment>

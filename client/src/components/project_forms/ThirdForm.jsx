@@ -365,14 +365,17 @@ const LightingSection = ({ control, getValues, setValue, errors }) => {
         const leOperationalNonDay = totalLeArr.leOperationalNonDay[index]
         const leNonOperational = totalLeArr.leNonOperational[index]
 
-        var result = calcLightingEnergyConsumption(leOperationalDay, leOperationalNonDay, leNonOperational, gfa)
+        var result = 0
+        if (gfa && leOperationalDay && leOperationalNonDay && leNonOperational) {
+            result = calcLightingEnergyConsumption(leOperationalDay, leOperationalNonDay, leNonOperational, gfa)
+        }
 
         if (totalLeArr.energyConsumption.length < index) {
             totalLeArr.energyConsumption.push(result)
         } else {
             totalLeArr.energyConsumption[index] = result
         }
-        console.log( watchValues)
+        console.log(watchValues)
         console.log("Lightingg", result, gfa, leOperationalDay, leOperationalNonDay, leNonOperational)
 
         return (
@@ -730,18 +733,21 @@ const ACSection = ({ control, getValues, setValue }) => {
         const workingDays = getValues("firstForm.a_working_days")
         const operationalHours = getValues("firstForm.a_operational_hours")
         var result = components.BSL + components.CFM1 + components.CFM2 + components.LSL + components.PLL + components.PSL
-            
-        result = convertCoolingLoad(result, operationalHours, workingDays, gfa)
+        
+        var finalResult = 0
+        if (result && operationalHours && workingDays && gfa) {
+            finalResult = convertCoolingLoad(result, operationalHours, workingDays, gfa)
+        } 
 
         useEffect(() => {
-        setValue("thirdForm.total_dec.ac", result)
+        setValue("thirdForm.total_dec.ac", finalResult)
         })
 
         return (
             <Paper sx={{ paddingX: 2, paddingY: 1, backgroundColor: "green", color: "white" }}>
                 <InlineLabel
                     title="Total AC Energy Consumption"
-                    value={`${isNaN(result) ? "-" : numberFormat(result)} kWh/m2 per year`}
+                    value={`${isNaN(finalResult) ? "-" : numberFormat(finalResult)} kWh/m2 per year`}
                 />
             </Paper>
         )
