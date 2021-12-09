@@ -844,7 +844,7 @@ export function ImageUpload({ name, errors, control, title = "Upload Image", sub
 
   const onAvatarChange = useCallback(async (event) => {
     if (event.target.files?.[0]) {
-      if (event.target.files[0].size < 200000) {
+      if (event.target.files[0].size < 20971520) {
         const base64 = await getBase64(event.target.files[0]);
 
         setImage(base64);
