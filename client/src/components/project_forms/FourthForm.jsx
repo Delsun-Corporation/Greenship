@@ -318,9 +318,7 @@ const OutdoorAirSection = ({ control, getValues, setValue, errors }) => {
 
   const HandleToggle = (event) => {
     setPotential(event.target.checked)
-    useEffect(() => {
-      setValue(`${sectionName}.d_a_is_potential`, event.target.checked)
-    })
+    setValue(`${sectionName}.d_a_is_potential`, event.target.checked)
   }
 
   return (
