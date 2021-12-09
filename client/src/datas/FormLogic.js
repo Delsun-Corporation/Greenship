@@ -15,7 +15,8 @@ export function calcOccupancy(gfa, occupancyDensity) {
 
 /// 1b1
 export function calcRoomVolumePerPerson(gfa, floorNumber, avgFloorHeight, occupancyDensity) {
-    return (gfa * floorNumber * avgFloorHeight / occupancyDensity)
+    const totalOccupancy = (gfa * occupancyDensity / 100);
+    return (gfa * floorNumber * avgFloorHeight / totalOccupancy)
 }
 
 /// 2
@@ -125,7 +126,7 @@ export function calcPlugConsumption(gfa, plugEnergyAC, plugEnergyNonAC) {
 
 /// 4a
 export function calcZonePopulation(gfa, occupancyDensity) {
-    return ((gfa * occupancyDensity))
+    return ((gfa * occupancyDensity)/100)
 }
 
 export function calcVbz(rp, pz, ra, az, mvAmount) {
@@ -157,7 +158,7 @@ export function calcPotentialPV(pca, l, w) {
  }
  
  export function calcPercentageElectrical(predictialElectrical, total_dec) {
-    return (predictialElectrical/total_dec * 100 / 100).toFixed(2);
+    return (predictialElectrical/total_dec * 100);
  }
 
 export function numberFormat(value, numberOfDigits = 2) {

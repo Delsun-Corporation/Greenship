@@ -383,7 +383,7 @@ const ThirdSection = ({ control }) => {
     if (gfa && floorNumber && avgFloorHeight && occupancyDensity) {
       return (
         numberFormat(calcRoomVolumePerPerson(gfa, floorNumber, avgFloorHeight, occupancyDensity)) +
-        " m3"
+        " m3/person"
       );
     }
     return NaN;
@@ -425,7 +425,7 @@ const ThirdSection = ({ control }) => {
       rightComponent={
         <Stack direction="column" spacing={2}>
           <InlineLabel
-            title="Room Volume per Person (m3)"
+            title="Room Volume per Person"
             value={RoomVolumePerPerson()}
           />
           <Box sx={{ fontWeight: "bold" }}>
