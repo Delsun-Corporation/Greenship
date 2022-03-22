@@ -93,10 +93,10 @@ function ProjectCard({ project, projectId, lastPage, duplicateProject, deletePro
           </div>
         </div>
         <div className="flex flex-col h-3/5 pt-2">
-            <h1 className="font-body font-bold text-xl truncate h-1/3">
+            <h1 className="font-body font-bold text-lg truncate h-1/2">
                 {project.project_name}
             </h1>
-            <h4 className="font-body font-medium text-sm text-coolGrey h-2/3 w-full overflow-ellipsis overflow-hidden whitespace-nowrap leading-6 pt-2">
+            <h4 className="font-body font-medium text-sm text-coolGrey h-2/3 w-full overflow-ellipsis overflow-hidden whitespace-nowrap leading-6">
                 {project.project_desc}
             </h4>
         </div>
