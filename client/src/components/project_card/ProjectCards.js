@@ -5,7 +5,7 @@ import { Grid, CircularProgress } from "@mui/material";
 import ProjectCard from "./ProjectCard";
 import { toast } from "react-toastify";
 
-function ProjectCards({ isProjectEmpty, setIsProjectEmpty }) {
+function ProjectCards({ isProjectEmpty, setIsProjectEmpty, duplicateProject, deleteProject, openProject }) {
   const [projects, setProjects] = useState([]);
 
   const handleEmptyState = useCallback(
@@ -50,7 +50,7 @@ function ProjectCards({ isProjectEmpty, setIsProjectEmpty }) {
         >
           {projects.map((project) => (
             <Grid item xs={2} sm={4} md={4} key={project._id}>
-              <ProjectCard project={project} projectId={project._id} lastPage={project.last_page} />
+              <ProjectCard project={project} projectId={project._id} lastPage={project.last_page} duplicateProject={duplicateProject} deleteProject={deleteProject} openProject={openProject} />
             </Grid>
           ))}
         </Grid>

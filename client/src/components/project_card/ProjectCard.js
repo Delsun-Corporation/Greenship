@@ -1,9 +1,75 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import IconButton from '@mui/material/IconButton';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 
-function ProjectCard({ project, projectId, lastPage }) {
+function LongMenu({ duplicate, projectId, deleteProject, openProject, lastPage }) {
+  const options = [
+    'Edit',
+    'Delete',
+    'Duplicate'
+  ];
+  const ITEM_HEIGHT = 48;
+
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = (event, item) => {
+    if (item !== null || item !== undefined) {
+      if (item === "Edit") {
+        openProject(projectId, lastPage);
+      } else if (item === "Delete") {
+        deleteProject(projectId);
+      } else if (item === "Duplicate") {
+        duplicate(projectId);
+      }
+    }
+    setAnchorEl(null);
+  };
+
   return (
-    <Link className="w-full h-32 bg-white flex flex-row p-2 rounded-lg" to={`/projects/create/${projectId}/${lastPage}`}>
+    <div>
+      <IconButton
+        aria-label="more"
+        id="long-button"
+        aria-controls={open ? 'long-menu' : undefined}
+        aria-expanded={open ? 'true' : undefined}
+        aria-haspopup="true"
+        onClick={handleClick}
+      >
+        <MoreHorizIcon />
+      </IconButton>
+      <Menu
+        id="long-menu"
+        MenuListProps={{
+          'aria-labelledby': 'long-button',
+        }}
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleClose}
+        PaperProps={{
+          style: {
+            maxHeight: ITEM_HEIGHT * 4.5,
+            width: '20ch',
+          },
+        }}
+      >
+        {options.map((option) => (
+          <MenuItem key={option} onClick={(event) => handleClose(event, option)} defaultValue={`${option}`}>
+            {option}
+          </MenuItem>
+        ))}
+      </Menu>
+    </div>
+  );
+}
+
+function ProjectCard({ project, projectId, lastPage, duplicateProject, deleteProject, openProject }) {
+  return (
+    <div className="w-full h-36 bg-white flex flex-row p-2 rounded-lg">
       <div className="bg-gray-200 w-1/4 h-full">
         <img
           src={project.project_image}
@@ -26,16 +92,19 @@ function ProjectCard({ project, projectId, lastPage }) {
             <h1 className="font-body font-bold text-white text-xs">{project.project_status}</h1>
           </div>
         </div>
-        <div className="flex flex-col h-4/5 pt-2">
-            <h1 className="font-body font-bold text-2xl truncate h-1/3">
+        <div className="flex flex-col h-3/5 pt-2">
+            <h1 className="font-body font-bold text-xl truncate h-1/3">
                 {project.project_name}
             </h1>
             <h4 className="font-body font-medium text-sm text-coolGrey h-2/3 w-full overflow-ellipsis overflow-hidden whitespace-nowrap leading-6 pt-2">
                 {project.project_desc}
             </h4>
         </div>
+        <div className="flex flex-row-reverse h-1/5">
+          <LongMenu className="h-1/4" duplicate={duplicateProject} projectId={`${project._id.toString()}`} deleteProject={deleteProject} openProject={openProject} lastPage={lastPage}/>
+        </div>
       </div>
-    </Link>
+    </div>
   );
 }
 
