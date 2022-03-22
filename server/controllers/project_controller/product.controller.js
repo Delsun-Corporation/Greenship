@@ -146,3 +146,42 @@ exports.toggleProjectStatus = (req, res) => {
     });
   })
 }
+
+exports.duplicateProject = (req, res) => {
+  const {projectId, userId} = req.body;
+  const objectId = ObjectId.ObjectId(projectId);
+  const userObjectId = ObjectId.ObjectId(userId);
+
+  if (projectId === undefined || projectId === null) {
+    return res.status(400).json({
+      message: "Bad request!",
+    });
+  }
+
+  Project.findById(objectId).then((project) => {
+    if (!project) {
+      return res.status(404).json({
+        message: "No Project is Found",
+      });
+    }
+    const projectNameTemp = project.project_name;
+    const newProjectName = `Copy of ${projectNameTemp}`;
+
+    project._id = mongoose.Types.ObjectId();
+    project.isNew = true;
+    project.project_name = newProjectName;
+
+    return project.save();
+  }).then((result) => {
+    if (result !== undefined) {
+      res.status(200).json({
+        message: "Success duplicate project",
+      });
+    }
+  }).catch((err) => {
+    console.log(err);
+    res.status(500).json({
+      message: "Internal server error",
+    });
+  })
+}

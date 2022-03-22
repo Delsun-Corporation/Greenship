@@ -4,7 +4,7 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 
-function LongMenu() {
+function LongMenu({ duplicate, projectId, deleteProject, openProject, lastPage }) {
   const options = [
     'Edit',
     'Delete',
@@ -14,11 +14,19 @@ function LongMenu() {
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
-  const handleClick = (event, value) => {
+  const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
   const handleClose = (event, item) => {
-    console.log(item);
+    if (item !== null || item !== undefined) {
+      if (item === "Edit") {
+        openProject(projectId, lastPage);
+      } else if (item === "Delete") {
+        deleteProject(projectId);
+      } else if (item === "Duplicate") {
+        duplicate(projectId);
+      }
+    }
     setAnchorEl(null);
   };
 
@@ -59,7 +67,7 @@ function LongMenu() {
   );
 }
 
-function ProjectCard({ project, projectId, lastPage }) {
+function ProjectCard({ project, projectId, lastPage, duplicateProject, deleteProject, openProject }) {
   return (
     <div className="w-full h-36 bg-white flex flex-row p-2 rounded-lg">
       <div className="bg-gray-200 w-1/4 h-full">
@@ -93,7 +101,7 @@ function ProjectCard({ project, projectId, lastPage }) {
             </h4>
         </div>
         <div className="flex flex-row-reverse h-1/5">
-          <LongMenu className="h-1/4"/>
+          <LongMenu className="h-1/4" duplicate={duplicateProject} projectId={`${project._id.toString()}`} deleteProject={deleteProject} openProject={openProject} lastPage={lastPage}/>
         </div>
       </div>
     </div>
