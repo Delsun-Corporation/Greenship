@@ -99,7 +99,7 @@ const SixthForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <Stack direction="column" spacing={4} sx={{ paddingY: 10 }}>
+      <Stack id="divToPrint" direction="column" spacing={4} sx={{ paddingY: 10 }}>
         <FormHeader
           title={formChapters.find((e) => e.chapter === CHAPTER_NUMBER).title}
           projectId={projectId}
