@@ -32,6 +32,8 @@ import {
 } from "recharts";
 import axios from "axios";
 import { toast } from "react-toastify";
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 const SixthForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
   const methods = useForm({
@@ -97,15 +99,29 @@ const SixthForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
 
   const CHAPTER_NUMBER = "6";
 
+  const exportPdf = () => {
+    html2canvas(document.querySelector("#capture")).then(canvas => {
+       document.body.appendChild(canvas);  // if you want see your screenshot in body.
+       const imgData = canvas.toDataURL('image/png');
+       const pdf = new jsPDF('p', 'pt', 'a3', false);
+       pdf.addImage(imgData, 'PNG', 128, 0, 600, 0, undefined, false);
+       pdf.save("download.pdf");
+       window.location.reload();
+   });
+
+}
+
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <Stack id="divToPrint" direction="column" spacing={4} sx={{ paddingY: 10 }}>
+      <Stack direction="column" spacing={4} sx={{ paddingY: 10 }}>
         <FormHeader
           title={formChapters.find((e) => e.chapter === CHAPTER_NUMBER).title}
           projectId={projectId}
           shouldRedirect={shouldRedirect}
           chapter={CHAPTER_NUMBER}
+          exportToPdf={exportPdf}
         />
+        <div id="capture">
         {isLoading && <SkeletonSection />}
         {!isLoading && (
           <>
@@ -114,6 +130,7 @@ const SixthForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
             <DesignRecommendationSection />
           </>
         )}
+        </div>
         <FormFooter
           chapter={CHAPTER_NUMBER}
           setFromNextButton={setIsFromNextButton}

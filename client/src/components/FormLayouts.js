@@ -51,7 +51,7 @@ export const FormLayout = ({ leftComponent, rightComponent }) => (
   </Container>
 );
 
-export const FormHeader = ({ title, projectId, shouldRedirect, chapter }) => {
+export const FormHeader = ({ title, projectId, shouldRedirect, chapter, exportToPdf }) => {
   const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
@@ -134,7 +134,7 @@ export const FormHeader = ({ title, projectId, shouldRedirect, chapter }) => {
             Save Draft
           </Button>
           {chapter === "6" && (
-            <Button type="submit" variant="contained" sx={{ backgroundColor: "steelTeal" }} startIcon={<ArticleIcon />}>
+            <Button onClick={exportToPdf} variant="contained" sx={{ backgroundColor: "steelTeal" }} startIcon={<ArticleIcon />}>
             Generate Pdf
           </Button>
           ) }
