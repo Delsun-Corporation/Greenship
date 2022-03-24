@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { useForm, useWatch, Controller } from "react-hook-form";
-import { Stack, TextField, Typography, Box, Divider, Skeleton } from "@mui/material";
+import { useForm, useWatch } from "react-hook-form";
+import { Stack, Typography, Box, Divider } from "@mui/material";
 import {
   FormLayout,
   FormHeader,
@@ -14,7 +14,7 @@ import { formChapters } from "../../datas/Datas";
 import { calcWWR, numberFormat } from "../../datas/FormLogic";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Brush, PieChart, Pie, Sector } from 'recharts';
+import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 const SecondForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
   const methods = useForm({
@@ -52,8 +52,7 @@ const SecondForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
         },
       })
       .then((res) => {
-        console.log("Second Form data get:", res.data.page_two)
-        const pageTwoData = res.data.page_two;
+        console.log("Second Form data get:", res.data.page_two);
         setValue("secondForm", {
           b_wall_area: isNull(res.data.page_two.b_wall_area),
           b_window_area: isNull(res.data.page_two.b_window_area),
@@ -156,7 +155,7 @@ const FirstSection = ({ control }) => {
       { label: "Baseline", value: baseline }
     ]
 
-    const barColors = ["#47919b", "#7e84a3"]
+    const barColors = [ ( calculated > baseline ? "#ff392e" : "#47919b"), "#7e84a3"]
 
     return (
       <Box>
@@ -207,8 +206,8 @@ const FirstSection = ({ control }) => {
       { label: "Calculated SHGC", value: calculated, min: 0, max: 0 },
       { label: "Baseline", value: 0, min: baseline, max: allowed - baseline }
     ]
-
-    const barColors = ["#47919b", "#7e84a3", "#82ca9d"];
+    
+    const barColors = [((calculated > baseline || calculated < allowed - baseline) ? "#ff392e" : "#47919b"), "#7e84a3", "#82ca9d"];
 
     return (
       <Box>
@@ -259,11 +258,6 @@ const FirstSection = ({ control }) => {
   }
 
   const WwrGraph = () => {
-    const watchValues = useWatch({
-      control,
-      name: `${sectionName}`,
-    });
-
     const calculated = countedWWR
     const baseline = 30
     const allowed = 40
@@ -273,7 +267,7 @@ const FirstSection = ({ control }) => {
       { label: "Baseline", value: 0, min: baseline, max: allowed - baseline }
     ]
 
-    const barColors = ["#47919b", "#7e84a3", "#82ca9d"];
+    const barColors = [((calculated > baseline || calculated < allowed - baseline) ? "#ff392e" : "#47919b"), "#7e84a3", "#82ca9d"];
 
     return (
       <Box>
