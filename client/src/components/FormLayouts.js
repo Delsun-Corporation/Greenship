@@ -1,6 +1,6 @@
-import React, { useCallback, useState, useEffect, Component } from "react";
+import React, { useCallback, useState } from "react";
 import Select from "react-select";
-import { useController, Controller, useFormContext } from "react-hook-form";
+import { useController, Controller } from "react-hook-form";
 import {
   Box,
   Button,
@@ -17,6 +17,7 @@ import {
   Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions,
   Modal
 } from "@mui/material";
+import ArticleIcon from '@mui/icons-material/Article';
 import {
   formChapters,
 } from "../datas/Datas";
@@ -25,13 +26,10 @@ import { toast } from "react-toastify";
 import { theme } from "../assets/Theme";
 import { Upload, Download } from "@mui/icons-material";
 import Image from 'material-ui-image'
-import { Page, PDFDownloadLink } from 'react-pdf'
+import { Page } from 'react-pdf'
 import { Document } from 'react-pdf/dist/esm/entry.webpack';
 import LogoPDF from "../assets/pdf.png";
 import Base64Downloader from 'react-base64-downloader';
-import NumericInput from 'react-numeric-input';
-import NumberFormat from 'react-number-format';
-import PropTypes from 'prop-types';
 
 
 export const FormLayout = ({ leftComponent, rightComponent }) => (
@@ -53,9 +51,7 @@ export const FormLayout = ({ leftComponent, rightComponent }) => (
   </Container>
 );
 
-
-
-export const FormHeader = ({ title, projectId, shouldRedirect }) => {
+export const FormHeader = ({ title, projectId, shouldRedirect, chapter, exportToPdf }) => {
   const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
@@ -137,6 +133,11 @@ export const FormHeader = ({ title, projectId, shouldRedirect }) => {
           <Button type="submit" variant="contained" sx={{ backgroundColor: "steelTeal" }}>
             Save Draft
           </Button>
+          {chapter === "6" && (
+            <Button onClick={exportToPdf} variant="contained" sx={{ backgroundColor: "steelTeal" }} startIcon={<ArticleIcon />}>
+            Generate Pdf
+          </Button>
+          ) }
         </Stack>
       </Stack>
     </ThemeProvider>
