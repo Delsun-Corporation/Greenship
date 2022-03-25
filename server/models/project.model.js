@@ -256,8 +256,8 @@ const projectSchema = new Schema({
       {
         room_activity: {
           e: {
-            type: Number,
-            default: 0
+            type: String,
+            default: "200"
           },
           locActivity: {
             type: String,

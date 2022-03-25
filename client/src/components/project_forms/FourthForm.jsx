@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useForm, useFieldArray, Controller, useWatch } from "react-hook-form";
+import { useForm, useFieldArray, useWatch } from "react-hook-form";
 import {
   Box,
   Paper,
@@ -67,7 +67,6 @@ const FourthForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
     control,
     handleSubmit,
     setValue,
-    reset,
     getValues,
     formState: { errors },
   } = methods;
