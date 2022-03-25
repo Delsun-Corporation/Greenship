@@ -264,7 +264,7 @@ const FirstSection = ({ control, setValue, getValues, errors }) => {
       { label: "Target energy mix", value: standard },
     ];
 
-    const barColors = ["#47919b", "#7e84a3"];
+    const barColors = [(calculate > standard ? "#ff392e" : "#47919b"), "#7e84a3"];
 
     return (
       <Box>

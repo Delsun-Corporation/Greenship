@@ -28,7 +28,7 @@ import {
   InlineLabel,
   ToggleInput,
   SkeletonSection,
-  ImageUpload
+  ImageUpload,
 } from "../FormLayouts";
 import {
   formChapters,
@@ -41,7 +41,7 @@ import {
   calcACH,
   calcAccessPercentage,
   calcIlluminance,
-  numberFormat
+  numberFormat,
 } from "../../datas/FormLogic";
 import {
   BarChart,
@@ -63,7 +63,14 @@ const FourthForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
   const methods = useForm({
     defaultValues: defaultFormValue(),
   });
-  const { control, handleSubmit, setValue, reset, getValues, formState: { errors } } = methods;
+  const {
+    control,
+    handleSubmit,
+    setValue,
+    reset,
+    getValues,
+    formState: { errors },
+  } = methods;
   const [isLoading, setLoading] = useState(true);
   const [isFromNextButton, setIsFromNextButton] = useState(false);
 
@@ -92,17 +99,17 @@ const FourthForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
         const pageOneData = res.data.page_one;
         console.log(res.data);
         setValue("firstForm", {
-          ...pageOneData
+          ...pageOneData,
         });
         setValue("thirdForm", {
-          ...pageThreeData
-        })
+          ...pageThreeData,
+        });
         setValue("fourthForm", {
           ...pageFourData,
           d_d_illuminance:
             pageFourData.d_d_illuminance.items.length === 0
               ? [defaultIlluminances()]
-              : pageFourData.d_d_illuminance.items
+              : pageFourData.d_d_illuminance.items,
         });
         setLoading(false);
       })
@@ -125,12 +132,39 @@ const FourthForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
         {isLoading && <SkeletonSection />}
         {!isLoading && (
           <>
-            <OutdoorAirSection control={control} getValues={getValues} setValue={setValue} errors={errors} />
-            <AchSection control={control} getValues={getValues} setValue={setValue} errors={errors} />
-            <AccessOutsideSection control={control} getValues={getValues} errors={errors} />
-            <VisualComfortSection control={control} getValues={getValues} setValue={setValue} errors={errors} />
-            <ThermalComfortSection control={control} getValues={getValues} errors={errors} />
-            <AcousticalComfortSection control={control} getValues={getValues} errors={errors} />
+            <OutdoorAirSection
+              control={control}
+              getValues={getValues}
+              setValue={setValue}
+              errors={errors}
+            />
+            <AchSection
+              control={control}
+              getValues={getValues}
+              setValue={setValue}
+              errors={errors}
+            />
+            <AccessOutsideSection
+              control={control}
+              getValues={getValues}
+              errors={errors}
+            />
+            <VisualComfortSection
+              control={control}
+              getValues={getValues}
+              setValue={setValue}
+              errors={errors}
+            />
+            <ThermalComfortSection
+              control={control}
+              getValues={getValues}
+              errors={errors}
+            />
+            <AcousticalComfortSection
+              control={control}
+              getValues={getValues}
+              errors={errors}
+            />
             <FormFooter
               chapter={CHAPTER_NUMBER}
               setFromNextButton={setIsFromNextButton}
@@ -172,7 +206,7 @@ function defaultFormValue() {
       d_d_illuminance: [defaultIlluminances()],
       d_e_temperature: 0,
       d_f_noise_level: 0,
-      d_total_bhc: defaultTotalBhc()
+      d_total_bhc: defaultTotalBhc(),
     },
   };
 }
@@ -189,11 +223,11 @@ function defaultIlluminances() {
 }
 
 function defaultTotalBhc() {
-  return ({
+  return {
     vbz: 0,
     ach: 0,
-    illuminance: []
-  })
+    illuminance: [],
+  };
 }
 
 /// SECTIONS ///
@@ -222,7 +256,12 @@ const OutdoorAirSection = ({ control, getValues, setValue, errors }) => {
       resultArr.pz = result;
     }
 
-    return <InlineLabel title="Zone Population (person)" value={numberFormat(result)} />;
+    return (
+      <InlineLabel
+        title="Zone Population (person)"
+        value={numberFormat(result)}
+      />
+    );
   };
 
   const Vbz = () => {
@@ -239,17 +278,17 @@ const OutdoorAirSection = ({ control, getValues, setValue, errors }) => {
       name: `${sectionName}.d_a_az`,
     });
     const pz = resultArr.pz;
-    const mvAmount = getValues("thirdForm.mv_amount")
+    const mvAmount = getValues("thirdForm.mv_amount");
 
     var result = 0;
-    console.log(rp, pz, ra, az, mvAmount)
+    console.log(rp, pz, ra, az, mvAmount);
     if (rp && pz && ra && az && mvAmount) {
       result = calcVbz(rp, pz, ra, az, mvAmount);
       resultArr.vbz = result;
     }
     useEffect(() => {
-      setValue("fourthForm.d_total_bhc.vbz", result)
-    })
+      setValue("fourthForm.d_total_bhc.vbz", result);
+    });
 
     return (
       <Paper
@@ -317,9 +356,9 @@ const OutdoorAirSection = ({ control, getValues, setValue, errors }) => {
   };
 
   const HandleToggle = (event) => {
-    setPotential(event.target.checked)
-    setValue(`${sectionName}.d_a_is_potential`, event.target.checked)
-  }
+    setPotential(event.target.checked);
+    setValue(`${sectionName}.d_a_is_potential`, event.target.checked);
+  };
 
   return (
     <FormLayout
@@ -334,13 +373,15 @@ const OutdoorAirSection = ({ control, getValues, setValue, errors }) => {
             title="Is there any outdoor air introduction potentials?"
             handleChange={(event) => HandleToggle(event)}
           />
-          {isPotential && <ImageUpload
-            name={sectionName + ".d_a_attachment"}
-            errors={errors}
-            control={control}
-            imageUrl={getValues(sectionName + ".d_a_attachment")}
-            title="Attach proof of Outdoor Air Introduction Potential"
-          />}
+          {isPotential && (
+            <ImageUpload
+              name={sectionName + ".d_a_attachment"}
+              errors={errors}
+              control={control}
+              imageUrl={getValues(sectionName + ".d_a_attachment")}
+              title="Attach proof of Outdoor Air Introduction Potential"
+            />
+          )}
           <Divider style={{ width: "100%" }} />
           <SideInput
             name={`${sectionName}.d_a_rp`}
@@ -426,8 +467,8 @@ const AchSection = ({ control, getValues, setValue }) => {
       resultArr.ach = result;
     }
     useEffect(() => {
-      setValue(`fourthForm.d_total_bhc.ach`, result)
-    })
+      setValue(`fourthForm.d_total_bhc.ach`, result);
+    });
 
     return (
       <Paper
@@ -460,7 +501,10 @@ const AchSection = ({ control, getValues, setValue }) => {
       { label: "ACH Standard", value: achStandard },
     ];
 
-    const barColors = ["#47919b", "#7e84a3"];
+    const barColors = [
+      achCalculate > achStandard ? "#ff392e" : "#47919b",
+      "#7e84a3",
+    ];
 
     return (
       <Box>
@@ -508,7 +552,9 @@ const AchSection = ({ control, getValues, setValue }) => {
           />
           <InlineLabel
             title="Area of ventilation"
-            value={numberFormat(getValues(`firstForm.a_ventilation_area`)) + " m2"}
+            value={
+              numberFormat(getValues(`firstForm.a_ventilation_area`)) + " m2"
+            }
           />
           <Volume />
           <Divider style={{ width: "100%" }} />
@@ -579,7 +625,7 @@ const AccessOutsideSection = ({ control, getValues, setValue, errors }) => {
       { label: "Greenship Standard", value: standard },
     ];
 
-    const barColors = ["#47919b", "#7e84a3"];
+    const barColors = [calculate > standard ? "#ff392e" : "#47919b", "#7e84a3"];
 
     return (
       <Box>
@@ -678,9 +724,10 @@ const VisualComfortSection = ({ control, getValues, setValue, errors }) => {
     const area = watchValues[index].area;
     const count = watchValues[index].lamp_count;
     const lumen = watchValues[index].lamp_lumen;
-    const standard = watchValues[index].room_activity.e + ""
-    var parsedStandard = standard.split(/[-]+/).map((number) => parseInt(number))
-
+    const standard = watchValues[index].room_activity.e + "";
+    var parsedStandard = standard
+      .split(/[-]+/)
+      .map((number) => parseInt(number));
 
     var result = 0;
     if (area && count && lumen) {
@@ -688,18 +735,21 @@ const VisualComfortSection = ({ control, getValues, setValue, errors }) => {
 
       if (resultArr.calculatedE.length < index) {
         resultArr.calculatedE.push(result);
-        resultArr.standardMin.push(parsedStandard[0])
-        parsedStandard.length === 2 ? resultArr.standardMax.push(parsedStandard[1]) : resultArr.standardMax.push(0)
+        resultArr.standardMin.push(parsedStandard[0]);
+        parsedStandard.length === 2
+          ? resultArr.standardMax.push(parsedStandard[1])
+          : resultArr.standardMax.push(0);
       } else {
         resultArr.calculatedE[index] = result;
-        resultArr.standardMin[index] = parsedStandard[0]
-        parsedStandard.length === 2 ?
-          resultArr.standardMax[index] = parsedStandard[1] : resultArr.standardMax[index] = 0
+        resultArr.standardMin[index] = parsedStandard[0];
+        parsedStandard.length === 2
+          ? (resultArr.standardMax[index] = parsedStandard[1])
+          : (resultArr.standardMax[index] = 0);
       }
     }
     useEffect(() => {
-      setValue(`fourthForm.d_total_bhc.illuminance`, resultArr.calculatedE)
-    })
+      setValue(`fourthForm.d_total_bhc.illuminance`, resultArr.calculatedE);
+    });
 
     return (
       <Paper
@@ -715,6 +765,17 @@ const VisualComfortSection = ({ control, getValues, setValue, errors }) => {
     );
   };
 
+  const illuminanceCalculatedBarColor = (calculated = 0, allowed = 0, baseline = 0) => {
+    console.log("Haha", calculated, allowed, baseline )
+    if (allowed > 0) {
+      if (calculated > baseline && calculated < allowed) return "#47919b";
+      return "#ff392e";
+    } else {
+      if (calculated > baseline ) return "#ff392e";
+      return "#47919b";
+    }
+  }
+
   const IlluminanceGraph = () => {
     const watchValues = useWatch({
       control,
@@ -722,7 +783,6 @@ const VisualComfortSection = ({ control, getValues, setValue, errors }) => {
     });
 
     const chartData = [];
-
     const barColors = ["#47919b", "#7e84a3", "#82ca9d"];
 
     resultArr.calculatedE.map(function (value, index) {
@@ -733,14 +793,14 @@ const VisualComfortSection = ({ control, getValues, setValue, errors }) => {
           label: watchValues[index].room_activity.locActivity,
           value: value,
           standardMin: resultArr.standardMin[index],
-          standardMax: resultArr.standardMax[index]
+          standardMax: resultArr.standardMax[index],
         });
       } else {
         chartData[index] = {
           label: watchValues[index].room_activity.locActivity,
           value: value,
           standardMin: resultArr.standardMin[index],
-          standardMax: resultArr.standardMax[index]
+          standardMax: resultArr.standardMax[index],
         };
       }
     });
@@ -767,9 +827,23 @@ const VisualComfortSection = ({ control, getValues, setValue, errors }) => {
               height={10}
               wrapperStyle={{ position: "relative", marginTop: "0px" }}
             />
-            <Bar name="Calculated E" dataKey="value" fill={barColors[0]} />
-            <Bar name="Baseline standard E" dataKey="standardMin" fill={barColors[1]} stackId="a" />
-            <Bar name="Upperline standard E" dataKey="standardMax" fill={barColors[2]} stackId="a" />
+            <Bar name="Calculated E" dataKey="value">
+              {chartData.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={illuminanceCalculatedBarColor(chartData[index].value, chartData[index].standardMax, chartData[index].standardMin)} />
+              ))}
+            </Bar>
+            <Bar
+              name="Baseline standard E"
+              dataKey="standardMin"
+              fill={barColors[1]}
+              stackId="a"
+            />
+            <Bar
+              name="Upperline standard E"
+              dataKey="standardMax"
+              fill={barColors[2]}
+              stackId="a"
+            />
           </BarChart>
         </ResponsiveContainer>
       );
@@ -788,7 +862,9 @@ const VisualComfortSection = ({ control, getValues, setValue, errors }) => {
         leftComponent={
           <Stack direction="column" spacing={2}>
             <Stack direction="row" justifyContent="space-between">
-              <Box sx={{ fontSize: 24, fontWeight: "bold" }}>Visual Comfort</Box>
+              <Box sx={{ fontSize: 24, fontWeight: "bold" }}>
+                Visual Comfort
+              </Box>
               <Button
                 variant="contained"
                 onClick={() => {
@@ -796,23 +872,23 @@ const VisualComfortSection = ({ control, getValues, setValue, errors }) => {
                 }}
                 sx={{
                   backgroundColor: "steelTeal",
-                  ...({
+                  ...{
                     "&:hover": {
-                      backgroundColor: ("steelTeal"),
-                    }
-                  })
+                      backgroundColor: "steelTeal",
+                    },
+                  },
                 }}
               >
                 ADD ITEM
               </Button>
             </Stack>
             <ImageUpload
-                          name={sectionName + ".d_d_lighting_plan_att"}
-                          errors={errors}
-                          control={control}
-                          imageUrl={getValues("fourthForm.d_d_lighting_plan_att")}
-                          title="Lighting Plan"
-                        />
+              name={sectionName + ".d_d_lighting_plan_att"}
+              errors={errors}
+              control={control}
+              imageUrl={getValues("fourthForm.d_d_lighting_plan_att")}
+              title="Lighting Plan"
+            />
             <div>
               {fields.map((field, index) => {
                 const multiInputName = `${sectionName}.${index}`;
@@ -839,11 +915,11 @@ const VisualComfortSection = ({ control, getValues, setValue, errors }) => {
                           onClick={() => remove(index)}
                           sx={{
                             backgroundColor: "candyPink",
-                            ...({
+                            ...{
                               "&:hover": {
-                                backgroundColor: ("candyPink"),
-                              }
-                            })
+                                backgroundColor: "candyPink",
+                              },
+                            },
                           }}
                         >
                           Delete
@@ -940,7 +1016,7 @@ const ThermalComfortSection = ({ control, getValues, setValue }) => {
       { label: "Greenship Standard", value: standard },
     ];
 
-    const barColors = ["#47919b", "#7e84a3"];
+    const barColors = [(calculate > standard ? "#ff392e" : "#47919b"), "#7e84a3"];
 
     return (
       <Box>
@@ -1002,6 +1078,17 @@ const ThermalComfortSection = ({ control, getValues, setValue }) => {
   );
 };
 
+const acousticalCalculatedBarColor = (calculated = 0, allowed = 0, baseline = 0) => {
+  console.log("Haha", calculated, allowed, baseline )
+  if (allowed > 0) {
+    if (calculated > baseline && calculated < allowed) return "#47919b";
+    return "#ff392e";
+  } else {
+    if (calculated > baseline ) return "#ff392e";
+    return "#47919b";
+  }
+}
+
 const AcousticalComfortSection = ({ control, getValues, setValue, errors }) => {
   const sectionName = "fourthForm";
 
@@ -1026,9 +1113,10 @@ const AcousticalComfortSection = ({ control, getValues, setValue, errors }) => {
     });
 
     const calculate = watchValues;
-
+    const allowed = StandardNoiseArr[1] - StandardNoiseArr[0] ;
+    const standard = StandardNoiseArr[0];
     const chartData = [
-      { label: "Noise level in site", value: calculate, min: 0, max: 0 },
+      { label: "Noise level in site", value: calculate},
       {
         label: "Standard allowed noise",
         value: 0,
@@ -1037,7 +1125,7 @@ const AcousticalComfortSection = ({ control, getValues, setValue, errors }) => {
       },
     ];
 
-    const barColors = ["#47919b", "#7e84a3", "#82ca9d"];
+    const barColors = [acousticalCalculatedBarColor(calculate, allowed, standard), "#7e84a3", "#82ca9d"];
 
     return (
       <Box>
@@ -1091,7 +1179,9 @@ const AcousticalComfortSection = ({ control, getValues, setValue, errors }) => {
     <FormLayout
       leftComponent={
         <Stack direction="column" spacing={2}>
-          <Box sx={{ fontSize: 24, fontWeight: "bold" }}>Acoustical Comfort</Box>
+          <Box sx={{ fontSize: 24, fontWeight: "bold" }}>
+            Acoustical Comfort
+          </Box>
           <StandardNoise />
 
           <SideInput
@@ -1100,12 +1190,12 @@ const AcousticalComfortSection = ({ control, getValues, setValue, errors }) => {
             title="Noise level in existing condition (dBA)"
           />
           <ImageUpload
-              name={sectionName + ".d_f_noise_control_att"}
-              errors={errors}
-              control={control}
-              imageUrl={getValues(sectionName + ".d_f_noise_control_att")}
-              title="Treatment for noise control"
-            />
+            name={sectionName + ".d_f_noise_control_att"}
+            errors={errors}
+            control={control}
+            imageUrl={getValues(sectionName + ".d_f_noise_control_att")}
+            title="Treatment for noise control"
+          />
         </Stack>
       }
       rightComponent={
