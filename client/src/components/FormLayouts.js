@@ -24,8 +24,8 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { theme } from "../assets/Theme";
 import { Upload, Download } from "@mui/icons-material";
-import Image from 'material-ui-image'
-import { Page, PDFDownloadLink } from 'react-pdf'
+import Image from 'mui-image';
+import { Page, PDFDownloadLink } from 'react-pdf';
 import { Document } from 'react-pdf/dist/esm/entry.webpack';
 import LogoPDF from "../assets/pdf.png";
 import Base64Downloader from 'react-base64-downloader';
@@ -886,10 +886,22 @@ export function ImageUpload({ name, errors, control, title = "Upload Image", sub
 
           <Image
             src={image}
-            imageStyle={{ objectFit: "contain" }}
-            style={{ width: '76vw', height: '80vh' }}
-            aspectRatio={aspectRatio}
+            fit="contain"
+            width="76vw"
+            height="80vh"
+            duration={1000}
+            showLoading
             onClickCapture={handleOpen} />
+
+            {/* <Box
+              component="img"
+              sx={{
+                width: '76vw', height: '80vh'
+              }}
+              imageStyle={{ objectFit: "contain" }}
+              alt="The house from the offer."
+              src={image}
+            /> */}
         </Box>
       </Modal>
     )
@@ -978,11 +990,10 @@ export function ImageUpload({ name, errors, control, title = "Upload Image", sub
         <>
           <Image
             src={LogoPDF}
-            cover
-            style={{ height: 100 }}
-            imageStyle={{ objectFit: "contain" }}
-            aspectRatio={aspectRatio}
+            height={100}
+            fit="contain"
             onClickCapture={handleOpen}
+            duration={500}
           />
           <PreviewPDFModal image={image} />
         </>
@@ -993,12 +1004,22 @@ export function ImageUpload({ name, errors, control, title = "Upload Image", sub
       <>
         <Image
           src={image}
-          cover
-          style={{ height: 200 }}
-          imageStyle={{ objectFit: "contain" }}
-          aspectRatio={aspectRatio}
+          fit="contain"
+          height={300}
+          duration={1000}
+          showLoading
           onClickCapture={handleOpen}
         />
+        {/* <Box
+          component="img"
+          sx={{
+            maxHeight: '200'
+          }}
+          imageStyle={{ objectFit: "contain" }}
+          onClickCapture={handleOpen}
+          alt="The house from the offer."
+          src={image}
+        /> */}
         <PreviewModal image={image} />
       </>
     )
