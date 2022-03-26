@@ -29,6 +29,50 @@ function App() {
       });
   };
 
+  const deleteProject = async (projectId) => {
+    try {
+      const res = await axios.delete(`${process.env.REACT_APP_API_URL}/deleteproject`, {
+        data: {
+          projectId: projectId,
+        },
+      });
+      if (res.status === 200) {
+        if (res.data.message) {
+          toast.success(res.data.message);
+          window.location.reload();
+        }
+      } else {
+        if (res.data.message) {
+          toast.error(res.data.message);
+        }
+      }
+    } catch (err) {
+      toast.error("Something went wrong, please try again!");
+    }
+    ;
+  };
+
+  const openProject = (projectId, lastPage) => {
+    history.push(`/projects/create/${projectId}/${lastPage}`)
+  }
+
+  const duplicateProject = (projectId) => {
+    const userId = getUserId()
+
+    axios.post(`${process.env.REACT_APP_API_URL}/duplicate-project`, {
+      userId: userId,
+      projectId: projectId
+    })
+    .then((response) => {
+      window.location.reload();
+      toast.success("Success Duplicate Project");
+    })
+    .catch((err) => {
+      console.log(err);
+      toast.error("Something went wrong, please try again");
+    });
+  }
+
   return (
     <div className="bg-gray-100 min-h-screen flex flex-col justify-center">
       <ToastContainer />
@@ -77,6 +121,9 @@ function App() {
             <ProjectCards
               isProjectEmpty={isProjectEmpty}
               setIsProjectEmpty={setIsProjectEmpty}
+              duplicateProject={duplicateProject}
+              deleteProject={deleteProject}
+              openProject={openProject}
             />
           </div>}
           </div>

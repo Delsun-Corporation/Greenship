@@ -6,7 +6,8 @@ const {
     getProjects,
     deleteProject,
     getLastPage,
-    toggleProjectStatus
+    toggleProjectStatus,
+    duplicateProject
 } = require('../controllers/project_controller/product.controller');
 
 const {
@@ -43,6 +44,7 @@ const  {
 } = require('../controllers/project_controller/pageSix.controller')
 
 router.post('/createproject', createProject);
+router.post('/duplicate-project', duplicateProject);
 
 router.put('/updatepageone', uploadProjectImage ,updatePageOneDraft);
 router.put('/updatepagetwo', updatePageTwoDraft);
