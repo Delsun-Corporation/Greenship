@@ -766,7 +766,7 @@ const VisualComfortSection = ({ control, getValues, setValue, errors }) => {
   const illuminanceCalculatedBarColor = (calculated = 0, allowed = 0, baseline = 0) => {
     console.log("Haha", calculated, allowed, baseline )
     if (allowed > 0) {
-      if (calculated > baseline && calculated < allowed) return "#47919b";
+      if (calculated >= baseline && calculated <= allowed) return "#47919b";
       return "#ff392e";
     } else {
       if (calculated < baseline ) return "#ff392e";
@@ -1077,12 +1077,11 @@ const ThermalComfortSection = ({ control, getValues, setValue }) => {
 };
 
 const acousticalCalculatedBarColor = (calculated = 0, allowed = 0, baseline = 0) => {
-  console.log("Haha", calculated, allowed, baseline )
   if (allowed > 0) {
-    if (calculated > baseline && calculated < allowed) return "#47919b";
+    if (calculated >= baseline && calculated <= allowed + baseline) return "#47919b";
     return "#ff392e";
   } else {
-    if (calculated > baseline ) return "#ff392e";
+    if (calculated < baseline ) return "#ff392e";
     return "#47919b";
   }
 }
@@ -1099,8 +1098,7 @@ const AcousticalComfortSection = ({ control, getValues, setValue, errors }) => {
     });
 
     const standard = getValues(`firstForm.a_typology_acoustic`);
-    StandardNoiseArr = standard.split(/[-]+/).map((number) => parseInt(number));
-
+    StandardNoiseArr = standard.split(" ").map((number) => parseInt(number));
     return <InlineLabel title="Standard Noise Level" value={standard} />;
   };
 
@@ -1111,7 +1109,7 @@ const AcousticalComfortSection = ({ control, getValues, setValue, errors }) => {
     });
 
     const calculate = watchValues;
-    const allowed = StandardNoiseArr[1] - StandardNoiseArr[0] ;
+    const allowed = StandardNoiseArr[2] - StandardNoiseArr[0];
     const standard = StandardNoiseArr[0];
     const chartData = [
       { label: "Noise level in site", value: calculate},
@@ -1119,7 +1117,7 @@ const AcousticalComfortSection = ({ control, getValues, setValue, errors }) => {
         label: "Standard allowed noise",
         value: 0,
         min: StandardNoiseArr[0],
-        max: StandardNoiseArr[1] - StandardNoiseArr[0],
+        max: allowed || 0,
       },
     ];
 
