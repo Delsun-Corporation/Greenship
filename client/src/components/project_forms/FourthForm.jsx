@@ -500,7 +500,7 @@ const AchSection = ({ control, getValues, setValue }) => {
     ];
 
     const barColors = [
-      achCalculate > achStandard ? "#ff392e" : "#47919b",
+      achCalculate < achStandard ? "#ff392e" : "#47919b",
       "#7e84a3",
     ];
 
@@ -623,7 +623,7 @@ const AccessOutsideSection = ({ control, getValues, setValue, errors }) => {
       { label: "Greenship Standard", value: standard },
     ];
 
-    const barColors = [calculate > standard ? "#ff392e" : "#47919b", "#7e84a3"];
+    const barColors = [calculate < standard ? "#ff392e" : "#47919b", "#7e84a3"];
 
     return (
       <Box>
