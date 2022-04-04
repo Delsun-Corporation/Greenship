@@ -345,7 +345,6 @@ const FirstSection = ({ control }) => {
           >
             <Stack direction="column">
               <Typography>Window Area (m2)</Typography>
-              <Typography variant="caption" color="text.secondary">Window Area Baseline: 45kWh/m2</Typography>
             </Stack>
 
             <Stack
