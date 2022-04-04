@@ -769,7 +769,7 @@ const VisualComfortSection = ({ control, getValues, setValue, errors }) => {
       if (calculated > baseline && calculated < allowed) return "#47919b";
       return "#ff392e";
     } else {
-      if (calculated > baseline ) return "#ff392e";
+      if (calculated < baseline ) return "#ff392e";
       return "#47919b";
     }
   }
