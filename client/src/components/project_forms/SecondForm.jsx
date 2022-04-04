@@ -267,7 +267,7 @@ const FirstSection = ({ control }) => {
       { label: "Baseline", value: 0, min: baseline, max: allowed - baseline }
     ]
 
-    const barColors = [((calculated > baseline || calculated < allowed - baseline) ? "#ff392e" : "#47919b"), "#7e84a3", "#82ca9d"];
+    const barColors = [((calculated < baseline || calculated > allowed) ? "#ff392e" : "#47919b"), "#7e84a3", "#82ca9d"];
 
     return (
       <Box>
