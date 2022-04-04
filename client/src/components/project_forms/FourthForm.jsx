@@ -320,7 +320,7 @@ const OutdoorAirSection = ({ control, getValues, setValue, errors }) => {
       { label: "MV flow rate", value: mvFlowRate },
     ];
 
-    const barColors = ["#47919b", "#7e84a3"];
+    const barColors = ["#47919b", ((mvFlowRate < vbz) ? "#ff392e" : "#7e84a3")];
 
     return (
       <Box>
