@@ -1014,7 +1014,7 @@ const ThermalComfortSection = ({ control, getValues, setValue }) => {
       { label: "Greenship Standard", value: standard },
     ];
 
-    const barColors = [(calculate > standard ? "#ff392e" : "#47919b"), "#7e84a3"];
+    const barColors = [(calculate < standard ? "#ff392e" : "#47919b"), "#7e84a3"];
 
     return (
       <Box>
