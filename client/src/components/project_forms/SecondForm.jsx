@@ -336,7 +336,7 @@ const FirstSection = ({ control }) => {
             subtitle="SHGC Baseline: 0.6 - 0.7"
             tooltip={
               <React.Fragment>
-                SHGC is <b>the fraction of solar radiation admitted through a window, door, or skylight</b> — either transmitted directly and/or absorbed, and subsequently released as heat inside a home"
+                SHGC is <b>the fraction of solar radiation admitted through a window, door, or skylight</b> — either transmitted directly and/or absorbed, and subsequently released as heat inside a home
               </React.Fragment>
             }
           />

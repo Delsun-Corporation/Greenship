@@ -333,7 +333,7 @@ export function InfoTooltip({
 }) {
   return (
     <>
-      <LightTooltip title={content} leaveDelay={500}>
+      <LightTooltip title={content} leaveDelay={300}>
           <Info sx={{ fontSize: 16 }} color="disabled"/>
       </LightTooltip>
     </>
