@@ -215,7 +215,7 @@ const NetZeroSection = ({ getValues }) => {
       },
     ];
 
-    const barColors = ["#47919b", "#7e84a3"];
+    const barColors = [(totalDec < baselineEnergyConsumption ? "#ff392e" : "#47919b"), "#7e84a3"];
 
     return (
       <Box>
@@ -236,7 +236,7 @@ const NetZeroSection = ({ getValues }) => {
               type="number"
               dataKey="value"
               domain={[0, "dataMax"]}
-              tickFormatter={(tick) => `${numberFormat(tick)}°C`}
+              tickFormatter={(tick) => `${numberFormat(tick)}kWh/m2 per year`}
             />
             <YAxis type="category" dataKey="label" tick={{ fontSize: 14 }} />
             <Tooltip formatter={(value) => numberFormat(value)}/>
@@ -306,7 +306,7 @@ const NetZeroSection = ({ getValues }) => {
       { label: "Target energy mix", value: standard },
     ];
 
-    const barColors = ["#47919b", "#7e84a3"];
+    const barColors = [(calculate < standard ? "#ff392e" : "#47919b"), "#7e84a3"];
 
     return (
       <Box>
@@ -402,7 +402,7 @@ const HealthyBuildingSection = ({ getValues }) => {
       { label: "MV flow rate", value: mvFlowRate },
     ];
 
-    const barColors = ["#47919b", "#7e84a3"];
+    const barColors = ["#47919b", ((mvFlowRate < vbz) ? "#ff392e" : "#7e84a3")];
 
     return (
       <Box>
@@ -444,7 +444,7 @@ const HealthyBuildingSection = ({ getValues }) => {
       { label: "ACH Standard", value: achStandard },
     ];
 
-    const barColors = ["#47919b", "#7e84a3"];
+    const barColors = [(achCalculate < achStandard ? "#ff392e" : "#47919b"), "#7e84a3"];
 
     return (
       <Box>
@@ -489,7 +489,7 @@ const HealthyBuildingSection = ({ getValues }) => {
       { label: "Greenship Standard", value: standard },
     ];
 
-    const barColors = ["#47919b", "#7e84a3"];
+    const barColors = [(calculate < standard ? "#ff392e" : "#47919b"), "#7e84a3"];
 
     return (
       <Box>
@@ -525,6 +525,16 @@ const HealthyBuildingSection = ({ getValues }) => {
       </Box>
     );
   };
+
+  const illuminanceCalculatedBarColor = (calculated = 0, allowed = 0, baseline = 0) => {
+    if (allowed > 0) {
+      if (calculated >= baseline && calculated <= allowed) return "#47919b";
+      return "#ff392e";
+    } else {
+      if (calculated < baseline ) return "#ff392e";
+      return "#47919b";
+    }
+  }
 
   const IlluminanceGraph = () => {
     const illuminanceArr = getValues(`fourthForm.d_d_illuminance`);
@@ -580,7 +590,11 @@ const HealthyBuildingSection = ({ getValues }) => {
             height={10}
             wrapperStyle={{ position: "relative", marginTop: "0px" }}
           />
-          <Bar name="Calculated E" dataKey="value" fill={barColors[0]} />
+          <Bar name="Calculated E" dataKey="value">
+              {chartData.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={illuminanceCalculatedBarColor(chartData[index].value, chartData[index].standardMax, chartData[index].standardMin)} />
+              ))}
+            </Bar>
           <Bar
             name="Baseline standard E"
             dataKey="standardMin"
@@ -607,7 +621,7 @@ const HealthyBuildingSection = ({ getValues }) => {
       { label: "Greenship Standard", value: standard },
     ];
 
-    const barColors = ["#47919b", "#7e84a3"];
+    const barColors = [(calculate < standard ? "#ff392e" : "#47919b"), "#7e84a3"];
 
     return (
       <Box>
@@ -644,24 +658,33 @@ const HealthyBuildingSection = ({ getValues }) => {
     );
   };
 
+  const acousticalCalculatedBarColor = (calculated = 0, allowed = 0, baseline = 0) => {
+    if (allowed > 0) {
+      if (calculated >= baseline && calculated <= allowed + baseline) return "#47919b";
+      return "#ff392e";
+    } else {
+      if (calculated < baseline ) return "#ff392e";
+      return "#47919b";
+    }
+  }
+
   const NoiseGraph = () => {
     const standard = getValues(`firstForm.a_typology_acoustic`);
-    const parsedStandard = standard
-      .split(/[-]+/)
-      .map((number) => parseInt(number));
+    const parsedStandard = standard.split(" ").map((number) => parseInt(number));
     const calculate = getValues(`fourthForm.d_f_noise_level`);
-
+    const allowed = parsedStandard[2] - parsedStandard[0];
+    const baseline = parsedStandard[0]
     const chartData = [
       { label: "Noise level in site", value: calculate, min: 0, max: 0 },
       {
         label: "Standard allowed noise",
         value: 0,
         min: parsedStandard[0],
-        max: parsedStandard[1] - parsedStandard[0],
+        max: allowed || 0,
       },
     ];
 
-    const barColors = ["#47919b", "#7e84a3", "#82ca9d"];
+    const barColors = [acousticalCalculatedBarColor(calculate, allowed, baseline), "#7e84a3", "#82ca9d"];
 
     return (
       <Box>

@@ -767,7 +767,6 @@ const VisualComfortSection = ({ control, getValues, setValue, errors }) => {
   };
 
   const illuminanceCalculatedBarColor = (calculated = 0, allowed = 0, baseline = 0) => {
-    console.log("Haha", calculated, allowed, baseline )
     if (allowed > 0) {
       if (calculated >= baseline && calculated <= allowed) return "#47919b";
       return "#ff392e";
