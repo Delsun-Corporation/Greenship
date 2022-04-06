@@ -257,6 +257,7 @@ const OutdoorAirSection = ({ control, getValues, setValue, errors }) => {
     return (
       <InlineLabel
         title="Zone Population (person)"
+        tooltip="Total number of people."
         value={numberFormat(result)}
       />
     );
@@ -399,6 +400,7 @@ const OutdoorAirSection = ({ control, getValues, setValue, errors }) => {
             name={`${sectionName}.d_a_az`}
             control={control}
             title="Zone floor area (m2)"
+            tooltip="Total area designated for outdoor air introduction."
           />
           <Divider style={{ width: "100%" }} />
           <Vbz />
@@ -547,6 +549,7 @@ const AchSection = ({ control, getValues, setValue }) => {
             name={`${sectionName}.d_b_velocity`}
             control={control}
             title="Velocity (m/s)"
+            tooltip="Data taken from the climate data attached in the 'Building Data' page."
           />
           <InlineLabel
             title="Area of ventilation"

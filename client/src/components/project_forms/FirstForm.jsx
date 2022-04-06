@@ -251,6 +251,7 @@ const SecondSection = ({ control, errors, getValues }) => {
                 control={control}
                 imageUrl={getValues(sectionName + "a_location_image")}
                 title="Climate data attachment"
+                tooltip="Attach climate data (in .png / .jpeg/ .pdf format) that consist minimum of average temperature, average wind speed, average solar radiation."
               />
           <Divider style={{ width: "100%" }} />
 
@@ -258,6 +259,7 @@ const SecondSection = ({ control, errors, getValues }) => {
             name={sectionName + "a_gfa"}
             control={control}
             title="Gross Floor Area (m2)"
+            tooltip="Enclosed area within the building including the service area (ex. parking, toilet, corridor, etc)."
           />
           <SideInput
             name={sectionName + "a_floor_count"}
@@ -296,6 +298,7 @@ const SecondSection = ({ control, errors, getValues }) => {
             name={sectionName + "a_ventilation_area"}
             control={control}
             title="Area of Ventilation (m2)"
+            tooltip="Total opening area that is viable for natural ventilation and daylight penetration."
           />
         </Stack>
       }
@@ -406,6 +409,7 @@ const ThirdSection = ({ control }) => {
           <InlineLabel
             title="Baseline Energy Consumption Index"
             value={EciBaseline()}
+            tooltip="Index for benchmarking performance and representing building energy consumption in kWh/m2 in a year."
           />
           <Divider style={{ width: "100%" }} />
           <Box sx={{ fontWeight: "bold" }}>Building Health Indexes:</Box>
@@ -415,11 +419,27 @@ const ThirdSection = ({ control }) => {
             control={control}
             title="Air Change per Hour (ACH)"
             subtitle="See next table for reference"
+            tooltip="Standards specify how much outdoor air should be brought into a room every hour and are based on occupancy and room size."
           />
-          <InlineLabel title="Access to Outside View" value="minimum 75%" />
-          <InlineLabel title="Visual Comfort" value={VisualComfort()} />
-          <InlineLabel title="Thermal Comfort" value="maximum 25°C" />
-          <InlineLabel title="Acoustical Comfort" value={AcousticalComfort()} />
+          <InlineLabel 
+            title="Access to Outside View"
+            value="minimum 75%" 
+            tooltip="Percentages of areas that have direct visuals from indoor to outdoor without any obstruction that prevent the visual connectivity."
+          />
+          <InlineLabel
+            title="Visual Comfort" 
+            value={VisualComfort()} 
+            tooltip="A set of criteria based on the balance of contrasts, the color 'temperature', the absence or presence of glare, and the one particularly used in this system is the illuminance level."
+          />
+          <InlineLabel
+            title="Thermal Comfort"
+            value="25°C ± 1°C temperature, 60% ± 10% relative humidity"
+          />
+          <InlineLabel
+            title="Acoustical Comfort"
+            value={AcousticalComfort()}
+            tooltip="The noise level in 90% of the area meet the design criteria recommended by SNI 03-6386-2000."
+          />
         </Stack>
       }
       rightComponent={
@@ -449,8 +469,9 @@ const FourthSection = ({ control, errors, getValues }) => {
             errors={errors}
             control={control}
             imageUrl={getValues(sectionName + "a_orientation_image")}
-            title="Building Plan Orientation (length, width, and orientation)"
-            subtitle="Attach planning image"
+            title="Building Plan Orientation"
+            subtitle="(length, width, and orientation)"
+            tooltip="Attach site plans and/or layout plans showing design strategies to minimize heat gain through building orientation"
           />
           <ImageUpload
             name={sectionName + "a_micro_noise_image"}
@@ -458,7 +479,7 @@ const FourthSection = ({ control, errors, getValues }) => {
             control={control}
             imageUrl={getValues(sectionName + "a_micro_noise_image")}
             title="Planning of Micro Climate and Noise Control"
-            subtitle="Attach site development: landscape closure, green area percentage"
+            tooltip="Attach site development: landscape closure, green area percentage"
           />
         </Stack>
       }
@@ -470,7 +491,7 @@ const FourthSection = ({ control, errors, getValues }) => {
             control={control}
             imageUrl={getValues(sectionName + "a_energy_place_image")}
             title="On-site Renewable Energy Planning"
-            subtitle="Attach document: proof of renewable energy potential on site"
+            tooltip="Attach document: proof of renewable energy potential on site"
           />
         </Stack>
       }

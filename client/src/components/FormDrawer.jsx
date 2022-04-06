@@ -1,10 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { styled, useTheme } from '@mui/material/styles';
-import { Box, Stack, Toolbar, List, Typography, Divider, IconButton, ThemeProvider, Menu, MenuItem, ListItem, ListItemText, ListItemIcon, Popper, Paper, ClickAwayListener, Button, Grow, MenuList } from '@mui/material';
+import { Box, Stack, Toolbar, List, Typography, Divider, IconButton, ThemeProvider, MenuItem, ListItem, ListItemText, ListItemIcon, Popper, Paper, ClickAwayListener, Button, Grow, MenuList } from '@mui/material';
 import MuiDrawer from '@mui/material/Drawer';
 import MuiAppBar from '@mui/material/AppBar';
-import { Link } from "react-router-dom";
-import * as FaIcons from "react-icons/fa";
 import { isAuth, Signout } from "../helpers/auth";
 import { formChapters } from "../datas/Datas"
 import { theme } from "../assets/Theme"
