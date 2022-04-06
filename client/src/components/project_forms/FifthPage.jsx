@@ -309,6 +309,7 @@ const FirstSection = ({ control, setValue, getValues, errors }) => {
             name={sectionName + "e_facade_area"}
             control={control}
             title="Potential facade area (m2)"
+            tooltip="Area that is feasible for PV panel installation."
             minimalInput={0}
           />
 
@@ -335,7 +336,8 @@ const FirstSection = ({ control, setValue, getValues, errors }) => {
           <SideInput
             name={sectionName + "e_pv_spec_wpeak"}
             control={control}
-            title="Wpeak (Wp)"
+            title="Watt-peak (Wp)"
+            tooltip="Maximum electrical energy that a photovoltaic panel can supply under standard test conditions."
             minimalInput={0}
           />
 

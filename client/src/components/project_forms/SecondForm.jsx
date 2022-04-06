@@ -326,6 +326,7 @@ const FirstSection = ({ control }) => {
             control={control}
             title="Overall Thermal Transfer Value (kWh/m2)"
             subtitle="OTTV Baseline: 45kWh/m2"
+            tooltip="A measure of average heat gain into a building through the building envelope"
           />
 
           <SideInput
@@ -333,6 +334,11 @@ const FirstSection = ({ control }) => {
             control={control}
             title="Solar Heat Gain Coefficient"
             subtitle="SHGC Baseline: 0.6 - 0.7"
+            tooltip={
+              <React.Fragment>
+                SHGC is <b>the fraction of solar radiation admitted through a window, door, or skylight</b> — either transmitted directly and/or absorbed, and subsequently released as heat inside a home
+              </React.Fragment>
+            }
           />
 
           <Stack

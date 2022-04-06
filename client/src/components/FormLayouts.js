@@ -17,6 +17,8 @@ import {
   Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions,
   Modal
 } from "@mui/material";
+import { styled } from '@mui/material/styles';
+import Tooltip, { tooltipClasses } from '@mui/material/Tooltip';
 import ArticleIcon from '@mui/icons-material/Article';
 import {
   formChapters,
@@ -24,7 +26,7 @@ import {
 import axios from "axios";
 import { toast } from "react-toastify";
 import { theme } from "../assets/Theme";
-import { Upload, Download } from "@mui/icons-material";
+import { Upload, Download, Info } from "@mui/icons-material";
 import Image from 'mui-image';
 import { Page, PDFDownloadLink } from 'react-pdf';
 import { Document } from 'react-pdf/dist/esm/entry.webpack';
@@ -260,88 +262,12 @@ export const SkeletonSection = () => {
   );
 }
 
-// export function SideInput({
-//   control,
-//   name,
-//   title,
-//   subtitle,
-//   defaultValue,
-//   isString,
-//   minimalInput,
-// }) {
-//   const {
-//     field: { ref, value, ...inputProps },
-//     fieldState: { invalid, isTouched, isDirty },
-//     formState: { touchedFields, dirtyFields },
-//   } = useController({
-//     name,
-//     control,
-//   });
-
-//   const handleKey = (e) => {
-//     //... rest of your code
-//     e.preventDefault()
-//    }
-
-//   return (
-//     <Stack
-//       direction="row"
-//       alignItems="center"
-//       justifyContent="space-between"
-//       spacing={2}
-//       minHeight={40}
-//     >
-//       <Stack direction="column">
-//         <Typography variant="body1">{title}</Typography>
-//         {subtitle && (
-//           <Typography variant="caption" color="text.secondary">
-//             {subtitle}
-//           </Typography>
-//         )}
-//       </Stack>
-      
-//       <NumericInput
-//         {...inputProps}
-//         value={value || defaultValue}
-//         inputProps={{ min: minimalInput, lang:"en-US", style: { textAlign: "right" } }}
-//         variant="outlined"
-//         inputMode="numeric"
-//         type="number"
-//         size={10}
-//       />
-//       {/* <TextField
-//         {...ref}
-//         value={value.numberformat}
-//         name="numberformat"
-//         variant="outlined"
-//         size= "small"
-//         id="formatted-numberformat-input"
-//         InputProps={{
-//           inputComponent: NumberFormatCustom,
-//         }}
-//       /> */}
-
-//       {/* <TextField
-//         {...inputProps}
-//         value={value || defaultValue}
-//         inputProps={{ min: minimalInput, style: { textAlign: "right" } }}
-//         variant="outlined"
-//         size="small"
-//         inputMode="numeric"
-//         type={isString ? "text" : "number"}
-//         sx={{
-//           maxWidth: "40%",
-//         }}
-//       /> */}
-//     </Stack>
-//   );
-// }
-
 export function SideInput({
   control,
   name,
   title,
   subtitle,
+  tooltip,
   defaultValue,
   isString,
   minimalInput,
@@ -356,7 +282,10 @@ export function SideInput({
       minHeight={40}
     >
       <Stack direction="column">
-        <Typography variant="body1">{title}</Typography>
+        <Stack direction="row" spacing={0.5}>
+          <Typography variant="body1">{title}</Typography>
+          {tooltip && (<InfoTooltip content={tooltip} />)}
+        </Stack>
         {subtitle && (
           <Typography variant="caption" color="text.secondary">
             {subtitle}
@@ -386,6 +315,29 @@ export function SideInput({
     />
     </Stack>
   );
+}
+
+const LightTooltip = styled(({ className, ...props }) => (
+  <Tooltip {...props} classes={{ popper: className }} />
+))(({ theme }) => ({
+  [`& .${tooltipClasses.tooltip}`]: {
+    backgroundColor: theme.palette.common.white,
+    color: 'rgba(0, 0, 0, 0.87)',
+    boxShadow: theme.shadows[5],
+    fontSize: 14,
+  },
+}));
+
+export function InfoTooltip({
+  content = "This is an info tooltip."
+}) {
+  return (
+    <>
+      <LightTooltip title={content} leaveDelay={300}>
+          <Info sx={{ fontSize: 16 }} color="disabled"/>
+      </LightTooltip>
+    </>
+  )
 }
 
 export function BlockInput({
@@ -512,7 +464,7 @@ export function ToggleInput({ control, name, title, subtitle, handleChange }) {
   )
 }
 
-export function InlineLabel({ title, subtitle, value, bold }) {
+export function InlineLabel({ title, subtitle, tooltip, value, bold}) {
   return (
     <Stack
       direction="row"
@@ -522,8 +474,11 @@ export function InlineLabel({ title, subtitle, value, bold }) {
       minHeight={40}
     >
       <Stack direction="column">
-        {bold && <Box sx={{ fontSize: 16, fontWeight: "bold" }}>{title}</Box>}
-        {!bold && <Typography variant="body1">{title}</Typography>}
+        <Stack direction="row" spacing={0.5}>
+          {bold && <Box sx={{ fontSize: 16, fontWeight: "bold" }}>{title}</Box>}
+          {!bold && <Typography variant="body1">{title}</Typography>}
+          {tooltip && (<InfoTooltip content={tooltip} />)}
+        </Stack>
         {subtitle && (
           <Typography variant="caption" color="text.secondary">
             {subtitle}
@@ -827,7 +782,10 @@ const getBase64FromUrl = async (url) => {
   });
 }
 
-export function ImageUpload({ name, errors, control, title = "Upload Image", subtitle = "Click the image to view", imageUrl }) {
+export function ImageUpload({ name, errors, control, 
+  title = "Upload Image", 
+  subtitle, 
+  tooltip, imageUrl }) {
   const { field } = useController({ name, control });
   const [image, setImage] = useState();
   const [open, setOpen] = useState(false);
@@ -1029,10 +987,22 @@ export function ImageUpload({ name, errors, control, title = "Upload Image", sub
         minHeight={40}
       >
         <Stack direction="column">
-          <Typography variant="body1">{title}</Typography>
+          <Stack direction="row" spacing={0.5}>
+          <Typography variant="body1">
+          {title}
+          </Typography> 
+          {tooltip && (<InfoTooltip content={tooltip} />)}
+          </Stack>
+          
           {subtitle && (
             <Typography variant="caption" color="text.secondary">
               {subtitle}
+            </Typography>
+          )}
+
+          {image && (
+            <Typography variant="caption" color="text.secondary">
+              Click the image to view
             </Typography>
           )}
         </Stack>
