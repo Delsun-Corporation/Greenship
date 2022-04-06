@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { useForm, useFieldArray, Controller, useWatch } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import {
   Box,
   Paper,
@@ -39,7 +39,7 @@ const SixthForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
   const methods = useForm({
     defaultValues: defaultFormValue(),
   });
-  const { control, handleSubmit, setValue, reset, getValues } = methods;
+  const { handleSubmit, setValue, getValues } = methods;
 
   const [isLoading, setLoading] = useState(true);
   const [isFromNextButton, setIsFromNextButton] = useState(false);
@@ -103,8 +103,20 @@ const SixthForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
     html2canvas(document.querySelector("#capture")).then(canvas => {
        document.body.appendChild(canvas);  // if you want see your screenshot in body.
        const imgData = canvas.toDataURL('image/png');
-       const pdf = new jsPDF('p', 'pt', 'a3', false);
-       pdf.addImage(imgData, 'PNG', 128, 0, 600, 0, undefined, false);
+       const pdf = new jsPDF('p', 'mm', [210, 297], false);
+       const pageWidth = pdf.internal.pageSize.getWidth();
+       const pageHeight = pdf.internal.pageSize.getHeight();
+
+       const widthRatio = pageWidth / canvas.width;
+       const heightRatio = pageHeight / canvas.height;
+       const ratio = widthRatio > heightRatio ? heightRatio : widthRatio;
+
+       const canvasWidth = canvas.width * ratio;
+       const canvasHeight = canvas.height * ratio;
+
+       const marginX = (pageWidth - canvasWidth) / 2;
+       const marginY = (pageHeight - canvasHeight) / 2;
+       pdf.addImage(imgData, 'PNG', marginX, marginY, canvasWidth, canvasHeight, undefined, false);
        pdf.save("download.pdf");
        window.location.reload();
    });
