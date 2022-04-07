@@ -28,7 +28,7 @@ import { toast } from "react-toastify";
 import { theme } from "../assets/Theme";
 import { Upload, Download, Info } from "@mui/icons-material";
 import Image from 'mui-image';
-import { Page, PDFDownloadLink } from 'react-pdf';
+import { Page } from 'react-pdf';
 import { Document } from 'react-pdf/dist/esm/entry.webpack';
 import LogoPDF from "../assets/pdf.png";
 import Base64Downloader from 'react-base64-downloader';

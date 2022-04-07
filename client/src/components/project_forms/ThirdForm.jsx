@@ -116,10 +116,6 @@ const ThirdForm = ({ onceSubmitted, projectId, shouldRedirect }) => {
 
     const CHAPTER_NUMBER = "3";
 
-    function refreshPage(){ 
-        window.location.reload(false); 
-      }
-
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
             <Stack direction="column" spacing={4} sx={{ paddingY: 10 }}>
