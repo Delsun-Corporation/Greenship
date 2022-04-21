@@ -227,7 +227,7 @@ const NetZeroSection = ({ getValues }) => {
       },
     ];
 
-    const barColors = [(totalDec < baselineEnergyConsumption ? "#ff392e" : "#47919b"), "#7e84a3"];
+    const barColors = [(totalDec > baselineEnergyConsumption ? "#ff392e" : "#47919b"), "#7e84a3"];
 
     return (
       <Box>
