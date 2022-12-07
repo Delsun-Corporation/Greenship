@@ -298,7 +298,7 @@ export function SideInput({
       defaultValue={defaultValue}
       render={({ field: { onChange, value } }) => (
       <TextField
-        value={value || defaultValue}
+        value={(value !== null || value !== undefined) ? value : defaultValue}
         inputProps={{ min: minimalInput, style: { textAlign: "right" } }}
         variant="outlined"
         size="small"
@@ -540,7 +540,7 @@ export function BasicInputField({ control, name, defaultValue, adornment, minima
       defaultValue={defaultValue}
       render={({ field: { onChange, value } }) => (
       <TextField
-        value={value || defaultValue}
+        value={(value !== null || value !== undefined) ? value : defaultValue}
         inputProps={{ min: minimalInput, style: { textAlign: "right" } }}
         variant="outlined"
         size="small"
