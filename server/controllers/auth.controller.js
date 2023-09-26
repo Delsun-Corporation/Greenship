@@ -19,7 +19,7 @@ const transporter = nodemailer.createTransport({
     },
     auth: {
         user: 'mockdelsun28-131-693-007@outlook.com',
-        pass: 'okeokeoke90'
+        pass: 'define888'
     }
 });
 
