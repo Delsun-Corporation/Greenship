@@ -21,8 +21,6 @@
     "react": "^17.0.2",
     "react-base64-downloader": "^2.1.7",
     "react-dom": "^17.0.2",
-    "react-facebook-login": "^4.1.1",
-    "react-google-login": "^5.2.2",
     "react-hook-form": "^7.17.4",
     "react-icons": "^4.2.0",
     "react-number-format": "^4.8.0",
@@ -43,8 +41,7 @@
   },
   "eslintConfig": {
     "extends": [
-      "react-app",
-      "react-app/jest"
+      "react-app"
     ]
   },
   "browserslist": {
